@@ -22,7 +22,13 @@ Personnage::Personnage()
 	_sprite = nullptr;
 }
 
+//Initialise le sprite
+Personnage::Personnage(std::string spriteSource, std::vector<sf::IntRect> spriteRects)
+{
+	loadSprite(spriteSource, spriteRects);
+}
 
+//DEstructeur
 Personnage::~Personnage()
 {
 	clear();
