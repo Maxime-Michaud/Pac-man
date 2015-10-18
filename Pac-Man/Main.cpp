@@ -11,17 +11,24 @@ TODO ajouter une description
 
 #include "autosfml.h"	//Définis des macros pour inclure les .lib de SFML, like a paresseux
 #include "Ligne.h"	
-
-
+#include "PacMan.h"
+#include <iostream>
+#include <SFML\System\Clock.hpp>
+ 
 void main()
 {
-	sf::RenderWindow tstWin;
-	tstWin.create(sf::VideoMode(800, 600), "Fenetre de test");
-	Ligne Test[] = { Ligne(5,5,5,100), Ligne(100,5,5,5), Ligne(10, 10, 10, 950) };
+	PacMan test;
+	sf::RenderWindow tstwin;
+	tstwin.create(sf::VideoMode(600, 600), "Fenetre de test");
 
-	for (int i = 0; i < 3 ; i++)
-		tstWin.draw(Test[i]);
+	while (true)
+	{
+		sf::Clock clock;
+		tstwin.clear();
+		tstwin.draw(test);
+		tstwin.display();
+		while (clock.getElapsedTime().asMilliseconds() < 15);
+	}
 
-	tstWin.display();
 	system("pause");
 }
