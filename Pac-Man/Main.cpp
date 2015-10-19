@@ -13,22 +13,21 @@ TODO ajouter une description
 #include "Ligne.h"	
 #include "PacMan.h"
 #include <iostream>
-#include <SFML\System\Clock.hpp>
- 
+#include <SFML\System.hpp>
+
 void main()
 {
 	PacMan test;
 	sf::RenderWindow tstwin;
 	tstwin.create(sf::VideoMode(600, 600), "Fenetre de test");
 
-	while (true)
+	for (int i = 0; i < 200; i++)
 	{
 		sf::Clock clock;
 		tstwin.clear();
 		tstwin.draw(test);
 		tstwin.display();
-		while (clock.getElapsedTime().asMilliseconds() < 15);
+		while (clock.getElapsedTime().asMilliseconds() < 20);
 	}
-
 	system("pause");
 }

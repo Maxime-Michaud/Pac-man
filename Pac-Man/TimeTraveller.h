@@ -41,7 +41,7 @@ public:
 	/// <summary>
 	/// Retourne dans le passé
 	/// </summary>
-	void goBack() = 0;
+	virtual void goBack() = 0;
 
 };
 

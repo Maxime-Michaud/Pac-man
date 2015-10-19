@@ -4,8 +4,13 @@
 
 PacMan::PacMan()
 {
-	step = 0;
-	stepIncrement = 2;
+	//Variables pour l'animation
+	_step = 0;
+	_stepIncrement = 1;
+
+	_color = sf::Color(255, 255, 0, 255);
+
+	_centre = sf::Vector2f(300, 300);
 }
 
 
@@ -17,33 +22,43 @@ PacMan::~PacMan()
 void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	//Centre du cercle
-	sf::Vector2f centre(300, 300), pos;
-	sf::Color color(255, 255, 0, 255);
+	sf::Vector2f pos;
 
-	//Définition les constantes du cercle
-	const float radius = 25;
-	const int nbrCote = 100;
+	//nombre de points : le centre + 1 par coté + 1 pour aller rejoindre le premier point et fermer le cercle
+	sf::Vertex vertices[_nbrCote + 2];
 
-
-	sf::Vertex test[nbrCote + 2];
-
-	test[0] = sf::Vertex(centre, color);
+	vertices[0] = sf::Vertex(_centre, _color);
 	
-	for (int i = 1; i <= nbrCote + 1; i++)
+	for (int i = 1; i <= _nbrCote + 1; i++)
 	{
-		pos.x = radius * cos(2 * M_PI * (i - 1) / nbrCote) + centre.x;
-		pos.y = radius * sin(2 * M_PI * (i - 1) / nbrCote) + centre.y;
+		pos.x = _radius * cos(2 * M_PI * (i - 1) / _nbrCote) + _centre.x;
+		pos.y = _radius * sin(2 * M_PI * (i - 1) / _nbrCote) + _centre.y;
 
-		test[i] = sf::Vertex(pos, color);
+		vertices[i] = sf::Vertex(pos, _color);
 	}
 
-	for (int i = 0; i < step; i++)
-		test[i + 1] = test[nbrCote + 1 - i] = centre;
 
-	step += stepIncrement;
+	//Fais ouvrir et fermet la bouche de pac-man
+	for (int i = 0; i < _step; i++)
+		vertices[i + 1] = vertices[_nbrCote + 1 - i] = _centre;
 
-	if (step == 0 || step >= nbrCote / 4 - 5)
-		stepIncrement *= -1;
-	target.draw(test, nbrCote + 2, sf::TrianglesFan);
+	_step += _stepIncrement;
 
+	if (_step == 0 || _step >= _nbrCote / 4 )
+		_stepIncrement *= -1;
+
+	target.draw(vertices, _nbrCote + 2, sf::TrianglesFan);
+
+}
+
+
+void PacMan::move(float x, float y)
+{
+	_centre.x += x;
+	_centre.y += y;
+}
+
+void PacMan::move(sf::Vector2f mov)
+{
+	_centre += mov;
 }
