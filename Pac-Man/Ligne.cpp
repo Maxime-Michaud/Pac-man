@@ -55,6 +55,16 @@ sf::Vector2f Ligne::getFin() const
 	return _p2;
 }
 
+sf::VertexArray Ligne::getVertex() const
+{
+	auto val = sf::VertexArray(sf::Lines, 2);
+	val.append(sf::Vertex(_p1));
+	val.append(sf::Vertex(_p2));
+
+	return val;
+		
+}
+
 bool Ligne::isOn(sf::Vector2f pos) const
 {
 	return pos.x >= _p1.x && pos.x <= _p2.x

@@ -101,13 +101,19 @@ public:
 	sf::Vector2f getFin() const;
 
 	/// <summary>
+	/// Retourne les vertex pour dessiner la ligne. 
+	/// </summary>
+	sf::VertexArray getVertex() const;
+
+	/// <summary>
 	/// Vérifie si une position est directement sur la ligne.
 	/// </summary>
 	/// <param name="pos">Position a vérifier</param>
 	bool isOn(sf::Vector2f pos) const;
 
 	/// <summary>
-	/// Dessine la ligne
+	/// Dessine la ligne. 
+	/// A remplacer par getVertex si on veut dessiner plusieurs lignes à la fois, pour des raisons de performance
 	/// </summary>
 	/// <param name="target">cible sur laquelle dessiner</param>
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
