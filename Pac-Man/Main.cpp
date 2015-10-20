@@ -99,8 +99,8 @@ void main()
 		}
 
 		test.move(test.getDirection(), map);
-		tstwin.clear();
-		tstwin.draw(lignes, 8, sf::Lines);
+		tstwin.clear(sf::Color(200, 200, 200, 255));
+		tstwin.draw(map);
 		tstwin.draw(test);
 		tstwin.display();
 		while (clock.getElapsedTime().asMilliseconds() < 20);
