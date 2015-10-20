@@ -71,6 +71,11 @@ bool Ligne::isOn(sf::Vector2f pos) const
 		&& pos.y >= _p1.y && pos.y <= _p2.y;
 }
 
+int Ligne::getOrientation() const
+{
+	return _p1.x == _p2.x ? 1 : -1;
+}
+
 void Ligne::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	sf::Vertex ligne[] = { sf::Vertex(_p1), sf::Vertex(_p2) };

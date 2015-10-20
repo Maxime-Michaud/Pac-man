@@ -23,6 +23,7 @@ class Ligne: public sf::Drawable
 private:
 	sf::Vector2f	_p1,		//Position en haut ou a gauche de la ligne 
 					_p2;		//Position en bas ou a droite de la ligne
+
 public:
 	//TODO Coder les setteurs
 
@@ -110,6 +111,12 @@ public:
 	/// </summary>
 	/// <param name="pos">Position a vérifier</param>
 	bool isOn(sf::Vector2f pos) const;
+
+	/// <summary>
+	/// Obtiens l'orientation de la ligne.
+	///  Retourne 1 si la ligne est verticale, -1 si elle est horizontale.
+	/// </summary>
+	int getOrientation()const;	
 
 	/// <summary>
 	/// Dessine la ligne. 
