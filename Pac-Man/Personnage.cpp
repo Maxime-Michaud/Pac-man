@@ -15,74 +15,14 @@
 //Set tout a 0
 Personnage::Personnage()
 {
-	_noSprite = _spriteCnt = 0;
-
 	_pos = sf::Vector2f(0, 0);
-	
-	_sprite = nullptr;
 }
 
-//Initialise le sprite
-Personnage::Personnage(std::string spriteSource, std::vector<sf::IntRect> spriteRects)
-{
-	loadSprite(spriteSource, spriteRects);
-}
-
-//DEstructeur
-Personnage::~Personnage()
-{
-	clear();
-}
-
-//désalloue la mémoire
-void Personnage::clear()
-{
-	if (_sprite)
-	{
-		delete[] _sprite;
-		_sprite = nullptr;
-	}
-
-	_texture = sf::Texture();	//efface la texture
-}
-
-//Charge les sprites a partir d'un fichier
-void Personnage::loadSprite(std::string source, std::vector<sf::IntRect> rects)
-{
-	if (rects.size() < 1)
-		throw std::invalid_argument("Le personnage a besoin d'avoir au moin un rectangle pour son sprite");
-
-	_spriteCnt = rects.size();
-
-	if (!_texture.loadFromFile(source))
-		throw std::exception(std::string("Image manquante: " + source + 
-										 "est introuvable sur votre ordinateur").c_str());
-
-	//Essaie de charger la texture et de créer les sprites. En cas de problème, désalloue toute la mémoire
-	try
-	{
-		_sprite = new sf::Sprite[_spriteCnt];
-
-		for (int i = 0; i < _spriteCnt; i++)
-			_sprite[i] = sf::Sprite(_texture, rects[i]);
-	}
-	catch (...)
-	{
-		clear();
-		throw;
-	}
-}
 
 //Toutes les positions sont valides en théorie. Peut être surchargée par les enfants si on veut éviter certains cas particuliés
 void Personnage::setPos(sf::Vector2f pos)
 {
 	_pos = pos;
-}
-
-//Retourne les sprite
-const sf::Sprite * Personnage::getSprite() const
-{
-	return _sprite;
 }
 
 //Obtiens la position du personnage
@@ -91,30 +31,154 @@ sf::Vector2f Personnage::getPos() const
 	return _pos;
 }
 
+char Personnage::getDirection()
+{
+	return _direction;
+}
+
+void Personnage::setDirection(char d)
+{
+	_direction = d;
+}
+
+bool Personnage::getVertical()
+{
+	return _vertical;
+}
+
+void Personnage::setDirectionProchaine(char c)
+{
+	_directionProchaine = c;
+}
+
+char Personnage::getDirectionProchaine()
+{
+	return _directionProchaine;
+}
+
+void Personnage::changerDeLigne(char direction, Map &map)
+{
+	int tempNoLigne = _numLigne;
+	switch (direction)
+	{
+	case 'a':
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x - 1, _pos.y), _numLigne);
+		break;
+	case 'd':
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x + 1, _pos.y), _numLigne);
+		break;
+	case 's':
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y + 1), _numLigne);
+		break;
+	case 'w':
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y - 1), _numLigne);
+		break;
+	default:
+		break;
+	}
+	if (_numLigne != tempNoLigne)
+	{
+		Ligne temp = map.getLigne(_numLigne);
+		switch (direction)
+		{
+		case 'a':
+			_direction = 'a';
+			_vertical = false;
+			setPos(sf::Vector2f(temp.getFin().x - _vitesse, temp.getFin().y));
+			break;
+		case 'd':
+			_vertical = false;
+			_direction = 'd';
+			setPos(sf::Vector2f(temp.getDebut().x + _vitesse, temp.getDebut().y));
+			break;
+		case 's':
+			_vertical = true;
+			_direction = 's';
+			setPos(sf::Vector2f(temp.getDebut().x, temp.getDebut().y + _vitesse));
+			break;
+		case 'w':
+			_vertical = true;
+			_direction = 'w';
+			setPos(sf::Vector2f(temp.getFin().x, temp.getFin().y - _vitesse));
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 //Déplace le personnage de x, y
-void Personnage::move(float x, float y)
+void Personnage::move(char direction, Map &map)
 {
-	_pos.x += x;
-	_pos.y += y;
+	Ligne temp = map.getLigne(_numLigne);
+	sf::Vector2f vtemp(_pos);
+	switch (direction)
+	{
+	case 'a':
+		vtemp.x -= _vitesse;
+		if (temp.isOn(vtemp))
+		{
+			_direction = 'a';
+			_pos.x -= _vitesse;
+		}
+		else
+		{
+			if (_vertical == false)
+				setPos(temp.getDebut());
+			changerDeLigne(_directionProchaine, map);
+		}
+		break;
+
+	case 's':
+		vtemp.y += _vitesse;
+		if (temp.isOn(vtemp))
+		{
+			_direction = 's';
+			_pos.y += _vitesse;
+		}
+		else
+		{
+			if (_vertical == true)
+				setPos(temp.getFin());
+			changerDeLigne(_directionProchaine, map);
+		}	
+		break;
+
+	case 'd':
+		vtemp.x += _vitesse;
+		if (temp.isOn(vtemp))
+		{
+			_direction = 'd';
+			_pos.x += _vitesse;
+		}
+		else
+		{
+			if (_vertical == false)
+				setPos(temp.getFin());
+			changerDeLigne(_directionProchaine, map);
+		}
+		break;
+
+	case 'w':
+		vtemp.y -= _vitesse;
+		if (temp.isOn(vtemp))
+		{
+			_direction = 'w';
+			_pos.y -= _vitesse;
+		}
+		else
+		{
+			if (_vertical == true)
+				setPos(temp.getDebut());
+			changerDeLigne(_directionProchaine, map);
+		}
+			
+		break;
+	default:
+		break;
+	}
 }
 
-//Déplace le personnage de deplacement
-void Personnage::move(sf::Vector2f deplacement)
-{
-	_pos += deplacement;
-}
-
-//Dessine le personnage
-void Personnage::draw(sf::RenderTarget & target, sf::RenderStates states) const
-{
-	//set la position du sprite
-	_sprite[_noSprite].setPosition(_pos);
-
-	//dessine le sprite et incrémente la position dans l'array de sprite
-	target.draw(_sprite[_noSprite++]);
-
-	//Si on est au dernier sprite, loop au sprite 0
-	_noSprite %= _spriteCnt;
-}
+Personnage::~Personnage(){}
 
 

@@ -13,8 +13,9 @@ TODO descriptionner mieux que ça												*
 #include <SFML\Graphics.hpp>
 #include "TimeTraveller.h"
 #include <cmath>
+#include "Personnage.h"
 
-class PacMan:public sf::Drawable
+class PacMan: public Personnage
 {
 	mutable int _step;			//Nombre de vertex a ne pas afficher dans le dessin
 	mutable int _stepIncrement;	//Nombre de vertex a ne pas afficher au prochain appel de draw()
@@ -22,17 +23,14 @@ class PacMan:public sf::Drawable
 	sf::Color _color;	//Couleur de pac-man
 
 	//Constantes du cercle
-	static const int _radius = 50;
-	static const int _nbrCote = 50;
+	static const int _radius = 30;
+	static const int _nbrCote = 30;
 	sf::Vector2f _centre;
 
 public:
 	PacMan();
 	~PacMan();
 
-	void move(float x, float y);
-	void move(sf::Vector2f mov);
-
-	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 };
 
