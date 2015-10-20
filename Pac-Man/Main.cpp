@@ -52,7 +52,8 @@ void main()
 	sf::Event event;
 	while (tstwin.isOpen())
 	{
-		if (sf::Event::KeyPressed)
+		tstwin.pollEvent(event);
+		if (event.type == sf::Event::KeyPressed)
 			break;
 	}
 
