@@ -30,6 +30,10 @@ void main()
 	map.ajouterLigne(bizounne);
 	bizounne.init(100, 100, 100, 300);
 	map.ajouterLigne(bizounne);
+	bizounne.init(300, 100, 500, 100);
+	map.ajouterLigne(bizounne);
+	bizounne.init(300, 0, 300, 100);
+	map.ajouterLigne(bizounne);
 
 	sf::Vertex lignes[] =
 	{
@@ -43,7 +47,13 @@ void main()
 		sf::Vertex(sf::Vector2f(300, 300)),
 
 		sf::Vertex(sf::Vector2f(100, 100)),
-		sf::Vertex(sf::Vector2f(100, 300))
+		sf::Vertex(sf::Vector2f(100, 300)),
+
+		sf::Vertex(sf::Vector2f(300, 100)),
+		sf::Vertex(sf::Vector2f(500, 100)),
+
+		sf::Vertex(sf::Vector2f(300, 0)),
+		sf::Vertex(sf::Vector2f(300, 100))
 	};
 
 	sf::RenderWindow tstwin;
@@ -52,7 +62,8 @@ void main()
 	sf::Event event;
 	while (tstwin.isOpen())
 	{
-		if (sf::Event::KeyPressed)
+		tstwin.pollEvent(event);
+		if (event.type == sf::Event::KeyPressed)
 			break;
 	}
 
@@ -69,33 +80,24 @@ void main()
 		{
 			if (!test.getVertical())
 				test.setDirection('d');
-			else
-				test.setDirectionProchaine('d');
-			//test.move('d', map);
-		}
+			test.setDirectionProchaine('d');		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		{
 			if (test.getVertical())
 				test.setDirection('s');
-			else
-				test.setDirectionProchaine('s');
-			//test.move('s', map);
+			test.setDirectionProchaine('s');
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
 			if (!test.getVertical())
 				test.setDirection('a');
-			else
-				test.setDirectionProchaine('a');
-			//test.move('a', map);
+			test.setDirectionProchaine('a');
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
 			if (test.getVertical())
 				test.setDirection('w');
-			else
-				test.setDirectionProchaine('w');
-			//test.move('w', map);
+			test.setDirectionProchaine('w');
 		}
 
 		test.move(test.getDirection(), map);
@@ -106,17 +108,5 @@ void main()
 		while (clock.getElapsedTime().asMilliseconds() < 20);
 	
 }
-
-
-	/*for (int i = 0; i < 200; i++)
-	{
-		sf::Clock clock;
-		tstwin.clear();
-		tstwin.draw(lignes, 8, sf::Lines);
-		tstwin.draw(test);
-		tstwin.display();
-		
-		while (clock.getElapsedTime().asMilliseconds() < 20);
-	}*/
 	system("pause");
 }

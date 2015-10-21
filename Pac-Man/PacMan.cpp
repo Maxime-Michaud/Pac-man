@@ -11,6 +11,7 @@ PacMan::PacMan()
 	_vitesse = 3;
 	_vertical = false;
 	_direction = 'd';
+	_directionProchaine = 'd';
 
 	_color = sf::Color(255, 255, 0, 255);
 
