@@ -35,8 +35,8 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	
 	for (int i = 1; i <= _nbrCote + 1; i++)
 	{
-		pos.x = _radius * cos(2 * M_PI * (i - 1) / _nbrCote) + _pos.x;
-		pos.y = _radius * sin(2 * M_PI * (i - 1) / _nbrCote) + _pos.y;
+		pos.x = _radius * cos(2 * (float)M_PI * (i - 1) / _nbrCote) + _pos.x;
+		pos.y = _radius * sin(2 * (float)M_PI * (i - 1) / _nbrCote) + _pos.y;
 
 		vertices[i] = sf::Vertex(pos, _color);
 	}
