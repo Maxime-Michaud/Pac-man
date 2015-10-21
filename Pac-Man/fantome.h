@@ -12,10 +12,9 @@ TODO descriptionner mieux que ça												*
 #define _USE_MATH_DEFINES 
 #include <SFML\Graphics.hpp>
 #include "TimeTraveller.h"
-#include <cmath>
 #include "Personnage.h"
 
-class PacMan: public Personnage
+class Fantome : public Personnage
 {
 	mutable int _step;			//Nombre de vertex a ne pas afficher dans le dessin
 	mutable int _stepIncrement;	//Nombre de vertex a ne pas afficher au prochain appel de draw()
@@ -28,10 +27,11 @@ class PacMan: public Personnage
 	sf::Vector2f _centre;
 
 public:
-	PacMan();
-	~PacMan();
+	Fantome();
+	~Fantome();
 
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-	virtual void move(char direction, Map &map);
+	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);
+	void deciderLigne(sf::Vector2f posPacMan, Map &map);
 };
 
