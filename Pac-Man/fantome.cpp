@@ -1,5 +1,5 @@
 #include "fantome.h"
-
+#include <iostream>
 
 
 Fantome::Fantome()
@@ -154,6 +154,7 @@ void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(vert);
 }
 
+//Inverse la direction donnée
 char inverserDirection(char direction)
 {
 	switch (direction)
@@ -176,34 +177,42 @@ char inverserDirection(char direction)
 	}
 }
 
+//Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 {
-	char directionArrivee = _direction;
-	int tempNoLigne = _numLigne;
-	char gaucheDroite;
-	char basHaut;
-	int distanceX = _pos.x - posPacMan.x;
-	if (distanceX >= 0)
+	char directionArrivee = _direction;			//La direction de départ
+	int tempNoLigne = _numLigne;				//Le numéro de la ligne du fantome au départ
+	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
+	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
+
+	int distanceX = _pos.x - posPacMan.x;		//La distance de l'axe des X entre le fantome et pac man
+	//Si la distance X est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
+	if (distanceX >= 0)							
 		gaucheDroite = 'a';
+	//Sinon il est à gauche de pac man et doit aller vers la droite
 	else
 	{
 		distanceX = posPacMan.x - _pos.x;
 		gaucheDroite = 'd';
 	}
 
-	int distanceY = _pos.y - posPacMan.y;
+	int distanceY = _pos.y - posPacMan.y;		//La distance de l'axe des Y entre le fantome et pac man
+	//Si la distance Y est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceY >= 0)
 		basHaut = 'w';
-	else
+	else	//Sinon c'est le contraire
 	{
 		distanceY = posPacMan.y - _pos.y;
 		basHaut = 's';
 	}
-	
-	if (distanceX >= distanceY)
+
+	//Si la distance a parcourir en X est supérieur, va tenter de prendre un chemin dans cette direction
+	if (distanceX >= distanceY)		
 		_direction = gaucheDroite;
-	else
+	else		//Sinon prendra une direction en Y pour sa rapprocher
 		_direction = basHaut;
+
+	//Vérifie si il peut simplement prendre la 1er direction qui lui est donné, si oui, il sort de la fonction
 	switch (_direction)
 	{
 	case 'a':
@@ -226,21 +235,20 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		break;
 	}
 
+	//Sinon il tente de prendre une autre ligne logique dans l'autre axe
 	Personnage::changerDeLigne(_direction, map);
 	if (tempNoLigne == _numLigne)
 	{
-		if (distanceX > distanceY)
+		if (distanceX >= distanceY)
 			_direction = basHaut;
 		else
 			_direction = gaucheDroite;
 	}
 	else
 		return;
-	Personnage::changerDeLigne(_direction, map);
-	if (tempNoLigne == _numLigne)
-		_direction = inverserDirection(directionArrivee);
-	else 
-		return;
+	
+	//Si rien n'a fonctionné, il retourne sur ses pas
+	_direction = inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
 }
 
 void Fantome::move(char direction, sf::Vector2f posPacMan, Map &map)

@@ -82,10 +82,6 @@ void main()
 	while (tstwin.isOpen())
 	{
 		sf::Clock clock;
-		while (tstwin.pollEvent(event))
-		{
-			
-		}
 		//TODO dans un switch (trouver comment...)
 		//Note, si il est dans le while event le mouvement est saccadé
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))

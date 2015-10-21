@@ -56,33 +56,34 @@ char Personnage::getDirectionProchaine()
 	return _directionProchaine;
 }
 
+//Valide et effectue un changement de ligne
 void Personnage::changerDeLigne(char direction, Map &map)
 {
-	int tempNoLigne = _numLigne;
+	int tempNoLigne = _numLigne;	//la ligne d'origine
 	switch (direction)
 	{
 	case 'a':
 	{
+		//regarde si le pixel dans cette direction est sur une ligne et affecte cette ligne au No de ligne du personnage
 		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x - 1, _pos.y), _numLigne);
-		if (_numLigne != tempNoLigne)
-		{
-			Ligne temp = map.getLigne(_numLigne);
+		if (_numLigne != tempNoLigne)	//Si il y a bien eut un changement de ligne
+		{								//place le personnage dans cette ligne au début(ou à la fin) +(ou -) sa vitesse
 			_direction = 'a';
 			_vertical = false;
-			setPos(sf::Vector2f(temp.getFin().x - _vitesse, temp.getFin().y));
+			setPos(sf::Vector2f(map.getLigne(_numLigne).getFin().x - _vitesse, map.getLigne(_numLigne).getFin().y));
 		}
-
 		break;
 	}
+	//Les autre cas suivent la même logique sauf que dans le cas de d par exemple, il se servira du début de la ligne
+	//au lieu de la fin car une ligne est TOUJOURS dessinée de gauche à droite.
 	case 'd':
 	{
 		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x + 1, _pos.y), _numLigne);
 		if (_numLigne != tempNoLigne)
 		{
-			Ligne temp = map.getLigne(_numLigne);
 			_vertical = false;
 			_direction = 'd';
-			setPos(sf::Vector2f(temp.getDebut().x + _vitesse, temp.getDebut().y));
+			setPos(sf::Vector2f(map.getLigne(_numLigne).getDebut().x + _vitesse, map.getLigne(_numLigne).getDebut().y));
 		}
 
 		break;
@@ -92,12 +93,10 @@ void Personnage::changerDeLigne(char direction, Map &map)
 		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y + 1), _numLigne);
 		if (_numLigne != tempNoLigne)
 		{
-			Ligne temp = map.getLigne(_numLigne);
 			_vertical = true;
 			_direction = 's';
-			setPos(sf::Vector2f(temp.getDebut().x, temp.getDebut().y + _vitesse));
+			setPos(sf::Vector2f(map.getLigne(_numLigne).getDebut().x, map.getLigne(_numLigne).getDebut().y + _vitesse));
 		}
-
 		break;
 	}
 	case 'w':
@@ -105,12 +104,10 @@ void Personnage::changerDeLigne(char direction, Map &map)
 		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y - 1), _numLigne);
 		if (_numLigne != tempNoLigne)
 		{
-			Ligne temp = map.getLigne(_numLigne);
 			_vertical = true;
 			_direction = 'w';
-			setPos(sf::Vector2f(temp.getFin().x, temp.getFin().y - _vitesse));
+			setPos(sf::Vector2f(map.getLigne(_numLigne).getFin().x, map.getLigne(_numLigne).getFin().y - _vitesse));
 		}
-
 		break;
 	}
 	default:
@@ -121,18 +118,18 @@ void Personnage::changerDeLigne(char direction, Map &map)
 //Déplace le personnage de x, y
 void Personnage::move(char direction, Map &map)
 {
-	Ligne temp = map.getLigne(_numLigne);
+	Ligne temp = map.getLigne(_numLigne);	//La ligne de départ
 	sf::Vector2f vtemp(_pos);
 	switch (direction)
 	{
 	case 'a':
 		vtemp.x -= _vitesse;
-		if (temp.isOn(vtemp))
+		if (temp.isOn(vtemp))				//Si le personnage est sur la ligne après son mouvement, avance
 		{
 			_direction = 'a';
 			_pos.x -= _vitesse;
 		}
-		else
+		else								//Sinon regarde pour changer de ligne si l'axe correspond avec la direction		
 		{
 			if (_vertical == false)
 				setPos(temp.getDebut());

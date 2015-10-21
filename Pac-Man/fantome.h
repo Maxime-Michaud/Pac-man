@@ -16,7 +16,7 @@ TODO descriptionner mieux que ça												*
 
 class Fantome : public Personnage
 {
-	sf::Color _color;	//Couleur du fantome
+	sf::Color _color;					//Couleur du fantome
 
 	sf::Vector2f _headOffset;
 	sf::Vector2f _feetOffset;
@@ -43,7 +43,7 @@ public:
 	~Fantome();
 
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);
-	void deciderLigne(sf::Vector2f posPacMan, Map &map);
+	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	//Fait bouger le fantome
+	void deciderLigne(sf::Vector2f posPacMan, Map &map);					//Prend une décision de la direction à un intersection
 };
 
