@@ -4,9 +4,6 @@
 
 Fantome::Fantome()
 {
-	//Variables pour l'animation
-	_step = 0;
-	_stepIncrement = 1;
 	_numLigne = 1;
 	_vitesse = 3;
 	_vertical = true;
@@ -16,6 +13,11 @@ Fantome::Fantome()
 	_color = sf::Color::Cyan;
 
 	_pos = sf::Vector2f(300, 300);
+
+	//variables pour le dessin
+	_headOffset = sf::Vector2f(0, -_width / 1.5);
+	_feetOffset = sf::Vector2f(0, -_width / 2);
+	_step = 0;
 }
 
 
@@ -24,15 +26,132 @@ Fantome::~Fantome()
 }
 
 
+//Fonctions pour dessiner le fantome
+
+//Dessine un demi cercle pour la tête du fantome
+void Fantome::buildHead(sf::VertexArray & vert) const
+{
+	sf::Vector2f pos = _pos;
+
+	vert.append(sf::Vertex(_pos + _headOffset, _color));
+	
+	for (int i = 0; i < _smoothness /2; i++)
+	{
+		pos.x = _width  * cos(2 * (float)M_PI * (i - (float)_smoothness / 2) / (float)_smoothness) + _pos.x;
+		pos.y = _width / 1.5 * sin(2 * (float)M_PI * (i - (float)_smoothness / 2) / (float)_smoothness) + _pos.y;
+
+		//Positionne le troisième point du triangle
+		vert.append(sf::Vertex(pos + _headOffset, _color));
+
+		//Replace un point au centre pour dessiner le prochain triangle. Simule un trangleStrip
+		vert.append(sf::Vertex(_pos + _headOffset, _color));
+	}
+
+}
+
+//Dessine le corps du fantome
+void Fantome::buildBody(sf::VertexArray & vert) const
+{
+	//Points du premier triangle: Coté droit de la tête, centre de la tête, coté en bas a droite du corps
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x + _width , _pos.y +_width) + _feetOffset, _color));
+
+	//Points du deuxième triangle: centre de la tête, coté en bas a droite du corps, coté en bas a gauche du corps
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x - _width, _pos.y + _width) + _feetOffset, _color));
+
+	//Replace le un point a la tete
+	vert.append(sf::Vertex(_pos + _headOffset, _color));
+
+	//Points du troisième triangle: Coté en bas a droite du corps, Centre de la tête, Coté gauche de la tête, 
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x - _width, _pos.y + _headOffset.y), _color));
+
+}
+
+void Fantome::buildFoot(sf::VertexArray & vert, bool right, float firstX) const
+{
+	float feetWidth = (float)_width / 2;
+
+	sf::Vertex Last = vert[vert.getVertexCount() - 1];
+
+	//Pour commencer, on atteint la position a laquelle on veut commencer.
+	if (Last.position.x != firstX)
+		vert.append(sf::Vertex(sf::Vector2f(firstX, Last.position.y),_color));
+
+	//Garantie que le triangle sera disjoint des autres triangles sauf par ce point
+	vert.append(sf::Vertex(sf::Vector2f(firstX, _pos.y + _width + _feetOffset.y), _color));
+
+	vert.append(sf::Vertex(sf::Vector2f(firstX + right * feetWidth, _pos.y + _width), _color));
+	vert.append(sf::Vertex(sf::Vector2f(firstX + feetWidth, _pos.y + _width + _feetOffset.y), _color));
+
+}
+
+//Dessine les pieds du fantome
+void Fantome::buildFeet(sf::VertexArray & vert) const
+{
+	float feetWidth = (float)_width / 2;
+
+	bool inverse = _step / framePerStep != 0;
+
+	for (int i = 0; i < 4; i++, inverse = !inverse)
+	{
+		buildFoot(vert, inverse, _pos.x - _width + feetWidth * i);
+	}
+	
+	_step++;
+
+	_step %= framePerStep * 2;
+}
+
+void Fantome::buildEye(sf::VertexArray & vert, sf::Vector2f eyePos, float eyeWidth) const
+{
+	//Atteint la position des yeux
+	sf::Vertex Last = vert[vert.getVertexCount() - 1];
+
+	vert.append(sf::Vertex(eyePos, _color));
+	vert.append(sf::Vertex(eyePos, _color));
+
+
+	sf::Vector2f pos;
+
+	for (int i = 1; i <= _eyeSmooth + 1; i++)
+	{
+		pos.x = eyeWidth * cos(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.x;
+		pos.y = eyeWidth * sin(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.y;
+
+		vert.append(sf::Vertex(pos, sf::Color::White));
+
+		//Replace le centre
+		vert.append(sf::Vertex(eyePos, sf::Color::White));
+	}
+
+	//Dessine un point au centre
+	vert.append(sf::Vertex(eyePos, sf::Color::White));
+	vert.append(sf::Vertex(eyePos + sf::Vector2f(-1, 2), sf::Color::Black));
+	vert.append(sf::Vertex(eyePos + sf::Vector2f(-1, -2), sf::Color::Black));
+	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, -2), sf::Color::Black));
+	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, 2), sf::Color::Black));
+	
+	//Ressors de l'oeil
+	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, 3), sf::Color::White));
+	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, 3), sf::Color::White));
+
+
+}
+
 void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	//Centre du fantome
-	sf::Vector2f pos;
-	sf::RectangleShape body(sf::Vector2f(20, 20));
-	body.setOrigin(sf::Vector2f(10, 10));
-	body.setFillColor(_color);
-	body.setPosition(_pos);
-	target.draw(body);
+	sf::Vector2f eyeOffset(_width / 3,0);
+
+	//Tableau de triangles pour dessiner le fantome.
+	sf::VertexArray vert(sf::TrianglesStrip);
+
+	buildHead(vert);
+	buildBody(vert);
+	buildFeet(vert);
+
+	buildEye(vert, _pos + eyeOffset + _headOffset, 5);
+	buildEye(vert, _pos - eyeOffset + _headOffset, 5);
+
+	target.draw(vert);
 }
 
 char inverserDirection(char direction)

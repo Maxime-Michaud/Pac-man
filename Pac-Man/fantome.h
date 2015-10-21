@@ -16,15 +16,27 @@ TODO descriptionner mieux que ça												*
 
 class Fantome : public Personnage
 {
-	mutable int _step;			//Nombre de vertex a ne pas afficher dans le dessin
-	mutable int _stepIncrement;	//Nombre de vertex a ne pas afficher au prochain appel de draw()
+	sf::Color _color;	//Couleur du fantome
 
-	sf::Color _color;	//Couleur de pac-man
+	sf::Vector2f _headOffset;
+	sf::Vector2f _feetOffset;
 
-	//Constantes du cercle
-	static const int _radius = 30;
-	static const int _nbrCote = 30;
-	sf::Vector2f _centre;
+	//Variables pour les dessins====================================
+	static const int _width = 20;
+
+	mutable int _step;
+	static const int framePerStep = 10;
+
+	//Nombres de vertex utilisés pour dessiner les cercles. Comme il s'agit de triangle, + gros chiffre = + rond
+	static const int _smoothness = 40;	//Pour la tete. Demi cercle, donc on utilise la moitié du chiffre0.
+	static const int _eyeSmooth = 10;	//Pour les yeux
+
+	void buildHead(sf::VertexArray & vert) const;
+	void buildBody(sf::VertexArray & vert) const;
+	void buildFoot(sf::VertexArray & vert, bool right, float firstX) const;
+	void buildFeet(sf::VertexArray & vert) const;
+	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos, float eyeWidth) const;
+
 
 public:
 	Fantome();

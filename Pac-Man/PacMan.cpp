@@ -26,7 +26,7 @@ PacMan::~PacMan()
 
 void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	//Centre du cercle
+	//possition du prochain vertex
 	sf::Vector2f pos;
 
 	//nombre de points : le centre + 1 par coté + 1 pour aller rejoindre le premier point et fermer le cercle
