@@ -55,3 +55,9 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(vertices, _nbrCote + 2, sf::TrianglesFan);
 
 }
+
+void PacMan::move(char direction, Map &map)
+{
+	Personnage::move(direction, map);
+	//do some other shit
+}

@@ -119,6 +119,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fantome.cpp" />
     <ClCompile Include="Ligne.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="map.cpp" />
@@ -126,6 +127,7 @@
     <ClCompile Include="Personnage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fantome.h" />
     <ClInclude Include="Ligne.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="PacMan.h" />

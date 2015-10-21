@@ -62,48 +62,59 @@ void Personnage::changerDeLigne(char direction, Map &map)
 	switch (direction)
 	{
 	case 'a':
-		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x - 1, _pos.y), _numLigne);
-		break;
-	case 'd':
-		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x + 1, _pos.y), _numLigne);
-		break;
-	case 's':
-		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y + 1), _numLigne);
-		break;
-	case 'w':
-		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y - 1), _numLigne);
-		break;
-	default:
-		break;
-	}
-	if (_numLigne != tempNoLigne)
 	{
-		Ligne temp = map.getLigne(_numLigne);
-		switch (direction)
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x - 1, _pos.y), _numLigne);
+		if (_numLigne != tempNoLigne)
 		{
-		case 'a':
+			Ligne temp = map.getLigne(_numLigne);
 			_direction = 'a';
 			_vertical = false;
 			setPos(sf::Vector2f(temp.getFin().x - _vitesse, temp.getFin().y));
-			break;
-		case 'd':
+		}
+
+		break;
+	}
+	case 'd':
+	{
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x + 1, _pos.y), _numLigne);
+		if (_numLigne != tempNoLigne)
+		{
+			Ligne temp = map.getLigne(_numLigne);
 			_vertical = false;
 			_direction = 'd';
 			setPos(sf::Vector2f(temp.getDebut().x + _vitesse, temp.getDebut().y));
-			break;
-		case 's':
+		}
+
+		break;
+	}
+	case 's':
+	{
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y + 1), _numLigne);
+		if (_numLigne != tempNoLigne)
+		{
+			Ligne temp = map.getLigne(_numLigne);
 			_vertical = true;
 			_direction = 's';
 			setPos(sf::Vector2f(temp.getDebut().x, temp.getDebut().y + _vitesse));
-			break;
-		case 'w':
+		}
+
+		break;
+	}
+	case 'w':
+	{
+		_numLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y - 1), _numLigne);
+		if (_numLigne != tempNoLigne)
+		{
+			Ligne temp = map.getLigne(_numLigne);
 			_vertical = true;
 			_direction = 'w';
 			setPos(sf::Vector2f(temp.getFin().x, temp.getFin().y - _vitesse));
-			break;
-		default:
-			break;
 		}
+
+		break;
+	}
+	default:
+		break;
 	}
 }
 

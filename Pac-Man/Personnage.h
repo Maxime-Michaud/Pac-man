@@ -62,7 +62,7 @@ public:
 	/// </summary>
 	/// <param name="x">Déplacement horizontal</param>
 	/// <param name="y">Déplacement vertical</param>
-	void move(char direction, Map &map);
+	virtual void move(char direction, Map &map);
 	void changerDeLigne(char direction, Map &map);
 	char getDirection();
 	void setDirection(char d);

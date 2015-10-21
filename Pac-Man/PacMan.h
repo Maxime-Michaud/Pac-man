@@ -32,5 +32,6 @@ public:
 	~PacMan();
 
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+	virtual void move(char direction, Map &map);
 };
 
