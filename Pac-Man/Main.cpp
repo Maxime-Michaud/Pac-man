@@ -40,27 +40,6 @@ void main()
 	bizounne.init(300, 0, 300, 100);
 	map.ajouterLigne(bizounne);
 
-	sf::Vertex lignes[] =
-	{
-		sf::Vertex(sf::Vector2f(100, 100)),
-		sf::Vertex(sf::Vector2f(300, 100)),
-
-		sf::Vertex(sf::Vector2f(300, 100)),
-		sf::Vertex(sf::Vector2f(300, 300)),
-
-		sf::Vertex(sf::Vector2f(100, 300)),
-		sf::Vertex(sf::Vector2f(300, 300)),
-
-		sf::Vertex(sf::Vector2f(100, 100)),
-		sf::Vertex(sf::Vector2f(100, 300)),
-
-		sf::Vertex(sf::Vector2f(300, 100)),
-		sf::Vertex(sf::Vector2f(500, 100)),
-
-		sf::Vertex(sf::Vector2f(300, 0)),
-		sf::Vertex(sf::Vector2f(300, 100))
-	};
-
 	sf::RenderWindow tstwin;
 	tstwin.create(sf::VideoMode(600, 600), "Fenetre de test");
 
