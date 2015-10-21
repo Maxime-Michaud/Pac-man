@@ -43,7 +43,7 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	}
 
 
-	//Fais ouvrir et fermet la bouche de pac-man
+	//Fais ouvrir et fermer la bouche de pac-man
 	for (int i = 0; i < _step; i++)
 		vertices[i + 1] = vertices[_nbrCote + 1 - i] = _pos;
 
