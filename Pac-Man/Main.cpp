@@ -25,6 +25,9 @@ void main()
 
 	fantomeBleu.setPos(sf::Vector2f(300, 300));
 
+	sf::Time timePerFrame;
+	int frameCount = 0;
+
 	Map map;
 	Ligne bizounne;
 	bizounne.init(100, 100, 300, 100);
@@ -115,8 +118,17 @@ void main()
 		tstwin.draw(test);
 		tstwin.draw(fantomeBleu);
 		tstwin.display();
+
+		timePerFrame += clock.getElapsedTime();
+		frameCount++;
+		if (frameCount > 10000) break;
 		while (clock.getElapsedTime().asMilliseconds() < 16);
+	}
+
+	std::cout << "Temps par frame: " << timePerFrame.asSeconds() / frameCount << '\n';
+	std::cout << "Temps par frame: " << timePerFrame.asMilliseconds() / frameCount<<'\n';
+	std::cout << "Temps par frame: " << timePerFrame.asMicroseconds() / frameCount<<'\n';
+	std::cout << "Vitesse (fps):   " << frameCount / timePerFrame.asSeconds()<< '\n';
 	
-}
 	system("pause");
 }
