@@ -14,6 +14,7 @@ TODO descriptionner mieux que ça												*
 #include "TimeTraveller.h"
 #include <cmath>
 #include "Personnage.h"
+#include "laser.h"
 
 class PacMan: public Personnage
 {

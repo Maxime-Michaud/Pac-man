@@ -1,7 +1,6 @@
 #include "PacMan.h"
 
 
-
 PacMan::PacMan()
 {
 	//Variables pour l'animation
@@ -108,69 +107,8 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 	if (_laser)
 	{
-		sf::CircleShape debutLaser(40);
-		debutLaser.setFillColor(sf::Color::White);
-		debutLaser.setScale(2, 1);
-		sf::Vertex ligne[2];
-		sf::RectangleShape milieuLaser(sf::Vector2f(600, 70));
-		milieuLaser.setFillColor(sf::Color::White);
-		milieuLaser.setOrigin(0, 35);
-		milieuLaser.setPosition(sf::Vector2f(_pos.x + 40, _pos.y));
-		switch (_direction)
-		{
-		case 'a':
-			ligne[0] = sf::Vertex(sf::Vector2f(_pos.x, _pos.y));
-			ligne[1] = sf::Vertex(sf::Vector2f(0, _pos.y));
-			debutLaser.setPosition(sf::Vector2f(_pos.x - 160, _pos.y - 40));
-			milieuLaser.rotate(180);
-			milieuLaser.setPosition(sf::Vector2f(_pos.x - 40, _pos.y));
-			break;
-		case 's':
-			ligne[0] = sf::Vertex(sf::Vector2f(_pos.x, _pos.y));
-			ligne[1] = sf::Vertex(sf::Vector2f(_pos.x, 600));
-			debutLaser.rotate(90);
-			milieuLaser.rotate(90);
-			milieuLaser.setPosition(sf::Vector2f(_pos.x, _pos.y + 40));
-			debutLaser.setPosition(sf::Vector2f(_pos.x + 40, _pos.y - 0));
-			break;
-		case 'd':
-			ligne[0] = sf::Vertex(sf::Vector2f(_pos.x, _pos.y));
-			ligne[1] = sf::Vertex(sf::Vector2f(600, _pos.y));
-			debutLaser.setPosition(sf::Vector2f(_pos.x, _pos.y - 40));
-			break;
-		case 'w':
-			ligne[0] = sf::Vertex(sf::Vector2f(_pos.x, _pos.y));
-			ligne[1] = sf::Vertex(sf::Vector2f(_pos.x, 0));
-			debutLaser.rotate(90);
-			milieuLaser.rotate(-90);
-			milieuLaser.setPosition(sf::Vector2f(_pos.x, _pos.y - 40));
-			debutLaser.setPosition(sf::Vector2f(_pos.x + 40, _pos.y - 160));
-			break;
-		default:
-			break;
-		}
-
-
-
-		// Create a vertex array for drawing; a line strip is perfect for this
-		sf::VertexArray verticesCourbe(sf::LinesStrip, 0);
-		// Calculate the points on the curve (10 segments)
-		std::vector<sf::Vector2f> points;
-		for (int i = -20; i < 20; i++)
-		{
-			points.push_back(sf::Vector2f(_pos.x + abs(i) * 20, _pos.y + i));
-		}
-
-		// Append the points as vertices to the vertex array
-		for (std::vector<sf::Vector2f>::const_iterator a = points.begin(); a != points.end(); ++a)
-			verticesCourbe.append(sf::Vertex(*a, sf::Color::White));
-		// Draw the vertex array
-		target.draw(verticesCourbe);
-
-
-		target.draw(milieuLaser);
-		target.draw(debutLaser);
-		target.draw(ligne, 2, sf::Lines, states);
+		Laser laser(_pos);
+		target.draw(laser);
 	}
 	target.draw(vertices);
 }

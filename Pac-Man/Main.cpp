@@ -33,7 +33,7 @@ void main()
 
 	sf::SoundBuffer laserSound;
 	laserSound.loadFromFile("BWAAAAH.wav");
-	sf::Sound laser;			//Son du début de combat, un "TAC"
+	sf::Sound laser;
 	laser.setBuffer(laserSound);
 	bool stopPlaysound = false;		//Pour partir le son qu'une seule fois
 
@@ -145,13 +145,13 @@ void main()
 		tstwin.draw(fantomeBleu);
 		tstwin.display();
 
-		timePerFrame += clock.getElapsedTime();
+		/*timePerFrame += clock.getElapsedTime();
 		frameCount++;
-		if (frameCount > 100) break;
+		if (frameCount > 100) break;*/
 		while (clock.getElapsedTime().asMilliseconds() < 16);
 	}
 
-	while (!test.hasDisappeared())
+	/*while (!test.hasDisappeared())
 	{
 		sf::Clock clock;
 		tstwin.clear(sf::Color(200, 200, 200, 255));
@@ -160,7 +160,7 @@ void main()
 		test.deathAnimation(tstwin);
 		tstwin.display();
 		while (clock.getElapsedTime().asMilliseconds() < 32);
-	}
+	}*/
 	std::cout << "Temps par frame: " << timePerFrame.asSeconds() / frameCount << '\n';
 	std::cout << "Temps par frame: " << timePerFrame.asMilliseconds() / frameCount<<'\n';
 	std::cout << "Temps par frame: " << timePerFrame.asMicroseconds() / frameCount<<'\n';
