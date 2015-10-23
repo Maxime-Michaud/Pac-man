@@ -18,6 +18,9 @@ Fantome::Fantome()
 	_headOffset = sf::Vector2f(0, -_width / 1.5);
 	_feetOffset = sf::Vector2f(0, -_width / 2);
 	_step = 0;
+	_feetWidth = (float)_width / 4;
+	_eyeSize = (float)_width / 3.5;
+	_pupilSize = _eyeSize / 2;
 }
 
 
@@ -31,19 +34,23 @@ Fantome::~Fantome()
 //Dessine un demi cercle pour la tête du fantome
 void Fantome::buildHead(sf::VertexArray & vert) const
 {
-	sf::Vector2f pos = _pos;
+	sf::Vector2f pos;
 
-	vert.append(sf::Vertex(_pos + _headOffset, _color));
 	
+	//On simule un triangleFan a l'aide de plusieurs triangles
 	for (int i = 0; i < _smoothness /2; i++)
 	{
+		//Premier point du triangle
 		pos.x = _width  * cos(2 * (float)M_PI * (i - (float)_smoothness / 2) / (float)_smoothness) + _pos.x;
 		pos.y = _width / 1.5 * sin(2 * (float)M_PI * (i - (float)_smoothness / 2) / (float)_smoothness) + _pos.y;
-
-		//Positionne le troisième point du triangle
 		vert.append(sf::Vertex(pos + _headOffset, _color));
 
-		//Replace un point au centre pour dessiner le prochain triangle. Simule un trangleStrip
+		//Second point du triangle
+		pos.x = _width  * cos(2 * (float)M_PI * (i + 1 - (float)_smoothness / 2) / (float)_smoothness) + _pos.x;
+		pos.y = _width / 1.5 * sin(2 * (float)M_PI * (i + 1 - (float)_smoothness / 2) / (float)_smoothness) + _pos.y;
+		vert.append(sf::Vertex(pos + _headOffset, _color));
+
+		//Place le poind central du triangle
 		vert.append(sf::Vertex(_pos + _headOffset, _color));
 	}
 
@@ -52,48 +59,66 @@ void Fantome::buildHead(sf::VertexArray & vert) const
 //Dessine le corps du fantome
 void Fantome::buildBody(sf::VertexArray & vert) const
 {
-	//Points du premier triangle: Coté droit de la tête, centre de la tête, coté en bas a droite du corps
-	vert.append(sf::Vertex(sf::Vector2f(_pos.x + _width , _pos.y +_width) + _feetOffset, _color));
+	/*Triangle 1:
+		*****
+		-****
+		--***
+		---**
+		----*
+	   Triangle 2
+	    *----
+	    **---
+		***--
+		****-
+		*****
+		*/
 
-	//Points du deuxième triangle: centre de la tête, coté en bas a droite du corps, coté en bas a gauche du corps
-	vert.append(sf::Vertex(sf::Vector2f(_pos.x - _width, _pos.y + _width) + _feetOffset, _color));
+	//Triangle 1
+	//Coin haut droit
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x + _width, _pos.y + _headOffset.y), _color));
 
-	//Replace le un point a la tete
-	vert.append(sf::Vertex(_pos + _headOffset, _color));
+	//Coin bas droit
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x + _width, _pos.y + _feetOffset.y + _width), _color));
 
-	//Points du troisième triangle: Coté en bas a droite du corps, Centre de la tête, Coté gauche de la tête, 
+	//Coin haut gauche
 	vert.append(sf::Vertex(sf::Vector2f(_pos.x - _width, _pos.y + _headOffset.y), _color));
+
+	//Triangle 2
+	//Coin bas droit
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x + _width, _pos.y + _feetOffset.y + _width), _color));
+
+	//Coin haut gauche
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x - _width, _pos.y + _headOffset.y), _color));
+
+	//Coin bas gauche
+	vert.append(sf::Vertex(sf::Vector2f(_pos.x - _width, _pos.y + _feetOffset.y + _width), _color));
 
 }
 
 void Fantome::buildFoot(sf::VertexArray & vert, bool right, float firstX) const
 {
-	float feetWidth = (float)_width / 2;
-
 	sf::Vertex Last = vert[vert.getVertexCount() - 1];
 
-	//Pour commencer, on atteint la position a laquelle on veut commencer.
-	if (Last.position.x != firstX)
-		vert.append(sf::Vertex(sf::Vector2f(firstX, Last.position.y),_color));
+	//Dessine le premier point
+	vert.append(sf::Vertex(sf::Vector2f(firstX, _pos.y + _feetOffset.y + _width), _color));
+	
+	//Dessine le second point
+	vert.append(sf::Vertex(sf::Vector2f(firstX + _feetWidth, _pos.y + _feetOffset.y + _width), _color));
+	
+	//Dessine le troisième point
+	vert.append(sf::Vertex(sf::Vector2f(firstX + _feetWidth * right, _pos.y + _width), _color));
 
-	//Garantie que le triangle sera disjoint des autres triangles sauf par ce point
-	vert.append(sf::Vertex(sf::Vector2f(firstX, _pos.y + _width + _feetOffset.y), _color));
-
-	vert.append(sf::Vertex(sf::Vector2f(firstX + right * feetWidth, _pos.y + _width), _color));
-	vert.append(sf::Vertex(sf::Vector2f(firstX + feetWidth, _pos.y + _width + _feetOffset.y), _color));
 
 }
 
 //Dessine les pieds du fantome
 void Fantome::buildFeet(sf::VertexArray & vert) const
 {
-	float feetWidth = (float)_width / 2;
-
 	bool inverse = _step / framePerStep != 0;
 
-	for (int i = 0; i < 4; i++, inverse = !inverse)
+	for (int i = 0; i < 2 *_width / (int)_feetWidth; i++, inverse = !inverse)
 	{
-		buildFoot(vert, inverse, _pos.x - _width + feetWidth * i);
+		buildFoot(vert, inverse, _pos.x - _width + _feetWidth * i);
 	}
 	
 	_step++;
@@ -101,40 +126,64 @@ void Fantome::buildFeet(sf::VertexArray & vert) const
 	_step %= framePerStep * 2;
 }
 
-void Fantome::buildEye(sf::VertexArray & vert, sf::Vector2f eyePos, float eyeWidth) const
+void Fantome::buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const
 {
-	//Atteint la position des yeux
-	sf::Vertex Last = vert[vert.getVertexCount() - 1];
-
-	vert.append(sf::Vertex(eyePos, _color));
-	vert.append(sf::Vertex(eyePos, _color));
-
-
 	sf::Vector2f pos;
 
-	for (int i = 1; i <= _eyeSmooth + 1; i++)
-	{
-		pos.x = eyeWidth * cos(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.x;
-		pos.y = eyeWidth * sin(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.y;
 
+	//Fait le blanc des yeux
+
+	for (int i = 0; i <= _eyeSmooth; i++)	//Simule un triangleFan
+	{
+		//Replace le dernier vertex		
+		pos.x = _eyeSize * cos(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.x;
+		pos.y = _eyeSize * sin(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.y;
 		vert.append(sf::Vertex(pos, sf::Color::White));
 
-		//Replace le centre
+		//Repositionne le centre
 		vert.append(sf::Vertex(eyePos, sf::Color::White));
+
+		//Position du nouveau vertex
+		pos.x = _eyeSize * cos(2 * (float)M_PI * i / _eyeSmooth) + eyePos.x;
+		pos.y = _eyeSize * sin(2 * (float)M_PI * i / _eyeSmooth) + eyePos.y;
+
+		vert.append(sf::Vertex(pos, sf::Color::White));
 	}
 
-	//Dessine un point au centre
-	vert.append(sf::Vertex(eyePos, sf::Color::White));
-	vert.append(sf::Vertex(eyePos + sf::Vector2f(-1, 2), sf::Color::Black));
-	vert.append(sf::Vertex(eyePos + sf::Vector2f(-1, -2), sf::Color::Black));
-	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, -2), sf::Color::Black));
-	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, 2), sf::Color::Black));
-	
-	//Ressors de l'oeil
-	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, 3), sf::Color::White));
-	vert.append(sf::Vertex(eyePos + sf::Vector2f(1, 3), sf::Color::White));
+	//Fais le noir des yeux
+	sf::Vector2f pupilOffset;
+	switch (_direction)
+	{
+	case 'a':
+		pupilOffset = sf::Vector2f(-(_eyeSize - _pupilSize), 0);
+		break;
+	case 's':
+		pupilOffset = sf::Vector2f(0, _eyeSize - _pupilSize);
+		break;
+	case 'w':
+		pupilOffset = sf::Vector2f(0, -(_eyeSize - _pupilSize));
+		break;
+	case 'd':
+		pupilOffset = sf::Vector2f(_eyeSize - _pupilSize, 0);
+		break;
+	}
 
+	for (int i = 0; i <= _pupilSmooth; i++)	//Simule un triangleFan
+	{
+		//Replace le dernier vertex		
+		pos.x = _pupilSize * cos(2 * (float)M_PI * (i - 1) / _pupilSmooth) + eyePos.x + pupilOffset.x;
+		pos.y = _pupilSize * sin(2 * (float)M_PI * (i - 1) / _pupilSmooth) + eyePos.y + pupilOffset.y;
+		vert.append(sf::Vertex(pos, sf::Color::Black));
 
+		//Repositionne le centre
+		vert.append(sf::Vertex(eyePos + pupilOffset, sf::Color::Black));
+
+		//Position du nouveau vertex
+		pos.x = _pupilSize * cos(2 * (float)M_PI * i / _pupilSmooth) + eyePos.x + pupilOffset.x;
+		pos.y = _pupilSize * sin(2 * (float)M_PI * i / _pupilSmooth) + eyePos.y + pupilOffset.y;
+
+		vert.append(sf::Vertex(pos, sf::Color::Black));
+	}
 }
 
 void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -142,14 +191,14 @@ void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	sf::Vector2f eyeOffset(_width / 3,0);
 
 	//Tableau de triangles pour dessiner le fantome.
-	sf::VertexArray vert(sf::TrianglesStrip);
+	sf::VertexArray vert(sf::Triangles);
 
 	buildHead(vert);
 	buildBody(vert);
 	buildFeet(vert);
 
-	buildEye(vert, _pos + eyeOffset + _headOffset, 5);
-	buildEye(vert, _pos - eyeOffset + _headOffset, 5);
+	buildEye(vert, _pos + eyeOffset + _headOffset);
+	buildEye(vert, _pos - eyeOffset + _headOffset);
 
 	target.draw(vert);
 }

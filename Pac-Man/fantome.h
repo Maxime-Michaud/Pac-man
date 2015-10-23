@@ -16,27 +16,35 @@ TODO descriptionner mieux que ça												*
 
 class Fantome : public Personnage
 {
+	//Variables pour les dessins====================================
 	sf::Color _color;					//Couleur du fantome
 
-	sf::Vector2f _headOffset;
-	sf::Vector2f _feetOffset;
+	sf::Vector2f _headOffset;			//Décalage de la tête par rapport au centre
+	sf::Vector2f _feetOffset;			//Décalage des pieds par rapport au centre
 
-	//Variables pour les dessins====================================
-	static const int _width = 20;
+	static const int _width = 25;		//Largeur du fantome
 
-	mutable int _step;
-	static const int framePerStep = 10;
+	mutable int _step;					//Étape de l'animation a laquelle on est rendu
+	static const int framePerStep = 10;	//Nombre de frame dessinés dans une étape
 
 	//Nombres de vertex utilisés pour dessiner les cercles. Comme il s'agit de triangle, + gros chiffre = + rond
 	static const int _smoothness = 40;	//Pour la tete. Demi cercle, donc on utilise la moitié du chiffre0.
 	static const int _eyeSmooth = 10;	//Pour les yeux
+	static const int _pupilSmooth = 7;	//Pour les pupilles
 
+	float _eyeSize;						//Grosseur des yeux
+	float _pupilSize;					//grosseur des pupilles
+	float _feetWidth;					//Largeur des pieds
+
+	//Fin des variables pour les dessins============================
+
+	//Fonctions pour construire le fantome
 	void buildHead(sf::VertexArray & vert) const;
 	void buildBody(sf::VertexArray & vert) const;
 	void buildFoot(sf::VertexArray & vert, bool right, float firstX) const;
 	void buildFeet(sf::VertexArray & vert) const;
-	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos, float eyeWidth) const;
-
+	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const;
+	
 
 public:
 	Fantome();
