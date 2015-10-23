@@ -26,11 +26,13 @@ class PacMan: public Personnage
 	static const int _radius = 30;
 	static const int _nbrCote = 30;
 	sf::Vector2f _centre;
+	bool _laser = false;		//True si pacman fait un laser
 
 public:
 	PacMan();
 	~PacMan();
 
+	void setLaser(bool);		//Set le laser a on ou off
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 	virtual void move(char direction, Map &map);
 };
