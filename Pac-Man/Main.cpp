@@ -100,10 +100,20 @@ void main()
 
 		timePerFrame += clock.getElapsedTime();
 		frameCount++;
-		if (frameCount > 10000) break;
+		if (frameCount > 100) break;
 		while (clock.getElapsedTime().asMilliseconds() < 16);
 	}
 
+	while (!test.hasDisappeared())
+	{
+		sf::Clock clock;
+		tstwin.clear(sf::Color(200, 200, 200, 255));
+		tstwin.draw(map);
+		tstwin.draw(fantomeBleu);
+		test.deathAnimation(tstwin);
+		tstwin.display();
+		while (clock.getElapsedTime().asMilliseconds() < 32);
+	}
 	std::cout << "Temps par frame: " << timePerFrame.asSeconds() / frameCount << '\n';
 	std::cout << "Temps par frame: " << timePerFrame.asMilliseconds() / frameCount<<'\n';
 	std::cout << "Temps par frame: " << timePerFrame.asMicroseconds() / frameCount<<'\n';

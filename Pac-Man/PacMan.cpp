@@ -12,6 +12,8 @@ PacMan::PacMan()
 	_vertical = false;
 	_direction = 'd';
 	_directionProchaine = 'd';
+	_deathCount = 0;
+	_deathIncrement = .4;
 
 	_color = sf::Color(255, 255, 0, 255);
 
@@ -23,21 +25,20 @@ PacMan::~PacMan()
 {
 }
 
-
-void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
+sf::VertexArray PacMan::buildPacMan() const
 {
 	//possition du prochain vertex
 	sf::Vector2f pos;
 
 	//nombre de points : le centre + 1 par coté + 1 pour aller rejoindre le premier point et fermer le cercle
-	sf::Vertex vertices[_nbrCote + 2];
+	sf::VertexArray vertices(sf::TrianglesFan);
 
-	vertices[0] = sf::Vertex(_pos, _color);
-	
+	vertices.append(sf::Vertex(_pos, _color));
+
 	for (int i = 1; i <= _nbrCote + 1; i++)
 	{
 
-		float offset = -1;		
+		float offset = -1;
 
 		switch (_direction)
 		{
@@ -59,7 +60,7 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		pos.x = _radius * cos(2 * (float)M_PI * (i + offset) / _nbrCote) + _pos.x;
 		pos.y = _radius * sin(2 * (float)M_PI * (i + offset) / _nbrCote) + _pos.y;
 
-		vertices[i] = sf::Vertex(pos, _color);
+		vertices.append(sf::Vertex(sf::Vertex(pos, _color)));
 	}
 
 
@@ -67,17 +68,39 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	for (int i = 0; i < _step; i++)
 		vertices[i + 1] = vertices[_nbrCote + 1 - i] = _pos;
 
-	_step += _stepIncrement;
-
-	if (_step == 0 || _step >= _nbrCote / 4 )
+	if (_step == 0 || _step >= _nbrCote / 4)
 		_stepIncrement *= -1;
 
-	target.draw(vertices, _nbrCote + 2, sf::TrianglesFan);
+	return vertices;
+}
 
+void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	_step += _stepIncrement;
+	auto vertices = buildPacMan();
+	target.draw(vertices);
+}
+
+void PacMan::deathAnimation(sf::RenderTarget & target) const
+{
+	auto vertices = buildPacMan();
+	_deathCount += _deathIncrement;
+
+	for (int i = 0; i < _deathCount && 
+					i + _step + 1 < vertices.getVertexCount();
+					i++)
+		vertices[i + _step + 1] = _pos;
+
+	target.draw(vertices);
+}
+
+bool PacMan::hasDisappeared() const
+{
+	return (_step + _deathCount) >= _nbrCote;
 }
 
 void PacMan::move(char direction, Map &map)
 {
 	Personnage::move(direction, map);
-	//do some other shit
 }
+

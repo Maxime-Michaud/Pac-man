@@ -2,11 +2,10 @@
 *Date:			16 octobre 2015													*
 *Programme:		PacMan.h														*
 *Programmeur:	Maxime Michaud-Corriveau										*
-*Description:	Personnage principal du jeu Pac-Man.							*
-TODO descriptionner mieux que ça												*
-*																				*
-*																				*
-*																				*
+*Description:	Fantome du jeu de Pac-Man.										*
+*				Il s'agit d'un personnage qui se déplace selon les mêmes règles	*
+*				que pac-man, mais qui est controlé par l'ordinateur. Si il		*
+*				touche pac-man, le joueur perd.									*
 *********************************************************************************/
 #pragma once
 #define _USE_MATH_DEFINES 
@@ -25,12 +24,12 @@ class Fantome : public Personnage
 	static const int _width = 25;		//Largeur du fantome
 
 	mutable int _step;					//Étape de l'animation a laquelle on est rendu
-	static const int framePerStep = 10;	//Nombre de frame dessinés dans une étape
+	static const int framePerStep = 8;	//Nombre de frame dessinés dans une étape
 
 	//Nombres de vertex utilisés pour dessiner les cercles. Comme il s'agit de triangle, + gros chiffre = + rond
-	static const int _smoothness = 40;	//Pour la tete. Demi cercle, donc on utilise la moitié du chiffre0.
-	static const int _eyeSmooth = 10;	//Pour les yeux
-	static const int _pupilSmooth = 7;	//Pour les pupilles
+	static const int _smoothness = 25;	//Pour la tete. Demi cercle, donc on utilise la moitié du chiffre0.
+	static const int _eyeSmooth = 8;	//Pour les yeux
+	static const int _pupilSmooth = 8;	//Pour les pupilles
 
 	float _eyeSize;						//Grosseur des yeux
 	float _pupilSize;					//grosseur des pupilles

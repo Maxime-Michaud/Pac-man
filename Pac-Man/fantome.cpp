@@ -15,7 +15,7 @@ Fantome::Fantome()
 	_pos = sf::Vector2f(300, 300);
 
 	//variables pour le dessin
-	_headOffset = sf::Vector2f(0, -_width / 1.5);
+	_headOffset = sf::Vector2f(0, -_width / 1.2);
 	_feetOffset = sf::Vector2f(0, -_width / 2);
 	_step = 0;
 	_feetWidth = (float)_width / 4;
@@ -38,7 +38,7 @@ void Fantome::buildHead(sf::VertexArray & vert) const
 
 	
 	//On simule un triangleFan a l'aide de plusieurs triangles
-	for (int i = 0; i < _smoothness /2; i++)
+	for (int i = 0; i < _smoothness /2 + _smoothness%2; i++)
 	{
 		//Premier point du triangle
 		pos.x = _width  * cos(2 * (float)M_PI * (i - (float)_smoothness / 2) / (float)_smoothness) + _pos.x;

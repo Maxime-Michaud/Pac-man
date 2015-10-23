@@ -19,6 +19,8 @@ class PacMan: public Personnage
 {
 	mutable int _step;			//Nombre de vertex a ne pas afficher dans le dessin
 	mutable int _stepIncrement;	//Nombre de vertex a ne pas afficher au prochain appel de draw()
+	mutable float _deathCount;	
+	float _deathIncrement;
 
 	sf::Color _color;	//Couleur de pac-man
 
@@ -27,11 +29,16 @@ class PacMan: public Personnage
 	static const int _nbrCote = 30;
 	sf::Vector2f _centre;
 
+	sf::VertexArray buildPacMan() const;
 public:
 	PacMan();
 	~PacMan();
 
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+
+	void deathAnimation(sf::RenderTarget & target) const;
+	bool hasDisappeared() const;
+
 	virtual void move(char direction, Map &map);
 };
 
