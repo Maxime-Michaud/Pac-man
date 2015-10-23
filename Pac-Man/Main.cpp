@@ -16,9 +16,12 @@ TODO ajouter une description
 #include "map.h"
 #include <iostream>
 #include <SFML\System.hpp>
+#include <SFML/Audio.hpp>
 
 void main()
 {
+	const int largeurEcran = 600;
+	const int HauteurEcran = 600;
 	PacMan test;
 	Fantome fantomeBleu;
 	test.setPos(sf::Vector2f(100, 100));
@@ -27,6 +30,12 @@ void main()
 
 	sf::Time timePerFrame;
 	int frameCount = 0;
+
+	sf::SoundBuffer laserSound;
+	laserSound.loadFromFile("BWAAAAH.wav");
+	sf::Sound laser;			//Son du début de combat, un "TAC"
+	laser.setBuffer(laserSound);
+	bool stopPlaysound = false;		//Pour partir le son qu'une seule fois
 
 	Map map;
 	Ligne bizounne;
@@ -44,7 +53,7 @@ void main()
 	map.ajouterLigne(bizounne);
 
 	sf::RenderWindow tstwin;
-	tstwin.create(sf::VideoMode(600, 600), "Fenetre de test");
+	tstwin.create(sf::VideoMode(largeurEcran, HauteurEcran), "Fenetre de test");
 
 	tstwin.clear(sf::Color(200, 200, 200, 255));
 
@@ -58,7 +67,28 @@ void main()
 	{
 		tstwin.pollEvent(event);
 		if (event.type == sf::Event::KeyPressed)
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::A:
+				test.setDirection('a');
+				break;
+			case sf::Keyboard::S:
+				test.setDirection('s');
+				break;
+			case sf::Keyboard::D:
+				test.setDirection('d');
+				break;
+			case sf::Keyboard::W:
+				test.setDirection('w');
+				break;
+			default:
+				break;
+
+			}
 			break;
+		}
+			
 	}
 
 	while (tstwin.isOpen())
@@ -88,6 +118,23 @@ void main()
 			if (test.getVertical())
 				test.setDirection('w');
 			test.setDirectionProchaine('w');
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+		{
+			if (!stopPlaysound)
+			{
+				laser.play();
+				stopPlaysound = true;
+			}
+			
+			test.setLaser(true);
+		}
+		else
+		{
+			laser.stop();
+			stopPlaysound = false;
+			test.setLaser(false);
 		}
 
 		test.move(test.getDirection(), map);
