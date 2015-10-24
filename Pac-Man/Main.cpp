@@ -24,7 +24,7 @@ void main()
 	const int HauteurEcran = 600;
 	PacMan test;
 	Fantome fantomeBleu;
-	test.setPos(sf::Vector2f(100, 100));
+	test.setPos(sf::Vector2f(150, 150));
 
 	fantomeBleu.setPos(sf::Vector2f(300, 300));
 
@@ -39,22 +39,21 @@ void main()
 
 	Map map;
 	Ligne bizounne;
-	bizounne.init(100, 100, 300, 100);
+	bizounne.init(150, 150, 300, 150);
 	map.ajouterLigne(bizounne);
-	bizounne.init(300, 100, 300, 300);
+	bizounne.init(300, 150, 300, 300);
 	map.ajouterLigne(bizounne);
-	bizounne.init(100, 300, 300, 300);
+	bizounne.init(150, 300, 300, 300);
 	map.ajouterLigne(bizounne);
-	bizounne.init(100, 100, 100, 300);
+	bizounne.init(150, 150, 150, 300);
 	map.ajouterLigne(bizounne);
-	bizounne.init(300, 100, 500, 100);
+	bizounne.init(300, 150, 500, 150);
 	map.ajouterLigne(bizounne);
-	bizounne.init(300, 0, 300, 100);
+	bizounne.init(300, 0, 300, 150);
 	map.ajouterLigne(bizounne);
 
 	sf::RenderWindow tstwin;
 	tstwin.create(sf::VideoMode(largeurEcran, HauteurEcran), "Fenetre de test");
-
 	tstwin.clear(sf::Color(200, 200, 200, 255));
 
 	tstwin.draw(map);
@@ -127,7 +126,8 @@ void main()
 				laser.play();
 				stopPlaysound = true;
 			}
-			
+			//Shake le screen en malade pour le laser
+			tstwin.setPosition(sf::Vector2i(600 + rand() % 25, 200 + rand() % 25));
 			test.setLaser(true);
 		}
 		else

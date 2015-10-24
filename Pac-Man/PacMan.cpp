@@ -1,6 +1,7 @@
 #include "PacMan.h"
 
 
+
 PacMan::PacMan()
 {
 	//Variables pour l'animation
@@ -107,8 +108,8 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 	if (_laser)
 	{
-		Laser laser(_pos);
-		target.draw(laser);
+		Laser laser(_pos, _direction);
+		laser.draw(target, states);
 	}
 	target.draw(vertices);
 }
