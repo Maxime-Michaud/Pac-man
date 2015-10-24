@@ -26,7 +26,7 @@ void main()
 	Fantome fantomeBleu;
 	test.setPos(sf::Vector2f(150, 150));
 
-	fantomeBleu.setPos(sf::Vector2f(300, 300));
+	fantomeBleu.setPos(sf::Vector2f(300, 250));
 
 	sf::Time timePerFrame;
 	int frameCount = 0;
@@ -35,7 +35,7 @@ void main()
 	laserSound.loadFromFile("BWAAAAH.wav");
 	sf::Sound laser;
 	laser.setBuffer(laserSound);
-	bool stopPlaysound = false;		//Pour partir le son qu'une seule fois
+	bool laserOn = false;		//Pour partir le son qu'une seule fois
 
 	Map map;
 	Ligne bizounne;
@@ -121,19 +121,20 @@ void main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
 		{
-			if (!stopPlaysound)
+			if (!laserOn)
 			{
 				laser.play();
-				stopPlaysound = true;
+				laserOn = true;
 			}
 			//Shake le screen en malade pour le laser
+			fantomeBleu.verifieSiMort(test.getPos(), test.getDirection(), laserOn);
 			tstwin.setPosition(sf::Vector2i(600 + rand() % 25, 200 + rand() % 25));
 			test.setLaser(true);
 		}
 		else
 		{
 			laser.stop();
-			stopPlaysound = false;
+			laserOn = false;
 			test.setLaser(false);
 		}
 
