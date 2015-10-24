@@ -36,6 +36,9 @@ public:
 	~PacMan();
 
 	void setLaser(bool);		//Set le laser a on ou off
+
+	void PacMan::buildBall(sf::Vector2f ballOffset, sf::VertexArray & ball)const;
+
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
 	void deathAnimation(sf::RenderTarget & target) const;

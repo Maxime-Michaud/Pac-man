@@ -147,7 +147,7 @@ void main()
 
 		timePerFrame += clock.getElapsedTime();
 		frameCount++;
-		if (frameCount > 100) break;
+		if (frameCount > 1000) break;
 		while (clock.getElapsedTime().asMilliseconds() < 16);
 	}
 

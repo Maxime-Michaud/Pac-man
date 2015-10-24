@@ -13,7 +13,7 @@ PacMan::PacMan()
 	_direction = 'd';
 	_directionProchaine = 'd';
 	_deathCount = 0;
-	_deathIncrement = .4;
+	_deathIncrement = .5;
 
 	_color = sf::Color(255, 255, 0, 255);
 
@@ -47,6 +47,7 @@ std::vector<sf::Vector2f> CalcCubicBezier(const sf::Vector2f &start, const sf::V
 		ret.push_back(p * p * p * (end + 3.f * (startControl - endControl) - start) +
 		3.f * p * p * (start - 2.f * startControl + endControl) +
 		3.f * p * (startControl - start) + start);
+
 	ret.push_back(end); // Last point is fixed
 	return ret;
 }
@@ -55,38 +56,38 @@ sf::VertexArray PacMan::buildPacMan() const
 {
 	//possition du prochain vertex
 	sf::Vector2f pos;
+	sf::Color color(175, 50, 25);
 
 	//nombre de points : le centre + 1 par coté + 1 pour aller rejoindre le premier point et fermer le cercle
 	sf::VertexArray vertices(sf::TrianglesFan);
 
-	vertices.append(sf::Vertex(_pos, _color));
+	vertices.append(sf::Vertex(_pos, color));
+
+	float offset = -1;
+
+	//switch (_direction)
+	//{
+	//case 'd':
+	//	offset = -1;
+	//	break;
+	//case 'a':
+	//	offset = (float)_nbrCote / 2 - 1;
+	//	break;
+	//case 'w':
+	//	offset = 3 * (float)_nbrCote / 4 - 1;
+	//	break;
+	//case 's':
+	//	offset = (float)_nbrCote / 4 - 1;
+	//	break;
+	//}
 
 	for (int i = 1; i <= _nbrCote + 1; i++)
 	{
 
-		float offset = -1;
-
-		switch (_direction)
-		{
-		case 'd':
-			offset = -1;
-			break;
-		case 'a':
-			offset = (float)_nbrCote / 2 - 1;
-			break;
-		case 'w':
-			offset = 3 * (float)_nbrCote / 4 - 1;
-			break;
-		case 's':
-			offset = (float)_nbrCote / 4 - 1;
-			break;
-		}
-
-
 		pos.x = _radius * cos(2 * (float)M_PI * (i + offset) / _nbrCote) + _pos.x;
 		pos.y = _radius * sin(2 * (float)M_PI * (i + offset) / _nbrCote) + _pos.y;
 
-		vertices.append(sf::Vertex(sf::Vertex(pos, _color)));
+		vertices.append(sf::Vertex(sf::Vertex(pos, color)));
 	}
 
 
@@ -101,10 +102,37 @@ sf::VertexArray PacMan::buildPacMan() const
 	return vertices;
 }
 
+void PacMan::buildBall(sf::Vector2f ballOffset, sf::VertexArray & ball) const
+{
+	sf::Color color(226, 185, 143);
+	ball.setPrimitiveType(sf::TrianglesFan);
+	sf::Vector2f pos(ballOffset + _pos);
+
+	ball.append(sf::Vertex(pos, color));
+	for (int i = 1; i <= _nbrCote + 1; i++)
+	{
+
+		pos.x = _radius * cos(2 * (float)M_PI * i / _nbrCote) + _pos.x + ballOffset.x;
+		pos.y = _radius * sin(2 * (float)M_PI * i / _nbrCote) + _pos.y + ballOffset.y;
+
+		ball.append(sf::Vertex(pos, color));
+	}
+	
+}
+
 void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	_step += _stepIncrement;
 	auto vertices = buildPacMan();
+
+	sf::VertexArray b1, b2;
+	buildBall(sf::Vector2f(-125, -25), b1);
+	buildBall(sf::Vector2f(-125, 25), b2);
+	sf::RectangleShape penis;
+	penis.setFillColor(sf::Color(226, 185, 143));
+	penis.setSize(sf::Vector2f(125, 50));
+	penis.setPosition(_pos - sf::Vector2f(125, 25));
+	target.draw(penis);
 
 	if (_laser)
 	{
@@ -173,6 +201,9 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(ligne, 2, sf::Lines, states);
 	}
 	target.draw(vertices);
+	target.draw(b1);
+	target.draw(b2);
+
 }
 
 void PacMan::deathAnimation(sf::RenderTarget & target) const
