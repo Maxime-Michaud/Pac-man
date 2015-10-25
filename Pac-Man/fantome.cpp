@@ -7,8 +7,7 @@ Fantome::Fantome()
 	_numLigne = 1;
 	_vitesse = 3;
 	_vertical = true;
-	_direction = 'w';
-	_directionProchaine = 'a';
+	_direction = 's';
 
 	_color = sf::Color::Cyan;
 
@@ -28,6 +27,10 @@ Fantome::~Fantome()
 {
 }
 
+void Fantome::setIsDead(bool isDead)
+{
+	_isDead = isDead;
+}
 
 //Fonctions pour dessiner le fantome
 
@@ -193,9 +196,9 @@ void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	//Tableau de triangles pour dessiner le fantome.
 	sf::VertexArray vert(sf::Triangles);
 
-	buildHead(vert);
-	buildBody(vert);
-	buildFeet(vert);
+	(_isDead != true) ? buildHead(vert) : NULL;
+	(_isDead != true) ? buildBody(vert) : NULL;
+	(_isDead != true) ? buildFeet(vert) : NULL;
 
 	buildEye(vert, _pos + eyeOffset + _headOffset);
 	buildEye(vert, _pos - eyeOffset + _headOffset);
@@ -226,11 +229,29 @@ char inverserDirection(char direction)
 	}
 }
 
+//L'animation et la placement du fantome quand il est mort
+void Fantome::deadAnimation(Map &map, sf::Vector2f pacManPos)
+{
+	if (_pos != sf::Vector2f(300, 300))
+	{
+		_direction = 's';
+		(_pos.x > 300) ? _pos.x -= 1 : (_pos.x < 300) ? _pos.x += 1 : NULL;
+		(_pos.y > 300) ? _pos.y -= 1 : (_pos.y < 300) ? _pos.y += 1 : NULL;
+	}
+	else
+	{
+		_numLigne = 2;
+		_vertical = true;
+		_isDead = false;
+	}
+
+}
+
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 {
 	char directionArrivee = _direction;			//La direction de départ
-	int tempNoLigne = _numLigne;				//Le numéro de la ligne du fantome au départ
+	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
 	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
 	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
 
@@ -265,45 +286,59 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	switch (_direction)
 	{
 	case 'a':
-		if (map.getLigne(_numLigne).isOn(sf::Vector2f(_pos.x - 1, _pos.y)))
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x - 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x - 1, _pos.y))))
+		{
+			Personnage::changerDeLigne(_direction, map);
 			return;
+		}
 		break;
 	case 'd':
-		if (map.getLigne(_numLigne).isOn(sf::Vector2f(_pos.x + 1, _pos.y)))
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x + 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x + 1, _pos.y))))
+		{
+			Personnage::changerDeLigne(_direction, map);
 			return;
+		}
 		break;
-	case 's':
-		if (map.getLigne(_numLigne).isOn(sf::Vector2f(_pos.x, _pos.y + 1)))
+	case 's':		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
+		{
+			Personnage::changerDeLigne(_direction, map);
 			return;
+		}
 		break;
 	case 'w':
-		if (map.getLigne(_numLigne).isOn(sf::Vector2f(_pos.x, _pos.y - 1)))
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
+		{
+			Personnage::changerDeLigne(_direction, map);
 			return;
+		}
 		break;
 	default:
 		break;
 	}
 
+	if (distanceX >= distanceY)
+		_direction = basHaut;
+	else
+		_direction = gaucheDroite;
 	//Sinon il tente de prendre une autre ligne logique dans l'autre axe
 	Personnage::changerDeLigne(_direction, map);
-	if (tempNoLigne == _numLigne)
-	{
-		if (distanceX >= distanceY)
-			_direction = basHaut;
-		else
-			_direction = gaucheDroite;
-	}
-	else
-		return;
-	
 	//Si rien n'a fonctionné, il retourne sur ses pas
-	_direction = inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
+	if (_numLigne == tempNoLigne)
+	{
+		_direction = inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
+	}
+	
 }
 
 void Fantome::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
-
+	if (_isDead)
+	{
+		deadAnimation(map, posPacMan);
+		return;
+	}
 	//Personnage::move(direction, map);
+
 	Ligne temp = map.getLigne(_numLigne);
 	sf::Vector2f vtemp(_pos);
 	switch (direction)

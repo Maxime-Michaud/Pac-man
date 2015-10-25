@@ -31,10 +31,12 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SaisieSecurisee.cpp">
-	      <Filter>Fichiers sources</Filter>
-	</ClCompile>
-
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
     <ClCompile Include="fantome.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Laser.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -58,9 +60,12 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="saisieSecurisee.h">
-	      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="fantome.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="laser.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

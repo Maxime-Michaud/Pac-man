@@ -24,37 +24,36 @@ void main()
 	const int HauteurEcran = 600;
 	PacMan test;
 	Fantome fantomeBleu;
-	test.setPos(sf::Vector2f(100, 100));
+	test.setPos(sf::Vector2f(150, 150));
 
-	fantomeBleu.setPos(sf::Vector2f(300, 300));
+	fantomeBleu.setPos(sf::Vector2f(300, 250));
 
 	sf::Time timePerFrame;
 	int frameCount = 0;
 
 	sf::SoundBuffer laserSound;
 	laserSound.loadFromFile("BWAAAAH.wav");
-	sf::Sound laser;			//Son du début de combat, un "TAC"
+	sf::Sound laser;
 	laser.setBuffer(laserSound);
-	bool stopPlaysound = false;		//Pour partir le son qu'une seule fois
+	bool laserOn = false;		//Pour partir le son qu'une seule fois
 
 	Map map;
 	Ligne bizounne;
-	bizounne.init(100, 100, 300, 100);
+	bizounne.init(150, 150, 300, 150);
 	map.ajouterLigne(bizounne);
-	bizounne.init(300, 100, 300, 300);
+	bizounne.init(300, 150, 300, 300);
 	map.ajouterLigne(bizounne);
-	bizounne.init(100, 300, 300, 300);
+	bizounne.init(150, 300, 300, 300);
 	map.ajouterLigne(bizounne);
-	bizounne.init(100, 100, 100, 300);
+	bizounne.init(150, 150, 150, 300);
 	map.ajouterLigne(bizounne);
-	bizounne.init(300, 100, 500, 100);
+	bizounne.init(300, 150, 500, 150);
 	map.ajouterLigne(bizounne);
-	bizounne.init(300, 0, 300, 100);
+	bizounne.init(300, 0, 300, 150);
 	map.ajouterLigne(bizounne);
 
 	sf::RenderWindow tstwin;
 	tstwin.create(sf::VideoMode(largeurEcran, HauteurEcran), "Fenetre de test");
-
 	tstwin.clear(sf::Color(200, 200, 200, 255));
 
 	tstwin.draw(map);
@@ -122,18 +121,22 @@ void main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
 		{
-			if (!stopPlaysound)
+			if (!laserOn)
 			{
 				laser.play();
-				stopPlaysound = true;
+				laserOn = true;
+				
 			}
+			//Shake le screen en malade pour le laser
+			fantomeBleu.setIsDead(map.verifieSiMort(test, fantomeBleu));
 			
+			tstwin.setPosition(sf::Vector2i(600 + rand() % 25, 200 + rand() % 25));
 			test.setLaser(true);
 		}
 		else
 		{
 			laser.stop();
-			stopPlaysound = false;
+			laserOn = false;
 			test.setLaser(false);
 		}
 
@@ -145,13 +148,13 @@ void main()
 		tstwin.draw(fantomeBleu);
 		tstwin.display();
 
-		timePerFrame += clock.getElapsedTime();
+		/*timePerFrame += clock.getElapsedTime();
 		frameCount++;
-		if (frameCount > 100) break;
+		if (frameCount > 100) break;*/
 		while (clock.getElapsedTime().asMilliseconds() < 16);
 	}
 
-	while (!test.hasDisappeared())
+	/*while (!test.hasDisappeared())
 	{
 		sf::Clock clock;
 		tstwin.clear(sf::Color(200, 200, 200, 255));
@@ -160,7 +163,7 @@ void main()
 		test.deathAnimation(tstwin);
 		tstwin.display();
 		while (clock.getElapsedTime().asMilliseconds() < 32);
-	}
+	}*/
 	std::cout << "Temps par frame: " << timePerFrame.asSeconds() / frameCount << '\n';
 	std::cout << "Temps par frame: " << timePerFrame.asMilliseconds() / frameCount<<'\n';
 	std::cout << "Temps par frame: " << timePerFrame.asMicroseconds() / frameCount<<'\n';

@@ -56,3 +56,29 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(quads);
 }
 
+
+//Vérifie le fantome est dans une situation lui causant la mort
+bool Map::verifieSiMort(PacMan &pacMan, Fantome &fantome)
+{
+	if (pacMan.getLaser())
+	{
+		switch (pacMan.getDirection())
+		{
+		case 'a':
+			return fantome.getPos().y == pacMan.getPos().y && fantome.getPos().x < pacMan.getPos().x;
+			break;
+		case 'd':
+			return fantome.getPos().y == pacMan.getPos().y && fantome.getPos().x > pacMan.getPos().x;
+			break;
+		case 's':
+			return fantome.getPos().x == pacMan.getPos().x && fantome.getPos().y > pacMan.getPos().y;
+			break;
+		case 'w':
+			return fantome.getPos().x == pacMan.getPos().x && fantome.getPos().y < pacMan.getPos().y;
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+}
