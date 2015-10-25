@@ -30,6 +30,11 @@ void PacMan::setLaser(bool b)
 	_laser = b;
 }
 
+bool PacMan::getLaser()
+{
+	return _laser;
+}
+
 //faire une ligne courbé, source : https://github.com/SFML/SFML/wiki/Source%3A-cubic-bezier-curve#code
 std::vector<sf::Vector2f> CalcCubicBezier(const sf::Vector2f &start, const sf::Vector2f &end,
 		const sf::Vector2f &startControl,

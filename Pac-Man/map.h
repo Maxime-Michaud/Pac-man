@@ -1,7 +1,10 @@
 #pragma once
+#include "fantome.h"
+#include "PacMan.h"
 #include "Ligne.h"
 #include <list>
 #include <SFML\Graphics.hpp>
+
 
 class Map :public sf::Drawable
 {
@@ -19,6 +22,7 @@ public:
 	int quelleLigne(sf::Vector2f ligne, int numLigne);			//retourne le nu de la ligne selon la position
 
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states)const;
+	bool verifieSiMort(PacMan &pacMan, Fantome &fantome);
 
 private:
 	std::vector<Ligne> _map;		//Contient toutes les lignes

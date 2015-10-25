@@ -27,6 +27,10 @@ Fantome::~Fantome()
 {
 }
 
+void Fantome::setIsDead(bool isDead)
+{
+	_isDead = isDead;
+}
 
 //Fonctions pour dessiner le fantome
 
@@ -243,47 +247,6 @@ void Fantome::deadAnimation(Map &map, sf::Vector2f pacManPos)
 
 }
 
-//Vérifie le fantome est dans une situation lui causant la mort
-bool Fantome::verifieSiMort(sf::Vector2f coordPacMan, char pacManDirection, bool laser)
-{
-	if (laser)
-	{
-		switch (pacManDirection)
-		{
-		case 'a':
-			if (_pos.y == coordPacMan.y && _pos.x < coordPacMan.x)
-			{
-				_isDead = true;
-				return true;
-			}
-			break;
-		case 'd':
-			if (_pos.y == coordPacMan.y && _pos.x > coordPacMan.x)
-			{
-				_isDead = true;
-				return true;
-			}
-			break;
-		case 's':
-			if (_pos.x == coordPacMan.x && _pos.y > coordPacMan.y)
-			{
-				_isDead = true;
-				return true;
-			}
-			break;
-		case 'w':
-			if (_pos.x == coordPacMan.x && _pos.y < coordPacMan.y)
-			{
-				_isDead = true;
-				return true;
-			}
-			break;
-		default:
-			break;
-		}
-	}
-}
-
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 {
@@ -336,8 +299,7 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 			return;
 		}
 		break;
-	case 's':
-		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
+	case 's':		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
 		{
 			Personnage::changerDeLigne(_direction, map);
 			return;

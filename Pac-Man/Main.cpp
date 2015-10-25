@@ -125,9 +125,11 @@ void main()
 			{
 				laser.play();
 				laserOn = true;
+				
 			}
 			//Shake le screen en malade pour le laser
-			fantomeBleu.verifieSiMort(test.getPos(), test.getDirection(), laserOn);
+			fantomeBleu.setIsDead(map.verifieSiMort(test, fantomeBleu));
+			
 			tstwin.setPosition(sf::Vector2i(600 + rand() % 25, 200 + rand() % 25));
 			test.setLaser(true);
 		}
