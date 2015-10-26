@@ -4,7 +4,7 @@
 
 Fantome::Fantome()
 {
-	_numLigne = 1;
+	_numLigne = 0;
 	_vitesse = 3;
 	_vertical = true;
 	_direction = 's';

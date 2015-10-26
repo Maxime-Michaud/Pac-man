@@ -112,11 +112,9 @@ public:
 	/// <param name="pos">Position a vérifier</param>
 	bool isOn(sf::Vector2f pos) const;
 
-	/// <summary>
-	/// Obtiens l'orientation de la ligne.
-	///  Retourne 1 si la ligne est verticale, -1 si elle est horizontale.
-	/// </summary>
-	int getOrientation()const;	
+	bool isVertical()const;	
+
+	bool traverse(const Ligne& l)const;
 
 	/// <summary>
 	/// Dessine la ligne. 
@@ -124,5 +122,7 @@ public:
 	/// </summary>
 	/// <param name="target">cible sur laquelle dessiner</param>
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	bool operator==(const Ligne& l)const;
 };
 

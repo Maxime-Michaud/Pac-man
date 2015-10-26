@@ -15,18 +15,19 @@ TODO ajouter une description
 #include "fantome.h"
 #include "map.h"
 #include <iostream>
+#include <fstream>
 #include <SFML\System.hpp>
 #include <SFML/Audio.hpp>
 
 void main()
 {
-	const int largeurEcran = 600;
-	const int HauteurEcran = 600;
+	const int largeurEcran = 1000;
+	const int HauteurEcran = 900;
 	PacMan test;
 	Fantome fantomeBleu;
-	test.setPos(sf::Vector2f(150, 150));
+	test.setPos(sf::Vector2f(100, 100));
 
-	fantomeBleu.setPos(sf::Vector2f(300, 250));
+	fantomeBleu.setPos(sf::Vector2f(100, 100));
 
 	sf::Time timePerFrame;
 	int frameCount = 0;
@@ -38,19 +39,9 @@ void main()
 	bool laserOn = false;		//Pour partir le son qu'une seule fois
 
 	Map map;
-	Ligne bizounne;
-	bizounne.init(150, 150, 300, 150);
-	map.ajouterLigne(bizounne);
-	bizounne.init(300, 150, 300, 300);
-	map.ajouterLigne(bizounne);
-	bizounne.init(150, 300, 300, 300);
-	map.ajouterLigne(bizounne);
-	bizounne.init(150, 150, 150, 300);
-	map.ajouterLigne(bizounne);
-	bizounne.init(300, 150, 500, 150);
-	map.ajouterLigne(bizounne);
-	bizounne.init(300, 0, 300, 150);
-	map.ajouterLigne(bizounne);
+	
+	std::ifstream in("map1.txt");
+	map.lireMap(in);
 
 	sf::RenderWindow tstwin;
 	tstwin.create(sf::VideoMode(largeurEcran, HauteurEcran), "Fenetre de test");
@@ -127,9 +118,7 @@ void main()
 				laserOn = true;
 				
 			}
-			//Shake le screen en malade pour le laser
-			fantomeBleu.setIsDead(map.verifieSiMort(test, fantomeBleu));
-			
+			//Shake le screen en malade pour le laser			
 			tstwin.setPosition(sf::Vector2i(600 + rand() % 25, 200 + rand() % 25));
 			test.setLaser(true);
 		}

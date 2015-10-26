@@ -71,9 +71,33 @@ bool Ligne::isOn(sf::Vector2f pos) const
 		&& pos.y >= _p1.y && pos.y <= _p2.y;
 }
 
-int Ligne::getOrientation() const
+bool Ligne::isVertical() const
 {
-	return _p1.x == _p2.x ? 1 : -1;
+	return _p1.x == _p2.x;
+}
+
+bool Ligne::traverse(const Ligne & l) const
+{
+	if (l == *this) return false;	//Une ligne ne se traverse pas elle meme
+
+	if (isVertical())
+		//Les deux sont verticales
+		if (l.isVertical())
+			return	_p1.x == l._p1.x && 
+					!(_p2.y <= l._p1.y || 
+						l._p2.y <= _p1.y);
+		else //ligne implicite verticale, explicite horizontale
+			return l._p1.x <= _p1.x && l._p2.x >= _p1.x 
+				&& _p1.y <= l._p1.y && _p2.y >= l._p1.y;
+	else
+		//ligne implicite horizontale, explicite verticale
+		if (l.isVertical())
+			return _p1.x <= l._p1.x && _p2.x >= l._p1.x
+				&& l._p1.y <= _p1.y && l._p2.y >= _p1.y;
+		else //Les deux sont horizontales
+			return	_p1.y == l._p1.y &&
+					 !(_p1.x <= l._p1.x ||
+					    l._p2.x <= _p1.x);
 }
 
 void Ligne::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -81,4 +105,9 @@ void Ligne::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	sf::Vertex ligne[] = { sf::Vertex(_p1), sf::Vertex(_p2) };
 
 	target.draw(ligne, 2, sf::Lines, states);
+}
+
+bool Ligne::operator==(const Ligne & l) const
+{
+	return _p1 == l._p1 && _p2 == l._p2;
 }

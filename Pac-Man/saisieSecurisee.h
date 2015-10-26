@@ -87,7 +87,6 @@ template <typename T, bool can_throw = true>
 	Permet aussi de spécifier le séparateur décimal pour les nombres non intégraux.*/
 std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * separateur = " ,", char separateurDecimal = '.')
 {
-
 	//Gestion d'erreurs et de cas limites
 #if defined(_MSC_VER) && _MSC_VER >= 1900	//Les versions précédentes de VS ne supportent pas constexpr
 	static_assert(std::is_arithmetic<T>(), 
@@ -113,7 +112,7 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 
 	std::vector<T> ret;		//Vecteur retourné
 	//Ajoute les nombres au vecteur
-	for (int c = 0; c < count; c++)
+	for (int c = 0; c < count || count == 0; c++)
 	{
 		std::string num;
 
@@ -164,16 +163,7 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 	if (can_throw && ret.size() != count)
 		throw std::invalid_argument("Le fichier ne contient pas le bon nombre de nombre ou est mal formaté!");
 
-	//Avant de quitter, efface tous les séparateurs restant
-	for (int i = 0; i < strlen(separateur); i++)
-	{
-		if (in.peek() == separateur[i])
-		{
-			in.get();
-			//Reset la loop
-			i = -1;
-		}
-	}
+	
 
 	return ret;
 }	

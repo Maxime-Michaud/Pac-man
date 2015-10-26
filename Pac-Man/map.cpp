@@ -1,15 +1,5 @@
 #include "map.h"
 
-void Map::ajouterLigne(Ligne ligne)
-{
-	_map.push_back(ligne);
-}
-
-Ligne Map::getLigne(int noLigne)
-{
-	return _map[noLigne];
-}
-
 Map::~Map()
 {
 
@@ -18,6 +8,55 @@ Map::~Map()
 Map::Map()
 {
 	_mapColor = sf::Color();
+}
+
+void Map::ajouterLigne(Ligne ligne)
+{
+	//Si la nouvelle ligne ne croise aucune autre lignes
+//	if (valideNouvelleLigne(ligne))
+	{
+		_map.push_back(ligne);
+		return;
+	}
+
+	for (int i = 0; i < _map.size; i++)
+	{
+		if (_map[i].traverse(ligne))
+		{
+			//On efface l'ancienne ligne a la position i pour la remplacer par deux petites lignes
+			auto tmp = _map[i];
+			std::swap(_map[i], *_map.end());
+		}
+	}
+
+}
+
+void Map::lireMap(std::istream & map)
+{
+	auto linePos = readNumFromStream<float, false>(map, 0, "(, )\n", '.');
+
+	if (linePos.size() % 4)
+		throw std::invalid_argument("Le format de la map est invalide!");
+
+	for (int i = 0; i < linePos.size(); i += 4)
+	{
+		ajouterLigne(Ligne(linePos[i], linePos[i + 1], linePos[i + 2], linePos[i + 3]));
+	}
+}
+
+bool Map::valideNouvelleLigne(Ligne & l)
+{
+	for (auto li:_map)
+		if (li.traverse(l))
+			return false;
+
+	return true;
+}
+
+Ligne Map::getLigne(int noLigne)
+{
+	if (noLigne >= _map.size()) throw std::invalid_argument("Le numero de ligne est trop grand");
+	return _map[noLigne];
 }
 
 int Map::quelleLigne(sf::Vector2f ligne, int noLigne)
@@ -56,29 +95,3 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(quads);
 }
 
-
-//Vérifie le fantome est dans une situation lui causant la mort
-bool Map::verifieSiMort(PacMan &pacMan, Fantome &fantome)
-{
-	if (pacMan.getLaser())
-	{
-		switch (pacMan.getDirection())
-		{
-		case 'a':
-			return fantome.getPos().y == pacMan.getPos().y && fantome.getPos().x < pacMan.getPos().x;
-			break;
-		case 'd':
-			return fantome.getPos().y == pacMan.getPos().y && fantome.getPos().x > pacMan.getPos().x;
-			break;
-		case 's':
-			return fantome.getPos().x == pacMan.getPos().x && fantome.getPos().y > pacMan.getPos().y;
-			break;
-		case 'w':
-			return fantome.getPos().x == pacMan.getPos().x && fantome.getPos().y < pacMan.getPos().y;
-			break;
-		default:
-			break;
-		}
-		return false;
-	}
-}
