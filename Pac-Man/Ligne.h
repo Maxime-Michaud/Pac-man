@@ -42,6 +42,13 @@ public:
 	/// <param name="y2">Position verticale de la fin de la ligne</param>
 	Ligne(float x1, float y1, float x2, float y2);	//construit la ligne a partir des coordonées
 
+	/// <summary>
+	/// Construit et initialise la ligne a partir des points de debut et de fin
+	/// </summary>
+	/// <param name="debut">debut de la ligne</param>
+	/// <param name="fin">fin de la ligne</param>
+	Ligne(sf::Vector2f debut, sf::Vector2f fin);
+
 	//Destructeur
 	~Ligne();
 
@@ -112,9 +119,23 @@ public:
 	/// <param name="pos">Position a vérifier</param>
 	bool isOn(sf::Vector2f pos) const;
 
+	/// <summary>
+	/// Retourne si la ligne est verticale
+	/// </summary>
 	bool isVertical()const;	
 
+	/// <summary>
+	/// Trouve si une ligne traverse une autre ligne. True si deux lignes partagent un point, sauf si ce point est situé a l'extrémité des deux lignes
+	/// </summary>
+	/// <param name="l">Ligne avec laquelle comparée</param>
 	bool traverse(const Ligne& l)const;
+
+	/// <summary>
+	/// Trouve l'intersection entre deux lignes. Si les deux lignes sont dans la même direction, retourne le début de la ligne plus basse/a droite.
+	///  Si les lignes ne s'intersectent pas, retourne le point de l'intersection si elles seraient étirées jusqu'a se rencontrer.
+	/// </summary>
+	/// <param name="l">Une ligne autre que la ligne implicite.</param>
+	sf::Vector2f intersect(const Ligne& l)const;
 
 	/// <summary>
 	/// Dessine la ligne. 

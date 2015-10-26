@@ -13,22 +13,57 @@ Map::Map()
 void Map::ajouterLigne(Ligne ligne)
 {
 	//Si la nouvelle ligne ne croise aucune autre lignes
-//	if (valideNouvelleLigne(ligne))
+	if (valideNouvelleLigne(ligne))
 	{
 		_map.push_back(ligne);
 		return;
 	}
 
-	for (int i = 0; i < _map.size; i++)
+	for (int i = 0; i < _map.size(); i++)
 	{
 		if (_map[i].traverse(ligne))
 		{
-			//On efface l'ancienne ligne a la position i pour la remplacer par deux petites lignes
+			//On efface l'ancienne ligne a la position i pour la remplacer plus tard
 			auto tmp = _map[i];
-			std::swap(_map[i], *_map.end());
+			std::swap(_map[i], _map[_map.size()-1]);
+			_map.resize(_map.size() - 1);
+
+			//Si les deux lignes sont dans la même direction, on les fusionne
+			if (ligne.isVertical() == tmp.isVertical())
+			{
+				float x1, x2, y1, y2;
+				x1 = std::min(ligne.getDebut().x, tmp.getDebut().x);
+				y1 = std::min(ligne.getDebut().y, tmp.getDebut().y);
+				x2 = std::max(ligne.getFin().x, tmp.getFin().x);
+				y2 = std::max(ligne.getFin().y, tmp.getFin().y);
+				
+				//Il peut rester des intersections avec d'autre ligness, donc on se rapelle récursivement
+				ajouterLigne(Ligne(x1, y1, x2, y2));	
+				return; //Quitte la fonction
+			}
+			else
+			{
+				//On trouve l'intersection entre les lignes
+				auto intersect = ligne.intersect(tmp);
+
+				//Les deux lignes créées a partir de tmp n'ont aucune intersection puisque tmp n'en avait aucune en théorie
+				if (tmp.getDebut() != intersect)
+					_map.push_back(Ligne(tmp.getDebut(), intersect));
+				if (tmp.getFin() != intersect)
+					_map.push_back(Ligne(intersect, tmp.getFin()));
+
+				//Réutilise la fonction afin d'ajouter de façon sécuritaire les deux fragments de ligne
+				if (ligne.getDebut() != intersect)
+					ajouterLigne(Ligne(ligne.getDebut(), intersect));
+				if (ligne.getFin() != intersect)
+					ajouterLigne(Ligne(intersect, ligne.getFin()));
+				return; //Quitte la fonction
+			}
+
 		}
 	}
-
+	//Cette partie de la fonction ne devrais jamais etre atteinte
+	assert(true);
 }
 
 void Map::lireMap(std::istream & map)
@@ -73,7 +108,7 @@ int Map::quelleLigne(sf::Vector2f ligne, int noLigne)
 
 void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	sf::VertexArray quads(sf::Quads, 2 * _map.size());
+	sf::VertexArray quads(sf::Quads);
 
 	sf::Vector2f offset(-_width, -_width);
 	//Pour chaque ligne, crée un rectangle et l'ajoute a quads
