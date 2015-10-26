@@ -8,9 +8,6 @@ Fantome::Fantome()
 	_vertical = true;
 	_direction = 's';
 
-	_color = sf::Color::Cyan;
-
-	_pos = sf::Vector2f(300, 300);
 
 	//variables pour le dessin
 	_headOffset = sf::Vector2f(0, -_width / 1.2);
@@ -199,7 +196,7 @@ void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
 }
 
 //Inverse la direction donnée
-char inverserDirection(char direction)
+char Fantome::inverserDirection(char direction)
 {
 	switch (direction)
 	{
@@ -222,21 +219,22 @@ char inverserDirection(char direction)
 }
 
 //L'animation et la placement du fantome quand il est mort
-void Fantome::deadAnimation(Map &map, sf::Vector2f pacManPos)
+void Fantome::fantomeDead(Map &map, sf::Vector2f pacManPos, sf::Vector2f window)
 {
-	if (_pos != sf::Vector2f(300, 300))
+	if (_pos != sf::Vector2f(window.x / 2, window.y / 2))
 	{
 		_direction = 's';
-		(_pos.x > 300) ? _pos.x -= 1 : (_pos.x < 300) ? _pos.x += 1 : NULL;
-		(_pos.y > 300) ? _pos.y -= 1 : (_pos.y < 300) ? _pos.y += 1 : NULL;
+		(_pos.x > window.x / 2) ? _pos.x -= 1 : (_pos.x < window.x / 2) ? _pos.x += 1 : NULL;
+		(_pos.y > window.y / 2) ? _pos.y -= 1 : (_pos.y < window.y / 2) ? _pos.y += 1 : NULL;
 	}
 	else
 	{
-		_numLigne = 2;
-		_vertical = true;
+		_numLigne = map.quelleLigne(_pos, _numLigne);
+		//_vertical = true;
 		_isDead = false;
 	}
 }
+
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
@@ -317,79 +315,10 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	if (_numLigne == tempNoLigne)
 	{
 		_direction = inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
-	}
+	}	
 }
 
 void Fantome::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
-	if (_isDead)
-	{
-		deadAnimation(map, posPacMan);
-		return;
-	}
-	//Personnage::move(direction, map);
-
-	Ligne temp = map.getLigne(_numLigne);
-	sf::Vector2f vtemp(_pos);
-	switch (direction)
-	{
-	case 'a':
-		vtemp.x -= _vitesse;
-		if (temp.isOn(vtemp))
-		{
-			_pos.x -= _vitesse;
-		}
-		else
-		{
-			if (_vertical == false)
-				setPos(temp.getDebut());
-			deciderLigne(posPacMan, map);
-		}
-		break;
-
-	case 's':
-		vtemp.y += _vitesse;
-		if (temp.isOn(vtemp))
-		{
-			_pos.y += _vitesse;
-		}
-		else
-		{
-			if (_vertical == true)
-				setPos(temp.getFin());
-			deciderLigne(posPacMan, map);
-		}
-		break;
-
-	case 'd':
-		vtemp.x += _vitesse;
-		if (temp.isOn(vtemp))
-		{
-			_pos.x += _vitesse;
-		}
-		else
-		{
-			if (_vertical == false)
-				setPos(temp.getFin());
-			deciderLigne(posPacMan, map);
-		}
-		break;
-
-	case 'w':
-		vtemp.y -= _vitesse;
-		if (temp.isOn(vtemp))
-		{
-			_pos.y -= _vitesse;
-		}
-		else
-		{
-			if (_vertical == true)
-				setPos(temp.getDebut());
-			deciderLigne(posPacMan, map);
-		}
-
-		break;
-	default:
-		break;
-	}
+	
 }

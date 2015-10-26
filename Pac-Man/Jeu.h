@@ -26,4 +26,5 @@ class Jeu
 public:
 	Jeu();
 	~Jeu();
+	bool verifieSiMort(PacMan &pacMan, Fantome &fantome);
 };
