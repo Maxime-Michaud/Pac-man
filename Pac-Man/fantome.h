@@ -15,6 +15,7 @@
 
 class Fantome : public Personnage
 {
+protected:
 	//Variables pour les dessins====================================
 	sf::Color _color;					//Couleur du fantome
 
@@ -43,18 +44,20 @@ class Fantome : public Personnage
 	void buildFoot(sf::VertexArray & vert, bool right, float firstX) const;
 	void buildFeet(sf::VertexArray & vert) const;
 	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const;
-	
-	bool _isDead = false;	//Si le fantome est mort ou pas
+
+	bool _isDead = false;				//Si le fantome est mort ou pas
+	bool aPritUnMauvaisChemin = false;	//Si le fantome a prit un mauvais chemin
 
 public:
 	Fantome();
 	~Fantome();
 
+	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
-	void deadAnimation(Map & map, sf::Vector2f pacManPos);													 //L'animation et la placement du fantome quand il est mort
+	void fantomeDead(Map & map, sf::Vector2f pacManPos, sf::Vector2f window);													 //L'animation et la placement du fantome quand il est mort
 	bool verifieSiMort(sf::Vector2f coordPacMan, char pacManDirection, bool laser);//Vérifie le fantome est dans une situation lui causant la mort
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	 //Fait bouger le fantome
-	void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
+	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
 };
 

@@ -12,8 +12,9 @@ TODO ajouter une description
 #include "autosfml.h"	//Définis des macros pour inclure les .lib de SFML, like a paresseux
 #include "Ligne.h"	
 #include "PacMan.h"
-#include "fantome.h"
+#include "fantomeRouge.h"
 #include "map.h"
+#include "Jeu.h"
 #include <iostream>
 #include <fstream>
 #include <SFML\System.hpp>
@@ -24,10 +25,11 @@ void main()
 	const int largeurEcran = 1000;
 	const int HauteurEcran = 900;
 	PacMan test;
-	Fantome fantomeBleu;
+	FantomeRouge fantomeRouge;
+	Jeu jeu;
 	test.setPos(sf::Vector2f(100, 100));
 
-	fantomeBleu.setPos(sf::Vector2f(100, 100));
+	fantomeRouge.setPos(sf::Vector2f(100, 100));
 
 	sf::Time timePerFrame;
 	int frameCount = 0;
@@ -49,7 +51,7 @@ void main()
 
 	tstwin.draw(map);
 	tstwin.draw(test);
-	tstwin.draw(fantomeBleu);
+	tstwin.draw(fantomeRouge);
 	tstwin.display();
 
 	sf::Event event;
@@ -119,8 +121,10 @@ void main()
 				
 			}
 			//Shake le screen en malade pour le laser			
-			tstwin.setPosition(sf::Vector2i(600 + rand() % 25, 200 + rand() % 25));
+			tstwin.setPosition(sf::Vector2i(450 + rand() % 25, 90 + rand() % 25));
+			jeu.verifieSiMort(test, fantomeRouge);
 			test.setLaser(true);
+			
 		}
 		else
 		{
@@ -130,11 +134,11 @@ void main()
 		}
 
 		test.move(test.getDirection(), map);
-		fantomeBleu.move(fantomeBleu.getDirection(), test.getPos(), map);
+		fantomeRouge.move(fantomeRouge.getDirection(), test.getPos(), map);
 		tstwin.clear(sf::Color(200, 200, 200, 255));
 		tstwin.draw(map);
 		tstwin.draw(test);
-		tstwin.draw(fantomeBleu);
+		tstwin.draw(fantomeRouge);
 		tstwin.display();
 
 		/*timePerFrame += clock.getElapsedTime();
