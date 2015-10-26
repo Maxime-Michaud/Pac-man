@@ -8,8 +8,8 @@ Description:      L'objectif de ce fichier d'en-tête
 				  de saisie, de validation ainsie que
 				  les fonctions d'ouverture fichier et de
 				  test de fichiers vides.*/
-/*Directives au pré-processeur
-==============================*/
+				  /*Directives au pré-processeur
+				  ==============================*/
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -19,7 +19,7 @@ Description:      L'objectif de ce fichier d'en-tête
 
 #pragma once
 
-//vide le buffer et remet le flux valide
+				  //vide le buffer et remet le flux valide
 void viderBuffer(std::istream & entree);
 
 //Affiche un message et permet à l'utilisateur d'entrer un int
@@ -67,9 +67,9 @@ T strtonum(const char * num)
 #if defined(_MSC_VER) && _MSC_VER >= 1900
 	static_assert(std::is_arithmetic<T>(),
 		"Assurez vous que le type de atoNum<T> est numérique (intégral ou a virgule flottante)!");
-	#else
-		assert(std::is_arithmetic<T>());
-	#endif
+#else
+	assert(std::is_arithmetic<T>());
+#endif
 	//Pour les floats
 	if (std::is_floating_point<T>())
 		return strtold(num, nullptr);
@@ -78,10 +78,9 @@ T strtonum(const char * num)
 		return strtoull(num, nullptr, 10);
 	//Il ne reste que les ints:
 	return strtoll(num, nullptr, 10);
-	
-}		
+}
 
-template <typename T, bool can_throw = true> 
+template <typename T, bool can_throw = true>
 /*Lis des nombres dans un flux d'entrée. Permet d'utiliser un ou plusieurs séparateurs différents.
 	Les séparateurs doivent être un tableaux de char terminé par \0.
 	Permet aussi de spécifier le séparateur décimal pour les nombres non intégraux.*/
@@ -89,8 +88,8 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 {
 	//Gestion d'erreurs et de cas limites
 #if defined(_MSC_VER) && _MSC_VER >= 1900	//Les versions précédentes de VS ne supportent pas constexpr
-	static_assert(std::is_arithmetic<T>(), 
-				  "Assurez vous que le type de readNumFromStream<T> est numérique (intégral ou a virgule flottante)!");
+	static_assert(std::is_arithmetic<T>(),
+		"Assurez vous que le type de readNumFromStream<T> est numérique (intégral ou a virgule flottante)!");
 #else
 	assert(std::is_arithmetic<T>());
 #endif
@@ -130,7 +129,7 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 		//Si le nombre commence par -, s'assure qu'il n'est pas unsigned
 		if (in.peek() == '-')
 		{
-			//Nombre négatif unsigned = pas bien. 
+			//Nombre négatif unsigned = pas bien.
 			if (can_throw && std::is_unsigned<T>())
 				throw std::invalid_argument("Un nombre unsigned ne peux commencer par '-'!");
 
@@ -141,7 +140,7 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 		while (in.peek() >= '0' && in.peek() <= '9')
 			num += in.get();
 
-		//Pour les nombres a virgule flottante 
+		//Pour les nombres a virgule flottante
 		if (std::is_floating_point<T>() && in.peek() == separateurDecimal)
 		{
 			//Obtiens la partie du nombre apres la virgule, si nécéssaire
@@ -156,14 +155,11 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 		if (num == "")
 			break;
 
-		
 		ret.push_back(strtonum<T>(num.c_str()));
 	}
 
 	if (can_throw && ret.size() != count)
 		throw std::invalid_argument("Le fichier ne contient pas le bon nombre de nombre ou est mal formaté!");
 
-	
-
 	return ret;
-}	
+}

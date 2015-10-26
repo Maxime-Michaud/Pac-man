@@ -9,18 +9,18 @@ TODO descriptionner mieux que ça												*
 *																				*
 *********************************************************************************/
 #pragma once
-#define _USE_MATH_DEFINES 
+#define _USE_MATH_DEFINES
 #include <SFML\Graphics.hpp>
 #include "TimeTraveller.h"
 #include <cmath>
 #include "Personnage.h"
 #include "laser.h"
 
-class PacMan: public Personnage
+class PacMan : public Personnage
 {
 	mutable int _step;			//Nombre de vertex a ne pas afficher dans le dessin
 	mutable int _stepIncrement;	//Nombre de vertex a ne pas afficher au prochain appel de draw()
-	mutable float _deathCount;	
+	mutable float _deathCount;
 	float _deathIncrement;
 
 	sf::Color _color;	//Couleur de pac-man
@@ -45,4 +45,3 @@ public:
 
 	virtual void move(char direction, Map &map);
 };
-

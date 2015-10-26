@@ -16,12 +16,11 @@
 
 #include "Ligne.h"
 
-
 //Ne construit rien
 Ligne::Ligne()
 {
 	//Si on dessine la ligne dans cet état, un point sera dessiner en dehors de l'écran
-	_p1 = _p2 = sf::Vector2f(-1, -1);	
+	_p1 = _p2 = sf::Vector2f(-1, -1);
 }
 
 //Initialise la ligne
@@ -67,7 +66,6 @@ sf::VertexArray Ligne::getVertex() const
 	val.append(sf::Vertex(_p2));
 
 	return val;
-		
 }
 
 bool Ligne::isOn(sf::Vector2f pos) const
@@ -86,35 +84,33 @@ bool Ligne::traverse(const Ligne & l) const
 	if (l == *this) return false;	//Une ligne ne se traverse pas elle meme
 
 	if (isVertical() != l.isVertical()		//Les deux ne sont pas dans la meme direction
-	&& (_p1 == l._p1 || _p2 == l._p1 || _p1 == l._p2 || _p2 == l._p2)) //Les lignes partagent un coin
+		&& (_p1 == l._p1 || _p2 == l._p1 || _p1 == l._p2 || _p2 == l._p2)) //Les lignes partagent un coin
 		return false;	//Les lignes qui partagent un coin ne s'intersectent pas
 
 	if (isVertical())
 		//Les deux sont verticales
 		if (l.isVertical())
-			return	_p1.x == l._p1.x && 
-					!(_p2.y <= l._p1.y || 
-						l._p2.y <= _p1.y);
+			return	_p1.x == l._p1.x &&
+			!(_p2.y <= l._p1.y ||
+				l._p2.y <= _p1.y);
 		else //ligne implicite verticale, explicite horizontale
 			return l._p1.x <= _p1.x && l._p2.x >= _p1.x		//X de la ligne verticale sur la ligne horizontale
-				   && _p1.y <= l._p1.y && _p2.y >= l._p1.y;	//y de la ligne horizontale sur la ligne verticale
+			&& _p1.y <= l._p1.y && _p2.y >= l._p1.y;	//y de la ligne horizontale sur la ligne verticale
 	else
 		//ligne implicite horizontale, explicite verticale
 		if (l.isVertical())
 			return _p1.x <= l._p1.x && _p2.x >= l._p1.x		//X de la ligne verticale sur la ligne horizontale
-				&& l._p1.y <= _p1.y && l._p2.y >= _p1.y;	//y de la ligne horizontale sur la ligne verticale
+			&& l._p1.y <= _p1.y && l._p2.y >= _p1.y;	//y de la ligne horizontale sur la ligne verticale
 		else //Les deux sont horizontales
 			return	_p1.y == l._p1.y &&
-					 !(_p1.x <= l._p1.x ||
-					    l._p2.x <= _p1.x);
+			!(_p1.x <= l._p1.x ||
+				l._p2.x <= _p1.x);
 }
 
 sf::Vector2f Ligne::intersect(const Ligne & l) const
 {
 	return sf::Vector2f(std::max(_p1.x, l._p1.x), std::max(_p1.y, l._p1.y));
 }
-
-
 
 void Ligne::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {

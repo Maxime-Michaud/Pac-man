@@ -31,7 +31,7 @@ protected:
 	std::stack<T> _change;	//Garde tous les changements a l'état de l'objet en mémoire
 
 public:
-	
+
 	/// <summary>
 	/// Obtiens l'état précédent. Si l'état précédent est le même que l'actuel, efface le précédent et retourne celui d'avant
 	/// </summary>
@@ -42,7 +42,6 @@ public:
 	/// Retourne dans le passé
 	/// </summary>
 	virtual void goBack() = 0;
-
 };
 
 template<typename T>

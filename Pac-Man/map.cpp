@@ -2,7 +2,6 @@
 
 Map::~Map()
 {
-
 }
 
 Map::Map()
@@ -25,7 +24,7 @@ void Map::ajouterLigne(Ligne ligne)
 		{
 			//On efface l'ancienne ligne a la position i pour la remplacer plus tard
 			auto tmp = _map[i];
-			std::swap(_map[i], _map[_map.size()-1]);
+			std::swap(_map[i], _map[_map.size() - 1]);
 			_map.resize(_map.size() - 1);
 
 			//Si les deux lignes sont dans la même direction, on les fusionne
@@ -36,9 +35,9 @@ void Map::ajouterLigne(Ligne ligne)
 				y1 = std::min(ligne.getDebut().y, tmp.getDebut().y);
 				x2 = std::max(ligne.getFin().x, tmp.getFin().x);
 				y2 = std::max(ligne.getFin().y, tmp.getFin().y);
-				
+
 				//Il peut rester des intersections avec d'autre ligness, donc on se rapelle récursivement
-				ajouterLigne(Ligne(x1, y1, x2, y2));	
+				ajouterLigne(Ligne(x1, y1, x2, y2));
 				return; //Quitte la fonction
 			}
 			else
@@ -59,7 +58,6 @@ void Map::ajouterLigne(Ligne ligne)
 					ajouterLigne(Ligne(intersect, ligne.getFin()));
 				return; //Quitte la fonction
 			}
-
 		}
 	}
 	//Cette partie de la fonction ne devrais jamais etre atteinte
@@ -81,7 +79,7 @@ void Map::lireMap(std::istream & map)
 
 bool Map::valideNouvelleLigne(Ligne & l)
 {
-	for (auto li:_map)
+	for (auto li : _map)
 		if (li.traverse(l))
 			return false;
 
@@ -116,9 +114,9 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	{
 		//Haut-Gauche
 		quads.append(sf::Vertex(l.getDebut() + offset, _mapColor));
-		
+
 		//Haut-Droit
-		quads.append(sf::Vertex(sf::Vector2f(l.getFin().x - offset.x, l.getDebut().y + offset.y),_mapColor));
+		quads.append(sf::Vertex(sf::Vector2f(l.getFin().x - offset.x, l.getDebut().y + offset.y), _mapColor));
 
 		//Bas-Droit
 		quads.append(sf::Vertex(l.getFin() - offset, _mapColor));
@@ -129,4 +127,3 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 	target.draw(quads);
 }
-

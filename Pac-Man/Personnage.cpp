@@ -11,13 +11,11 @@
 
 #include "Personnage.h"
 
-
 //Set tout a 0
 Personnage::Personnage()
 {
 	_pos = sf::Vector2f(0, 0);
 }
-
 
 //Toutes les positions sont valides en théorie. Peut être surchargée par les enfants si on veut éviter certains cas particuliés
 void Personnage::setPos(sf::Vector2f pos)
@@ -129,7 +127,7 @@ void Personnage::move(char direction, Map &map)
 			_direction = 'a';
 			_pos.x -= _vitesse;
 		}
-		else								//Sinon regarde pour changer de ligne si l'axe correspond avec la direction		
+		else								//Sinon regarde pour changer de ligne si l'axe correspond avec la direction
 		{
 			if (_vertical == false)
 				setPos(temp.getDebut());
@@ -149,7 +147,7 @@ void Personnage::move(char direction, Map &map)
 			if (_vertical == true)
 				setPos(temp.getFin());
 			changerDeLigne(_directionProchaine, map);
-		}	
+		}
 		break;
 
 	case 'd':
@@ -180,13 +178,11 @@ void Personnage::move(char direction, Map &map)
 				setPos(temp.getDebut());
 			changerDeLigne(_directionProchaine, map);
 		}
-			
+
 		break;
 	default:
 		break;
 	}
 }
 
-Personnage::~Personnage(){}
-
-
+Personnage::~Personnage() {}

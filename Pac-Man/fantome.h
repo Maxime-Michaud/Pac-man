@@ -8,7 +8,7 @@
 *				touche pac-man, le joueur perd.									*
 *********************************************************************************/
 #pragma once
-#define _USE_MATH_DEFINES 
+#define _USE_MATH_DEFINES
 #include <SFML\Graphics.hpp>
 #include "TimeTraveller.h"
 #include "Personnage.h"
@@ -43,7 +43,7 @@ class Fantome : public Personnage
 	void buildFoot(sf::VertexArray & vert, bool right, float firstX) const;
 	void buildFeet(sf::VertexArray & vert) const;
 	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const;
-	
+
 	bool _isDead = false;	//Si le fantome est mort ou pas
 
 public:
@@ -57,4 +57,3 @@ public:
 	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	 //Fait bouger le fantome
 	void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
 };
-

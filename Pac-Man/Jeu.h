@@ -23,9 +23,7 @@ class Jeu
 	//Carte
 	Map _map;					//Carte du jeu
 
-
 public:
 	Jeu();
 	~Jeu();
 };
-

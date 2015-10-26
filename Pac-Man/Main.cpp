@@ -3,14 +3,14 @@
 *Programme:		Main.cpp														*
 *Programmeur:	Maxime Michaud-Corriveau										*
 *Description:	Jeu de Pacman													*
-TODO ajouter une description				
+TODO ajouter une description
 *																				*
 *																				*
 *																				*
 *********************************************************************************/
 
 #include "autosfml.h"	//Définis des macros pour inclure les .lib de SFML, like a paresseux
-#include "Ligne.h"	
+#include "Ligne.h"
 #include "PacMan.h"
 #include "fantome.h"
 #include "map.h"
@@ -39,7 +39,7 @@ void main()
 	bool laserOn = false;		//Pour partir le son qu'une seule fois
 
 	Map map;
-	
+
 	std::ifstream in("map1.txt");
 	map.lireMap(in);
 
@@ -74,11 +74,9 @@ void main()
 				break;
 			default:
 				break;
-
 			}
 			break;
 		}
-			
 	}
 
 	while (tstwin.isOpen())
@@ -90,7 +88,8 @@ void main()
 		{
 			if (!test.getVertical())
 				test.setDirection('d');
-			test.setDirectionProchaine('d');		}
+			test.setDirectionProchaine('d');
+		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		{
 			if (test.getVertical())
@@ -116,9 +115,8 @@ void main()
 			{
 				laser.play();
 				laserOn = true;
-				
 			}
-			//Shake le screen en malade pour le laser			
+			//Shake le screen en malade pour le laser
 			tstwin.setPosition(sf::Vector2i(600 + rand() % 25, 200 + rand() % 25));
 			test.setLaser(true);
 		}
@@ -154,9 +152,9 @@ void main()
 		while (clock.getElapsedTime().asMilliseconds() < 32);
 	}*/
 	std::cout << "Temps par frame: " << timePerFrame.asSeconds() / frameCount << '\n';
-	std::cout << "Temps par frame: " << timePerFrame.asMilliseconds() / frameCount<<'\n';
-	std::cout << "Temps par frame: " << timePerFrame.asMicroseconds() / frameCount<<'\n';
-	std::cout << "Vitesse (fps):   " << frameCount / timePerFrame.asSeconds()<< '\n';
-	
+	std::cout << "Temps par frame: " << timePerFrame.asMilliseconds() / frameCount << '\n';
+	std::cout << "Temps par frame: " << timePerFrame.asMicroseconds() / frameCount << '\n';
+	std::cout << "Vitesse (fps):   " << frameCount / timePerFrame.asSeconds() << '\n';
+
 	system("pause");
 }

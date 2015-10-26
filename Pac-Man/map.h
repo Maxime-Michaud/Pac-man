@@ -4,7 +4,6 @@
 #include <vector>
 #include <SFML\Graphics.hpp>
 
-
 class Map :public sf::Drawable
 {
 public:

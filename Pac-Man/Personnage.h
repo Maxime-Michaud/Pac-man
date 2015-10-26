@@ -15,7 +15,6 @@
 #include <vector>
 #include "map.h"
 
-
 class Personnage : public sf::Drawable
 {
 protected:
@@ -70,4 +69,3 @@ public:
 	void setDirectionProchaine(char d);
 	char getDirectionProchaine();
 };
-

@@ -18,11 +18,11 @@
 #include <algorithm>
 
 #pragma once
-class Ligne: public sf::Drawable
+class Ligne : public sf::Drawable
 {
 private:
-	sf::Vector2f	_p1,		//Position en haut ou a gauche de la ligne 
-					_p2;		//Position en bas ou a droite de la ligne
+	sf::Vector2f	_p1,		//Position en haut ou a gauche de la ligne
+		_p2;		//Position en bas ou a droite de la ligne
 
 public:
 	//TODO Coder les setteurs
@@ -31,10 +31,10 @@ public:
 	/// <summary>
 	/// Initialise la ligne à un point en dehors de l'écran
 	/// </summary>
-	Ligne();			
+	Ligne();
 
 	/// <summary>
-	/// Construit et initialise la ligne 
+	/// Construit et initialise la ligne
 	/// </summary>
 	/// <param name="x1">Position horizontale du début de la ligne</param>
 	/// <param name="y1">Position verticale du début de la ligne</param>
@@ -67,7 +67,7 @@ public:
 
 	/// <summary>
 	/// Set le point de début de la ligne. Si les coordonnées corresponde a un point après la fin de la ligne,
-	/// set la fin de la ligne au lieu du début. 
+	/// set la fin de la ligne au lieu du début.
 	/// </summary>
 	/// <param name="p">La position de la coordonnée sur la ligne. Correspond aux X sur une ligne horizontale et
 	/// aux Y sur une ligne verticale </param>
@@ -75,7 +75,7 @@ public:
 
 	/// <summary>
 	/// Set le point de début de la ligne. Si les coordonnées corresponde a un point après la fin de la ligne,
-	/// set la fin de la ligne au lieu du début. 
+	/// set la fin de la ligne au lieu du début.
 	/// </summary>
 	/// <param name="x">position horizontale du point</param>
 	/// <param name="y">position verticale du point</param>
@@ -83,7 +83,7 @@ public:
 
 	/// <summary>
 	/// Set le point de fin de la ligne. Si les coordonnées corresponde a un point avant le début de la ligne,
-	/// set le début de la ligne au lieu de la fin. 
+	/// set le début de la ligne au lieu de la fin.
 	/// </summary>
 	/// <param name="p">La position de la coordonnée sur la ligne. Correspond aux X sur une ligne horizontale et
 	/// aux Y sur une ligne verticale </param>
@@ -109,7 +109,7 @@ public:
 	sf::Vector2f getFin() const;
 
 	/// <summary>
-	/// Retourne les vertex pour dessiner la ligne. 
+	/// Retourne les vertex pour dessiner la ligne.
 	/// </summary>
 	sf::VertexArray getVertex() const;
 
@@ -122,7 +122,7 @@ public:
 	/// <summary>
 	/// Retourne si la ligne est verticale
 	/// </summary>
-	bool isVertical()const;	
+	bool isVertical()const;
 
 	/// <summary>
 	/// Trouve si une ligne traverse une autre ligne. True si deux lignes partagent un point, sauf si ce point est situé a l'extrémité des deux lignes
@@ -138,7 +138,7 @@ public:
 	sf::Vector2f intersect(const Ligne& l)const;
 
 	/// <summary>
-	/// Dessine la ligne. 
+	/// Dessine la ligne.
 	/// A remplacer par getVertex si on veut dessiner plusieurs lignes à la fois, pour des raisons de performance
 	/// </summary>
 	/// <param name="target">cible sur laquelle dessiner</param>
@@ -146,4 +146,3 @@ public:
 
 	bool operator==(const Ligne& l)const;
 };
-
