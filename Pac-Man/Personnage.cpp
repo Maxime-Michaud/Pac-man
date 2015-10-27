@@ -36,7 +36,22 @@ char Personnage::getDirection()
 
 void Personnage::setDirection(char d)
 {
-	_direction = d;
+	switch (d)
+	{
+	case 'w': case 's':
+		if (_vertical)
+			_direction = d;
+		break;
+	case 'a': case 'd':
+		if (!_vertical)
+			_direction = d;
+		break;
+	//Quitte la fonction si la direction n'est pas w a s d
+	default:
+		return;
+	}
+
+	_directionProchaine = d;
 }
 
 bool Personnage::getVertical()

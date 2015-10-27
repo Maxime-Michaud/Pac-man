@@ -132,6 +132,7 @@
     <ClCompile Include="Personnage.cpp" />
     <ClCompile Include="SaisieSecurisee.cpp" />
     <ClCompile Include="testingMain.cpp" />
+    <ClCompile Include="windowsAPIwrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="autosfml.h" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Personnage.h" />
     <ClInclude Include="saisieSecurisee.h" />
     <ClInclude Include="TimeTraveller.h" />
+    <ClInclude Include="windowsAPIwrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

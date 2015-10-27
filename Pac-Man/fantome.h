@@ -55,8 +55,8 @@ public:
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
 	void fantomeDead(Map & map, sf::Vector2f pacManPos, sf::Vector2f window);													 //L'animation et la placement du fantome quand il est mort
-	bool verifieSiMort(sf::Vector2f coordPacMan, char pacManDirection, bool laser);//Vérifie le fantome est dans une situation lui causant la mort
+
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	 //Fait bouger le fantome
+	virtual void move(char direction, sf::Vector2f posPacMan, Map &map) = 0;	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
 };

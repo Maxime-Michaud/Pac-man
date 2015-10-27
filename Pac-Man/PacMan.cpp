@@ -16,15 +16,31 @@ PacMan::PacMan()
 	_color = sf::Color(255, 255, 0, 255);
 
 	_pos = sf::Vector2f(300, 300);
+	_laserSB.loadFromFile("BWAAAAH.wav");
+	_laserSound.setBuffer(_laserSB);
+
 }
 
 PacMan::~PacMan()
 {
 }
 
-void PacMan::setLaser(bool b)
+void PacMan::fire() const
 {
-	_laser = b;
+	if (!_laser)
+	{
+		_laser = true;
+		_laserSound.play();
+	}
+}
+
+void PacMan::stop() const
+{
+	if (_laser)
+	{
+		_laser = false;
+		_laserSound.stop();
+	}
 }
 
 bool PacMan::getLaser()
@@ -104,11 +120,24 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	_step += _stepIncrement;
 	auto vertices = buildPacMan();
 
+	if (_keepFiring)
+	{
+		_keepFiring = false;
+		fire();
+	}
+	else
+	{
+		stop();
+	}
+
 	if (_laser)
 	{
 		Laser laser(_pos, _direction);
 		laser.draw(target, states);
 	}
+
+
+	
 	target.draw(vertices);
 }
 
@@ -128,6 +157,14 @@ void PacMan::deathAnimation(sf::RenderTarget & target) const
 bool PacMan::hasDisappeared() const
 {
 	return (_step + _deathCount) >= _nbrCote;
+}
+
+void PacMan::input(char c)
+{
+	if (c == 'l')
+		_keepFiring = true;
+
+	setDirection(c);
 }
 
 void PacMan::move(char direction, Map &map)

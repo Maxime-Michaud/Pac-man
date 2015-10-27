@@ -15,6 +15,7 @@ TODO descriptionner mieux que ça												*
 #include <cmath>
 #include "Personnage.h"
 #include "laser.h"
+#include <SFML\Audio.hpp>
 
 class PacMan : public Personnage
 {
@@ -29,19 +30,27 @@ class PacMan : public Personnage
 	static const int _radius = 30;
 	static const int _nbrCote = 30;
 	sf::Vector2f _centre;
-	bool _laser = false;		//True si pacman fait un laser
+	mutable bool _laser = false;		//True si pacman fait un laser
+	mutable bool _keepFiring = false;
+	sf::SoundBuffer _laserSB;
+	mutable sf::Sound _laserSound;
 
 	sf::VertexArray buildPacMan() const;
 public:
 	PacMan();
 	~PacMan();
 
-	void setLaser(bool);		//Set le laser a on ou off
+	//Fire et stop sont const pour pouvoir les utiliser dans sf::draw
+	void fire() const;
+	void stop() const;
+
 	bool getLaser();
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
 	void deathAnimation(sf::RenderTarget & target) const;
 	bool hasDisappeared() const;
+
+	void input(char c);
 
 	virtual void move(char direction, Map &map);
 };

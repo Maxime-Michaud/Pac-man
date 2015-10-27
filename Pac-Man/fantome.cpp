@@ -317,8 +317,3 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		_direction = inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
 	}	
 }
-
-void Fantome::move(char direction, sf::Vector2f posPacMan, Map &map)
-{
-	
-}
