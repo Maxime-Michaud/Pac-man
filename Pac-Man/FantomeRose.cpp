@@ -350,7 +350,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		}
 		else
 		{
-			if (_vertical == false)
+			//if (_vertical == false)
 				setPos(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
@@ -376,7 +376,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		}
 		else
 		{
-			if (_vertical == true)
+			//if (_vertical == true)
 				setPos(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
@@ -401,7 +401,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		}
 		else
 		{
-			if (_vertical == false)
+			//if (_vertical == false)
 				setPos(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
@@ -426,7 +426,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		}
 		else
 		{
-			if (_vertical == true)
+			//if (_vertical == true)
 				setPos(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
