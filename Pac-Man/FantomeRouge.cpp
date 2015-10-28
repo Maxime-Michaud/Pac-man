@@ -61,6 +61,16 @@ void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	else		//Sinon prendra une direction en Y pour sa rapprocher
 		_direction = basHaut;
 
+	if (aPritUnMauvaisChemin && _direction == gaucheDroite)
+	{
+		_direction = basHaut;
+		aPritUnMauvaisChemin = false;
+	}
+	else if (aPritUnMauvaisChemin && _direction == basHaut)
+	{
+		_direction = gaucheDroite;
+		aPritUnMauvaisChemin = false;
+	}
 	//Vérifie si il peut simplement prendre la 1er direction qui lui est donné, si oui, il sort de la fonction
 	switch (_direction)
 	{
@@ -104,6 +114,7 @@ void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	//Si rien n'a fonctionné, il retourne sur ses pas
 	if (_numLigne == tempNoLigne)
 	{
+		aPritUnMauvaisChemin = true;
 		_direction = Fantome::inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
 	}
 

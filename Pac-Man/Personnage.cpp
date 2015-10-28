@@ -25,6 +25,15 @@ void Personnage::setPos(sf::Vector2f pos)
 	_pos = pos;
 }
 
+void Personnage::setNumLigne(int numLigne)
+{
+	_numLigne = numLigne;
+}
+
+int Personnage::getNumLigne()
+{
+	return _numLigne;
+}
 //Obtiens la position du personnage
 sf::Vector2f Personnage::getPos() const
 {

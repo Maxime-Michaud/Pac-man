@@ -13,6 +13,7 @@ TODO ajouter une description
 #include "Ligne.h"	
 #include "PacMan.h"
 #include "fantomeRouge.h"
+#include "fantomeRose.h"
 #include "map.h"
 #include "Jeu.h"
 #include <iostream>
@@ -26,10 +27,13 @@ void main()
 	const int HauteurEcran = 900;
 	PacMan test;
 	FantomeRouge fantomeRouge;
+	FantomeRose fantomeRose;
 	Jeu jeu;
+	Map map;
 	test.setPos(sf::Vector2f(100, 100));
 
-	fantomeRouge.setPos(sf::Vector2f(100, 100));
+	fantomeRouge.setPos(sf::Vector2f(largeurEcran / 2, HauteurEcran / 2));
+	fantomeRose.setPos(sf::Vector2f(largeurEcran / 2, HauteurEcran / 2));
 
 	sf::Time timePerFrame;
 	int frameCount = 0;
@@ -40,11 +44,13 @@ void main()
 	laser.setBuffer(laserSound);
 	bool laserOn = false;		//Pour partir le son qu'une seule fois
 
-	Map map;
+
 	
 	std::ifstream in("map1.txt");
 	map.lireMap(in);
 
+	fantomeRose.setNumLigne(map.quelleLigne(fantomeRose.getPos(), 0));
+	fantomeRouge.setNumLigne(map.quelleLigne(fantomeRouge.getPos(), 0));
 	sf::RenderWindow tstwin;
 	tstwin.create(sf::VideoMode(largeurEcran, HauteurEcran), "Fenetre de test");
 	tstwin.clear(sf::Color(200, 200, 200, 255));
@@ -52,6 +58,7 @@ void main()
 	tstwin.draw(map);
 	tstwin.draw(test);
 	tstwin.draw(fantomeRouge);
+	tstwin.draw(fantomeRose);
 	tstwin.display();
 
 	sf::Event event;
@@ -123,6 +130,7 @@ void main()
 			//Shake le screen en malade pour le laser			
 			tstwin.setPosition(sf::Vector2i(450 + rand() % 25, 90 + rand() % 25));
 			jeu.verifieSiMort(test, fantomeRouge);
+			jeu.verifieSiMort(test, fantomeRose);
 			test.setLaser(true);
 			
 		}
@@ -135,12 +143,13 @@ void main()
 
 		test.move(test.getDirection(), map);
 		fantomeRouge.move(fantomeRouge.getDirection(), test.getPos(), map);
+		fantomeRose.move(fantomeRose.getDirection(), test.getPos(), map);
 		tstwin.clear(sf::Color(200, 200, 200, 255));
 		tstwin.draw(map);
 		tstwin.draw(test);
 		tstwin.draw(fantomeRouge);
+		tstwin.draw(fantomeRose);
 		tstwin.display();
-
 		/*timePerFrame += clock.getElapsedTime();
 		frameCount++;
 		if (frameCount > 100) break;*/

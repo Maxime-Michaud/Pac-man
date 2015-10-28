@@ -12,6 +12,7 @@
 #include <SFML\Graphics.hpp>
 #include "TimeTraveller.h"
 #include "Personnage.h"
+#include <deque>
 
 class Fantome : public Personnage
 {
