@@ -107,10 +107,7 @@ sf::VertexArray PacMan::buildPacMan() const
 
 	//Fais ouvrir et fermer la bouche de pac-man
 	for (int i = 0; i < _step; i++)
-		vertices[i + 1] = vertices[_nbrCote + 1 - i] = _pos;
-
-	if (_step == 0 || _step >= _nbrCote / 4)
-		_stepIncrement *= -1;
+		vertices[i + 1] = vertices[_nbrCote + 1 - i] = sf::Vertex(_pos, _color);
 
 	return vertices;
 }
@@ -118,6 +115,9 @@ sf::VertexArray PacMan::buildPacMan() const
 void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	_step += _stepIncrement;
+	if (_step < 0 || _step >= _nbrCote / 4)
+		_stepIncrement *= -1;
+
 	auto vertices = buildPacMan();
 
 	if (_keepFiring)
@@ -146,10 +146,11 @@ void PacMan::deathAnimation(sf::RenderTarget & target) const
 	auto vertices = buildPacMan();
 	_deathCount += _deathIncrement;
 
+
 	for (int i = 0; i < _deathCount &&
 		i + _step + 1 < vertices.getVertexCount();
 		i++)
-		vertices[i + _step + 1] = _pos;
+		vertices[i + _step + 1] = sf::Vertex(_pos, _color);
 
 	target.draw(vertices);
 }
@@ -170,4 +171,12 @@ void PacMan::input(char c)
 void PacMan::move(char direction, Map &map)
 {
 	Personnage::move(direction, map);
+}
+
+void PacMan::respawn(sf::Vector2f pos)
+{
+	_pos = pos;
+	_step = 0;
+	_deathCount = 0;
+
 }

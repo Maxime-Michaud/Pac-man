@@ -159,7 +159,7 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getFin());
+ 				setPos(temp.getFin());
 			deciderLigne(posPacMan, map);
 		}
 		break;

@@ -135,6 +135,7 @@
     <ClCompile Include="windowsAPIwrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="algo.h" />
     <ClInclude Include="autosfml.h" />
     <ClInclude Include="fantome.h" />
     <ClInclude Include="FantomeRouge.h" />

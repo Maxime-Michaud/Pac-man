@@ -3,7 +3,7 @@
 
 Fantome::Fantome()
 {
-	_numLigne = 0;
+	_numLigne = 3;
 	_vitesse = 3;
 	_vertical = true;
 	_direction = 's';
@@ -233,6 +233,11 @@ void Fantome::fantomeDead(Map &map, sf::Vector2f pacManPos, sf::Vector2f window)
 		//_vertical = true;
 		_isDead = false;
 	}
+}
+
+bool Fantome::isDead() const
+{
+	return _isDead;
 }
 
 

@@ -43,6 +43,8 @@ public:
 	/// <param name="pos">position ou placer le personnage</param>
 	virtual void setPos(sf::Vector2f pos);
 
+	virtual void setLigne(unsigned int ligne);
+
 	//Getteurs=================================================================
 
 	/// <summary>
@@ -63,9 +65,12 @@ public:
 	/// <param name="y">Déplacement vertical</param>
 	virtual void move(char direction, Map &map);
 	void changerDeLigne(char direction, Map &map);
+
+
 	char getDirection();
 	void setDirection(char d);
 	bool getVertical();
+	void setVertical(bool v);
 	void setDirectionProchaine(char d);
 	char getDirectionProchaine();
 };

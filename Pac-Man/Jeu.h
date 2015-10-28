@@ -17,7 +17,7 @@
 #include "map.h"
 #include "windowsAPIwrapper.h"
 #include <random>		
-
+#include "algo.h"
 class Jeu
 {
 	sf::RenderWindow _window;		//Fenetre du jeu
@@ -29,6 +29,9 @@ class Jeu
 
 	//Carte
 	Map _map;					//Carte du jeu
+	sf::Vector2f _startpos;		//Position de depart
+	sf::Vector2f _ghostStart;	//Position de depart des fantomes
+
 
 	sf::Font _font;
 
@@ -48,6 +51,8 @@ public:
 	void pause(std::string msg = "Appuyez sur n'importe quel bouton pour continuer!");
 
 	void shakeScreen();
+
+	void killPacman();
 
 	bool verifieSiMort(Fantome &fantome);
 };

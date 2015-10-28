@@ -12,6 +12,7 @@
 #include <SFML\Graphics.hpp>
 #include "TimeTraveller.h"
 #include "Personnage.h"
+#include "map.h"
 
 class Fantome : public Personnage
 {
@@ -52,9 +53,12 @@ public:
 	Fantome();
 	~Fantome();
 
+	const int Width = _width;
+
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
 	void fantomeDead(Map & map, sf::Vector2f pacManPos, sf::Vector2f window);													 //L'animation et la placement du fantome quand il est mort
+	bool isDead() const;	//Obtiens si le fantome est mort ou vivant
 
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 	virtual void move(char direction, sf::Vector2f posPacMan, Map &map) = 0;	 //Fait bouger le fantome

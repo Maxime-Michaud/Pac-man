@@ -23,6 +23,11 @@ void Personnage::setPos(sf::Vector2f pos)
 	_pos = pos;
 }
 
+void Personnage::setLigne(unsigned int ligne)
+{
+	_numLigne = ligne;
+}
+
 //Obtiens la position du personnage
 sf::Vector2f Personnage::getPos() const
 {
@@ -57,6 +62,11 @@ void Personnage::setDirection(char d)
 bool Personnage::getVertical()
 {
 	return _vertical;
+}
+
+void Personnage::setVertical(bool v)
+{
+	_vertical = v;
 }
 
 void Personnage::setDirectionProchaine(char c)
