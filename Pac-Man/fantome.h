@@ -13,6 +13,7 @@
 #include "TimeTraveller.h"
 #include "Personnage.h"
 #include "map.h"
+#include <deque>
 
 class Fantome : public Personnage
 {

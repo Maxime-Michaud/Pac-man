@@ -230,7 +230,7 @@ void Fantome::fantomeDead(Map &map, sf::Vector2f pacManPos, sf::Vector2f window)
 	else
 	{
 		_numLigne = map.quelleLigne(_pos, _numLigne);
-		//_vertical = true;
+		_vertical = true;
 		_isDead = false;
 	}
 }

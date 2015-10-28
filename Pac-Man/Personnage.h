@@ -44,9 +44,14 @@ public:
 	virtual void setPos(sf::Vector2f pos);
 
 	virtual void setLigne(unsigned int ligne);
-
+	/// <summary>
+	/// Set le numéro de la ligne du personnage
+	/// </summary>
+	/// <param name="numLigne">Ligne ou placer le personnage</param>
+	virtual void setNumLigne(int numLigne);
 	//Getteurs=================================================================
 
+	int getNumLigne();
 	/// <summary>
 	/// Obtiens tous les sprites du personnage. Retourne nullptr si les sprites ne sont pas initialisés
 	/// </summary>

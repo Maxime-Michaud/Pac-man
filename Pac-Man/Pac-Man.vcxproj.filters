@@ -49,6 +49,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="windowsAPIwrapper.cpp">
+	      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FantomeRose.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -90,6 +93,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="algo.h">
+	      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FantomeRose.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
