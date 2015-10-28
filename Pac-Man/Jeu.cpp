@@ -26,6 +26,7 @@ Jeu::Jeu(std::string map)
 	
 	_ghostStart = _map.getLigne(3).getFin();
 	_fantome.push_back(new FantomeRouge());
+	_fantome.push_back(new FantomeRose());
 	
 
 	for (auto f : _fantome)

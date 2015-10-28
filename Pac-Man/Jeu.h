@@ -11,8 +11,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "fantome.h"
 #include "FantomeRouge.h"
+#include "FantomeRose.h"
 #include "PacMan.h"
 #include "map.h"
 #include "windowsAPIwrapper.h"
