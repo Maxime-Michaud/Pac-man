@@ -24,7 +24,7 @@ protected:
 	sf::Vector2f _headOffset;			//Décalage de la tête par rapport au centre
 	sf::Vector2f _feetOffset;			//Décalage des pieds par rapport au centre
 
-	static const int _width = 25;		//Largeur du fantome
+	static const int _width = 9;		//Largeur du fantome
 
 	mutable int _step;					//Étape de l'animation a laquelle on est rendu
 	static const int framePerStep = 8;	//Nombre de frame dessinés dans une étape

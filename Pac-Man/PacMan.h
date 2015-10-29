@@ -27,7 +27,7 @@ class PacMan : public Personnage
 	sf::Color _color;	//Couleur de pac-man
 
 	//Constantes du cercle
-	static const int _radius = 29;
+	static const int _radius = 10;
 	static const int _nbrCote = 30;
 	sf::Vector2f _centre;
 	mutable bool _laser = false;		//True si pacman fait un laser

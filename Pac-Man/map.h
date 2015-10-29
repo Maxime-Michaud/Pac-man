@@ -22,7 +22,7 @@ public:
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states)const;
 private:
 	std::vector<Ligne> _map;		//Contient toutes les lignes
-	const float _width = 30;		//Largeur des lignes
+	const float _width = 10;		//Largeur des lignes
 	sf::Color _mapColor;
 	sf::Vector2f _ghostStart;
 };

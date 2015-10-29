@@ -13,8 +13,16 @@ TODO ajouter une description
 #include "Jeu.h"
 
 
-void main()
+void main(int argc, char* argv[])
 {
-	Jeu jeu("map1.txt");
+	std::string map;
+	if (argc < 2)
+		map = "map2.txt";
+	else
+		map = argv[1];
+
+	Jeu jeu(map);
 	jeu.play();
+
+	//system("C:\\Users\\Nicholas1\\Desktop\\pac-man\\x64\\Debug\\pac-man.exe map1.txt");
 }

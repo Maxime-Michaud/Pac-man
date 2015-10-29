@@ -150,8 +150,8 @@ void Jeu::shakeScreen()
 	if (_pacman.getLaser())
 	{
 		sf::Vector2i windowPos;
-		windowPos.x = _defaultWinPos.x +_window.getPosition().x / 2 + rand() % 31 - 15;
-		windowPos.y = _defaultWinPos.y +_window.getPosition().y / 2 + rand() % 31 - 15;
+		windowPos.x = _defaultWinPos.x +_window.getPosition().x / 2 + rand() % 15 - 4;
+		windowPos.y = _defaultWinPos.y +_window.getPosition().y / 2 + rand() % 15 - 4;
 		_window.setPosition(windowPos);
 	}
 	else
