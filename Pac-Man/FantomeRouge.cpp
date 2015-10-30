@@ -3,22 +3,8 @@
 
 FantomeRouge::FantomeRouge()
 {
-	_numLigne = 0;
-	_vitesse = 3;
-	_vertical = true;
-	_direction = 's';
-
 	_color = sf::Color(255, 0, 0, 255);
 
-	_pos = sf::Vector2f(300, 300);
-
-	//variables pour le dessin
-	_headOffset = sf::Vector2f(0, -_width / 1.2);
-	_feetOffset = sf::Vector2f(0, -_width / 2);
-	_step = 0;
-	_feetWidth = (float)_width / 4;
-	_eyeSize = (float)_width / 3.5;
-	_pupilSize = _eyeSize / 2;
 }
 
 

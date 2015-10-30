@@ -13,7 +13,7 @@ Fantome::Fantome()
 	_headOffset = sf::Vector2f(0, -_width / 1.2);
 	_feetOffset = sf::Vector2f(0, -_width / 2);
 	_step = 0;
-	_feetWidth = (float)_width / 4;
+	_feetWidth = (float)_width/3 ;
 	_eyeSize = (float)_width / 3.5;
 	_pupilSize = _eyeSize / 2;
 }
