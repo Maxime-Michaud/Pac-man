@@ -18,6 +18,7 @@
 #include "windowsAPIwrapper.h"
 #include <random>		
 #include "algo.h"
+#include <thread>
 class Jeu
 {
 	sf::RenderWindow _window;		//Fenetre du jeu
@@ -55,4 +56,6 @@ public:
 	void killPacman();
 
 	bool verifieSiMort(Fantome &fantome);
+
+	std::thread buildMoveThread(Fantome *fantome);
 };

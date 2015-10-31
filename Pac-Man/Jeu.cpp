@@ -84,13 +84,19 @@ void Jeu::play()
 
 		_pacman.move(_pacman.getDirection(), _map);
 
+		std::vector<std::thread> threads;
+
 		for (auto f : _fantome)
 		{
-			f->move(f->getDirection(), _pacman.getPos(), _map);
+			threads.push_back(buildMoveThread(f));
 			verifieSiMort(*f);
 		}
 
 		draw();
+
+		for (int i = threads.size() - 1; i >= 0; i--)
+			threads[i].detach();
+
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
 	}
 }
@@ -250,4 +256,19 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			killPacman();
 	}
 	return false;
+}
+
+std::thread Jeu::buildMoveThread(Fantome * fantome)
+{
+	if (typeid(*fantome).name() == typeid(FantomeRose).name())
+	{
+		auto moveFunc = &FantomeRose::move;
+		return std::thread(moveFunc, (FantomeRose*)fantome, fantome->getDirection(), _pacman.getPos(), _map);
+	}
+	else if (typeid(*fantome).name() == typeid(FantomeRouge).name())
+	{
+		auto moveFunc = &FantomeRouge::move;
+		return std::thread(moveFunc, (FantomeRouge*)fantome, fantome->getDirection(), _pacman.getPos(), _map);
+	}
+	throw std::exception("Le type de fantome est inconnu");
 }
