@@ -14,9 +14,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "map.h"
+#include "TimeTraveller.h"
 
-
-class Personnage : public sf::Drawable
+class Personnage : public sf::Drawable, public TimeTraveller <sf::Vector2f>
 {
 protected:
 	sf::Vector2f _pos;		//Position sur la map
@@ -44,8 +44,15 @@ public:
 	/// <param name="pos">position ou placer le personnage</param>
 	virtual void setPos(sf::Vector2f pos);
 
+	virtual void setLigne(unsigned int ligne);
+	/// <summary>
+	/// Set le numéro de la ligne du personnage
+	/// </summary>
+	/// <param name="numLigne">Ligne ou placer le personnage</param>
+	virtual void setNumLigne(int numLigne);
 	//Getteurs=================================================================
 
+	int getNumLigne();
 	/// <summary>
 	/// Obtiens tous les sprites du personnage. Retourne nullptr si les sprites ne sont pas initialisés
 	/// </summary>
@@ -63,11 +70,13 @@ public:
 	/// <param name="x">Déplacement horizontal</param>
 	/// <param name="y">Déplacement vertical</param>
 	virtual void move(char direction, Map &map);
-	void changerDeLigne(char direction, Map &map);
+	bool changerDeLigne(char direction, Map &map);
+
+
 	char getDirection();
 	void setDirection(char d);
 	bool getVertical();
+	void setVertical(bool v);
 	void setDirectionProchaine(char d);
 	char getDirectionProchaine();
 };
-

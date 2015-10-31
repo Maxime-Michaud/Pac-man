@@ -9,11 +9,11 @@ Description:      L'objectif de ce fichier d'en-tête
 				  les fonctions d'ouverture fichier et de
 				  test de fichiers vides.*/
 
-/*Directives au pré-processeur
-==============================*/
+				  /*Directives au pré-processeur
+				  ==============================*/
 #include "saisieSecurisee.h"
 
-//vide le buffer et remet le flux valide
+				  //vide le buffer et remet le flux valide
 void viderBuffer(std::istream & entree)
 {
 	entree.clear();
@@ -125,7 +125,7 @@ char saisirCharValide(std::string message, char critere1, char critere2)
 		viderBuffer(std::cin);
 
 		charSaisi = std::cin.get();
-		//met le charactere en majuscule pour avoir moins de vérifications 
+		//met le charactere en majuscule pour avoir moins de vérifications
 		charSaisi = tolower(charSaisi);
 	}
 
@@ -139,7 +139,7 @@ std::string saisirStringNonVide(std::string message)
 
 	std::cout << message;
 
-	viderBuffer(std::cin); //Vide le buffer pour s'assurer 
+	viderBuffer(std::cin); //Vide le buffer pour s'assurer
 	getline(std::cin, stringSaisi);
 
 	while (stringSaisi == "")

@@ -8,20 +8,24 @@
 *				touche pac-man, le joueur perd.									*
 *********************************************************************************/
 #pragma once
-#define _USE_MATH_DEFINES 
+#define _USE_MATH_DEFINES
 #include <SFML\Graphics.hpp>
 #include "TimeTraveller.h"
 #include "Personnage.h"
+#include "map.h"
+#include <deque>
 
 class Fantome : public Personnage
 {
+protected:
 	//Variables pour les dessins====================================
+	std::string _nom;
 	sf::Color _color;					//Couleur du fantome
 
 	sf::Vector2f _headOffset;			//Décalage de la tête par rapport au centre
 	sf::Vector2f _feetOffset;			//Décalage des pieds par rapport au centre
 
-	static const int _width = 25;		//Largeur du fantome
+	static const int _width = 9;		//Largeur du fantome
 
 	mutable int _step;					//Étape de l'animation a laquelle on est rendu
 	static const int framePerStep = 8;	//Nombre de frame dessinés dans une étape
@@ -43,14 +47,23 @@ class Fantome : public Personnage
 	void buildFoot(sf::VertexArray & vert, bool right, float firstX) const;
 	void buildFeet(sf::VertexArray & vert) const;
 	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const;
-	
+
+	bool _isDead = false;				//Si le fantome est mort ou pas
+	bool aPritUnMauvaisChemin = false;	//Si le fantome a prit un mauvais chemin
 
 public:
 	Fantome();
 	~Fantome();
 
-	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	//Fait bouger le fantome
-	void deciderLigne(sf::Vector2f posPacMan, Map &map);					//Prend une décision de la direction à un intersection
-};
+	const int Width = _width;
 
+	std::string getNom();	//Renvois le nom du fantome(nommer par sa couleur)
+	char inverserDirection(char direction);
+	void setIsDead(bool isDead);
+	void fantomeDead(Map & map, sf::Vector2f pacManPos, sf::Vector2f window);													 //L'animation et la placement du fantome quand il est mort
+	bool isDead() const;	//Obtiens si le fantome est mort ou vivant
+
+	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+	virtual void move(char direction, sf::Vector2f posPacMan, Map &map) = 0;	 //Fait bouger le fantome
+	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
+};
