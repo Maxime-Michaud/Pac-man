@@ -1,102 +1,120 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Fichiers sources">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Fichiers de ressources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Ligne.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="PacMan.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Personnage.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="map.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SaisieSecurisee.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="fantome.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Laser.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Jeu.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="testingMain.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="FantomeRouge.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="windowsAPIwrapper.cpp">
-	      <Filter>Fichiers sources</Filter>
+    <ClCompile Include="FantomeOrange.cpp">
+      <Filter>Jeu\Personnage\Fantome</Filter>
     </ClCompile>
     <ClCompile Include="FantomeRose.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Jeu\Personnage\Fantome</Filter>
+    </ClCompile>
+    <ClCompile Include="FantomeRouge.cpp">
+      <Filter>Jeu\Personnage\Fantome</Filter>
+    </ClCompile>
+    <ClCompile Include="fantome.cpp">
+      <Filter>Jeu\Personnage\Fantome</Filter>
+    </ClCompile>
+    <ClCompile Include="SaisieSecurisee.cpp">
+      <Filter>divers</Filter>
+    </ClCompile>
+    <ClCompile Include="windowsAPIwrapper.cpp">
+      <Filter>divers</Filter>
+    </ClCompile>
+    <ClCompile Include="PacMan.cpp">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClCompile>
+    <ClCompile Include="Laser.cpp">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClCompile>
+    <ClCompile Include="Personnage.cpp">
+      <Filter>Jeu\Personnage</Filter>
+    </ClCompile>
+    <ClCompile Include="Jeu.cpp">
+      <Filter>Jeu</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Jeu</Filter>
+    </ClCompile>
+    <ClCompile Include="testingMain.cpp">
+      <Filter>Jeu</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>Jeu\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Ligne.cpp">
+      <Filter>Jeu\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="FantomeBleu.cpp">
+      <Filter>Jeu\Personnage\Fantome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Ligne.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="PacMan.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Personnage.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeTraveller.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="map.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="autosfml.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="saisieSecurisee.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="fantome.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="laser.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Jeu.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="FantomeRouge.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="windowsAPIwrapper.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="algo.h">
-	      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="FantomeOrange.h">
+      <Filter>Jeu\Personnage\Fantome</Filter>
     </ClInclude>
     <ClInclude Include="FantomeRose.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Jeu\Personnage\Fantome</Filter>
     </ClInclude>
+    <ClInclude Include="FantomeRouge.h">
+      <Filter>Jeu\Personnage\Fantome</Filter>
+    </ClInclude>
+    <ClInclude Include="fantome.h">
+      <Filter>Jeu\Personnage\Fantome</Filter>
+    </ClInclude>
+    <ClInclude Include="algo.h">
+      <Filter>divers</Filter>
+    </ClInclude>
+    <ClInclude Include="autosfml.h">
+      <Filter>divers</Filter>
+    </ClInclude>
+    <ClInclude Include="saisieSecurisee.h">
+      <Filter>divers</Filter>
+    </ClInclude>
+    <ClInclude Include="windowsAPIwrapper.h">
+      <Filter>divers</Filter>
+    </ClInclude>
+    <ClInclude Include="PacMan.h">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClInclude>
+    <ClInclude Include="laser.h">
+      <Filter>Jeu\Personnage</Filter>
+    </ClInclude>
+    <ClInclude Include="Personnage.h">
+      <Filter>Jeu\Personnage</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeTraveller.h">
+      <Filter>Jeu\Personnage</Filter>
+    </ClInclude>
+    <ClInclude Include="Jeu.h">
+      <Filter>Jeu</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>Jeu\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Ligne.h">
+      <Filter>Jeu\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="FantomeBleu.h">
+      <Filter>Jeu\Personnage\Fantome</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="divers">
+      <UniqueIdentifier>{a685fce0-dbd1-42a3-a03b-62726be27bc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu">
+      <UniqueIdentifier>{cd616e66-0f7d-4001-a7a1-c4410424ba3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Personnage">
+      <UniqueIdentifier>{4c07cefc-7f88-47ad-b1c2-70050cb738de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Personnage\Fantome">
+      <UniqueIdentifier>{baaf8eca-acb0-494f-ad87-f8b928aca902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Personnage\Pac Man">
+      <UniqueIdentifier>{94c87bce-040d-42c2-9e95-8b66356ae6ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Map">
+      <UniqueIdentifier>{38ee7eff-bcde-4200-94f0-381fa7de5302}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

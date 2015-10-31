@@ -89,7 +89,7 @@ char Personnage::getDirectionProchaine()
 }
 
 //Valide et effectue un changement de ligne
-void Personnage::changerDeLigne(char direction, Map &map)
+bool Personnage::changerDeLigne(char direction, Map &map)
 {
 	int tempNoLigne = _numLigne;	//la ligne d'origine
 	switch (direction)
@@ -102,7 +102,9 @@ void Personnage::changerDeLigne(char direction, Map &map)
 		{								//place le personnage dans cette ligne au début(ou à la fin) +(ou -) sa vitesse
 			_direction = 'a';
 			_vertical = false;
+			_change.push(_pos);
 			setPos(sf::Vector2f(map.getLigne(_numLigne).getFin().x - _vitesse, map.getLigne(_numLigne).getFin().y));
+			return true;
 		}
 		break;
 	}
@@ -115,7 +117,9 @@ void Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = false;
 			_direction = 'd';
+			_change.push(_pos);
 			setPos(sf::Vector2f(map.getLigne(_numLigne).getDebut().x + _vitesse, map.getLigne(_numLigne).getDebut().y));
+			return true;
 		}
 
 		break;
@@ -127,7 +131,9 @@ void Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = true;
 			_direction = 's';
+			_change.push(_pos);
 			setPos(sf::Vector2f(map.getLigne(_numLigne).getDebut().x, map.getLigne(_numLigne).getDebut().y + _vitesse));
+			return true;
 		}
 		break;
 	}
@@ -138,13 +144,16 @@ void Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = true;
 			_direction = 'w';
+			_change.push(_pos);
 			setPos(sf::Vector2f(map.getLigne(_numLigne).getFin().x, map.getLigne(_numLigne).getFin().y - _vitesse));
+			return true;
 		}
 		break;
 	}
 	default:
 		break;
 	}
+	return false;
 }
 
 //Déplace le personnage de x, y
@@ -165,7 +174,9 @@ void Personnage::move(char direction, Map &map)
 		{
 			if (_vertical == false)
 				setPos(temp.getDebut());
-			changerDeLigne(_directionProchaine, map);
+			char tempDirection = _direction;
+			if (!changerDeLigne(_directionProchaine, map))
+				changerDeLigne(tempDirection, map);
 		}
 		break;
 
@@ -180,7 +191,9 @@ void Personnage::move(char direction, Map &map)
 		{
 			if (_vertical == true)
 				setPos(temp.getFin());
-			changerDeLigne(_directionProchaine, map);
+			char tempDirection = _direction;
+			if (!changerDeLigne(_directionProchaine, map))
+				changerDeLigne(tempDirection, map);
 		}
 		break;
 
@@ -195,7 +208,9 @@ void Personnage::move(char direction, Map &map)
 		{
 			if (_vertical == false)
 				setPos(temp.getFin());
-			changerDeLigne(_directionProchaine, map);
+			char tempDirection = _direction;
+			if (!changerDeLigne(_directionProchaine, map))
+				changerDeLigne(tempDirection, map);
 		}
 		break;
 
@@ -210,7 +225,9 @@ void Personnage::move(char direction, Map &map)
 		{
 			if (_vertical == true)
 				setPos(temp.getDebut());
-			changerDeLigne(_directionProchaine, map);
+			char tempDirection = _direction;
+			if (!changerDeLigne(_directionProchaine, map))
+				changerDeLigne(tempDirection, map);
 		}
 
 		break;

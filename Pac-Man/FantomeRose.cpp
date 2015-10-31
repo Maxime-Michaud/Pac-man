@@ -2,24 +2,11 @@
 
 FantomeRose::FantomeRose()
 {
-	_numLigne = 0;
-	_vitesse = 3;
-	_vertical = true;
-	_direction = 's';
-
 	_color = sf::Color(255, 192, 203, 255);
-
-	_pos = sf::Vector2f(300, 300);
-
-	//variables pour le dessin
-	_headOffset = sf::Vector2f(0, -_width / 1.2);
-	_feetOffset = sf::Vector2f(0, -_width / 2);
-	_step = 0;
-	_feetWidth = (float)_width / 4;
-	_eyeSize = (float)_width / 3.5;
-	_pupilSize = _eyeSize / 2;
+	_nom = "rose";
 }
 
+//Donne la prohcaine direction vers la DROITE
 char tourner(char direction)
 {
 	switch (direction)
@@ -42,6 +29,7 @@ char tourner(char direction)
 	return direction;
 }
 
+//Permet au fantôme rose de se déplacer théoriquement sans changer sa position actuelle
 bool FantomeRose::moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f posTheorique, Map &map)
 {
 	Ligne temp = map.getLigne(ligneTheorique);
@@ -89,7 +77,8 @@ bool FantomeRose::moveTheorique(char directionTheorique, int ligneTheorique, sf:
 	return false;
 }
 
-//change la ligne et la pos théorique et renvois vrai si c'est changé
+//Essais de changer de ligne et de pos théorique et renvois vrai si c'est changé
+//Change la ligne théorique, les points visitées et la pos théorique si il effectue un changement de ligne
 bool FantomeRose::esseyerLigne(char direction, int &ligneParcoursTheorique, std::vector<sf::Vector2f> &pointsVisites, sf::Vector2f &posTheorique, Map &map, char directionArrivee)
 {
 	_vertical = map.getLigne(ligneParcoursTheorique).isVertical();
