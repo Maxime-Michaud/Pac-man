@@ -121,6 +121,12 @@ void Jeu::pause(std::string msg)
 	//Dessine le jeu
 	draw(false);
 	
+	//Dessine un background pour le message
+	sf::RectangleShape rect;
+	rect.setFillColor(sf::Color(0, 0, 0, 100));	//noir semi-transparent
+	rect.setSize(sf::Vector2f(_window.getSize().x, 75));
+	_window.draw(rect);
+
 	//Dessine le message
 	sf::Text pauseMsg(msg, _font, 60);
 	_window.draw(pauseMsg);
