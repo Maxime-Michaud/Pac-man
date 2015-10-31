@@ -1,43 +1,39 @@
-#include "FantomeRouge.h"
+#include "FantomeBleu.h"
 
-
-FantomeRouge::FantomeRouge()
+FantomeBleu::FantomeBleu()
 {
-	_color = sf::Color(255, 0, 0, 255);
-	_nom = "rouge";
+	_color = sf::Color(0, 255, 255, 255);
+	_vitesse = 2;
+	_nom = "bleu";
 }
 
-
-FantomeRouge::~FantomeRouge()
-{
-}
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
-void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
+void FantomeBleu::deciderLigne(sf::Vector2f posFantomeRouge, Map &map)
 {
 	char directionArrivee = _direction;			//La direction de départ
 	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
 	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
 	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
 
-	int distanceX = _pos.x - posPacMan.x;		//La distance de l'axe des X entre le fantome et pac man
+	int distanceX = _pos.x - posFantomeRouge.x;		//La distance de l'axe des X entre le fantome et pac man
 	//Si la distance X est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceX >= 0)
 		gaucheDroite = 'a';
 	//Sinon il est à gauche de pac man et doit aller vers la droite
 	else
 	{
-		distanceX = posPacMan.x - _pos.x;
+		distanceX = posFantomeRouge.x - _pos.x;
 		gaucheDroite = 'd';
 	}
 
-	int distanceY = _pos.y - posPacMan.y;		//La distance de l'axe des Y entre le fantome et pac man
+	int distanceY = _pos.y - posFantomeRouge.y;		//La distance de l'axe des Y entre le fantome et pac man
 	//Si la distance Y est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceY >= 0)
 		basHaut = 'w';
 	else	//Sinon c'est le contraire
 	{
-		distanceY = posPacMan.y - _pos.y;
+		distanceY = posFantomeRouge.y - _pos.y;
 		basHaut = 's';
 	}
 
@@ -106,11 +102,11 @@ void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
 
 }
 
-void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
+void FantomeBleu::move(char direction, sf::Vector2f posFantomeRouge, Map &map)
 {
 	if (_isDead)
 	{
-		fantomeDead(map, posPacMan, sf::Vector2f(1000, 900));
+		fantomeDead(map, posFantomeRouge, sf::Vector2f(1000, 900));
 		return;
 	}
 	//Personnage::move(direction, map);
@@ -129,7 +125,7 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 		{
 			if (_vertical == false)
 				setPos(temp.getDebut());
-			deciderLigne(posPacMan, map);
+			deciderLigne(posFantomeRouge, map);
 		}
 		break;
 
@@ -143,7 +139,7 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 		{
 			if (_vertical == true)
 				setPos(temp.getFin());
-			deciderLigne(posPacMan, map);
+			deciderLigne(posFantomeRouge, map);
 		}
 		break;
 
@@ -156,8 +152,8 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 		else
 		{
 			if (_vertical == false)
- 				setPos(temp.getFin());
-			deciderLigne(posPacMan, map);
+				setPos(temp.getFin());
+			deciderLigne(posFantomeRouge, map);
 		}
 		break;
 
@@ -171,11 +167,15 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 		{
 			if (_vertical == true)
 				setPos(temp.getDebut());
-			deciderLigne(posPacMan, map);
+			deciderLigne(posFantomeRouge, map);
 		}
 
 		break;
 	default:
 		break;
 	}
+}
+
+FantomeBleu::~FantomeBleu()
+{
 }

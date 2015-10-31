@@ -27,7 +27,8 @@ Jeu::Jeu(std::string map)
 	_ghostStart = _map.getLigne(3).getFin();
 	_fantome.push_back(new FantomeRouge());
 	_fantome.push_back(new FantomeRose());
-	
+	_fantome.push_back(new FantomeOrange());
+	_fantome.push_back(new FantomeBleu());
 
 	for (auto f : _fantome)
 	{
@@ -86,7 +87,10 @@ void Jeu::play()
 
 		for (auto f : _fantome)
 		{
-			f->move(f->getDirection(), _pacman.getPos(), _map);
+			if (f->getNom() != "bleu")
+				f->move(f->getDirection(), _pacman.getPos(), _map);
+			else
+				f->move(f->getDirection(), _fantome[0]->getPos(), _map);
 			verifieSiMort(*f);
 		}
 

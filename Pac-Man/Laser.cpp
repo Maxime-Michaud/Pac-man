@@ -43,10 +43,10 @@ void Laser::draw(sf::RenderTarget &rt, sf::RenderStates rs)const
 	debutLaser.append(sf::Vertex(_pos, sf::Color::White));
 	for (int i = 1; i <= nbCote + 1; i++)
 	{
-		pos.x = hauteurLaser * arrondir.x * cos(2 * (float)M_PI * (i) / nbCote) + _pos.x + offset.x;   //largeur cercle
-		pos.y = hauteurLaser * arrondir.y * sin(2 * (float)M_PI * (i) / nbCote) + _pos.y + offset.y;   //Hauteur cercle
-		debutLaser.append(sf::Vertex(_pos, sf::Color(0, 255, 255, 255)));
-		debutLaser.append(sf::Vertex(sf::Vertex(pos, sf::Color(i * 25, 255, 255, 255))));
+		pos.x = hauteurLaser * arrondir.x * cos(2 * (float)M_PI * (i + nbCote/2) / nbCote) + _pos.x + offset.x;   //largeur cercle
+		pos.y = hauteurLaser * arrondir.y * sin(2 * (float)M_PI * (i + nbCote/2) / nbCote) + _pos.y + offset.y;   //Hauteur cercle
+		debutLaser.append(sf::Vertex(_pos, sf::Color(255, 255, 255, 255)));
+		debutLaser.append(sf::Vertex(sf::Vertex(pos, sf::Color(0, 255, 255, 255))));
 	}
 
 	sf::VertexArray milieuLaser(sf::Quads);
@@ -68,10 +68,10 @@ void Laser::draw(sf::RenderTarget &rt, sf::RenderStates rs)const
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2 + 30, _pos.y + 10), sf::Color(255, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2, _pos.y + hauteurLaser), sf::Color(0, 255, 255, 255))));
 
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2 + 30, _pos.y - 10), sf::Color(255, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2, _pos.y - hauteurLaser), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2, _pos.y + hauteurLaser), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2 + 30, _pos.y + 10), sf::Color(255, 255, 255, 255))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2 + 30, _pos.y - 10), sf::Color(255, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2, _pos.y - hauteurLaser), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2, _pos.y + hauteurLaser), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * 2 + 30, _pos.y + 10), sf::Color(255, 255, 255, 100))));
 
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(rt.getSize().x - 30, _pos.y + 10), sf::Color(255, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(rt.getSize().x - 30, _pos.y - 10), sf::Color(255, 255, 255, 255))));
@@ -94,10 +94,10 @@ void Laser::draw(sf::RenderTarget &rt, sf::RenderStates rs)const
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, _pos.y - hauteurLaser), sf::Color(0, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(0 + 30, _pos.y - 10), sf::Color(255, 255, 255, 255))));
 
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2 - 30, _pos.y + 10), sf::Color(255, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2, _pos.y + hauteurLaser), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2, _pos.y - hauteurLaser), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2 - 30, _pos.y - 10), sf::Color(255, 255, 255, 255))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2 - 30, _pos.y + 10), sf::Color(255, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2, _pos.y + hauteurLaser), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2, _pos.y - hauteurLaser), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser * -2 - 30, _pos.y - 10), sf::Color(255, 255, 255, 100))));
 
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(0 + 30, _pos.y - 10), sf::Color(255, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(0 + 30, _pos.y + 10), sf::Color(255, 255, 255, 255))));
@@ -121,10 +121,10 @@ void Laser::draw(sf::RenderTarget &rt, sf::RenderStates rs)const
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, _pos.y + hauteurLaser * 2 + 30), sf::Color(255, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser, _pos.y + hauteurLaser * 2), sf::Color(0, 255, 255, 255))));
 
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - 10, _pos.y + hauteurLaser * 2 + 30), sf::Color(255, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - hauteurLaser, _pos.y + hauteurLaser * 2), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser, _pos.y + hauteurLaser * 2), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, _pos.y + hauteurLaser * 2 + 30), sf::Color(255, 255, 255, 255))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - 10, _pos.y + hauteurLaser * 2 + 30), sf::Color(255, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - hauteurLaser, _pos.y + hauteurLaser * 2), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser, _pos.y + hauteurLaser * 2), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, _pos.y + hauteurLaser * 2 + 30), sf::Color(255, 255, 255, 100))));
 
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, rt.getSize().y - 30), sf::Color(255, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - 10, rt.getSize().y - 30), sf::Color(255, 255, 255, 255))));
@@ -147,10 +147,10 @@ void Laser::draw(sf::RenderTarget &rt, sf::RenderStates rs)const
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, _pos.y + hauteurLaser * -2 - 30), sf::Color(255, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser, _pos.y + hauteurLaser * -2), sf::Color(0, 255, 255, 255))));
 
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, _pos.y + hauteurLaser * -2 - 30), sf::Color(255, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser, _pos.y + hauteurLaser * -2), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - hauteurLaser, _pos.y + hauteurLaser * -2), sf::Color(0, 255, 255, 255))));
-		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - 10, _pos.y + hauteurLaser * -2 - 30), sf::Color(255, 255, 255, 255))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, _pos.y + hauteurLaser * -2 - 30), sf::Color(255, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + hauteurLaser, _pos.y + hauteurLaser * -2), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - hauteurLaser, _pos.y + hauteurLaser * -2), sf::Color(0, 255, 255, 100))));
+		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - 10, _pos.y + hauteurLaser * -2 - 30), sf::Color(255, 255, 255, 100))));
 
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x - 10, 0 + 30), sf::Color(255, 255, 255, 255))));
 		milieuLaser.append(sf::Vertex(sf::Vertex(sf::Vector2f(_pos.x + 10, 0 + 30), sf::Color(255, 255, 255, 255))));

@@ -27,6 +27,10 @@ void Fantome::setIsDead(bool isDead)
 	_isDead = isDead;
 }
 
+std::string Fantome::getNom()
+{
+	return _nom;
+}
 //Fonctions pour dessiner le fantome
 
 //Dessine un demi cercle pour la tête du fantome

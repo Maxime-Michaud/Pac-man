@@ -13,6 +13,8 @@
 #include <fstream>
 #include "FantomeRouge.h"
 #include "FantomeRose.h"
+#include "FantomeOrange.h"
+#include "FantomeBleu.h"
 #include "PacMan.h"
 #include "map.h"
 #include "windowsAPIwrapper.h"
