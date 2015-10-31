@@ -54,7 +54,7 @@ Jeu::~Jeu()
 
 void Jeu::draw(bool display)
 {	
-	_window.clear(sf::Color(200, 200, 200, 255));
+	_window.clear();
 	_window.draw(_map);
 
 	_window.draw(_pacman);
@@ -175,7 +175,7 @@ void Jeu::killPacman()
 	while (!_pacman.hasDisappeared())
 	{
 		sf::Clock clock;
-		_window.clear(sf::Color(200, 200, 200, 255));
+		_window.clear();
 
 		_window.draw(_map);
 
