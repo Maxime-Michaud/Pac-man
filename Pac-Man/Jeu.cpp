@@ -45,11 +45,8 @@ Jeu::Jeu(std::string map)
 
 Jeu::~Jeu()
 {
-	for (auto i = _fantome.size() - 1; i >= 0; i--)
-	{
-		delete _fantome[i];
-		_fantome.pop_back();
-	}
+	for (auto f : _fantome)
+		delete f;
 }
 
 void Jeu::draw(bool display)
@@ -123,7 +120,7 @@ void Jeu::pause(std::string msg)
 	//Dessine un background pour le message
 	sf::RectangleShape rect;
 	rect.setFillColor(sf::Color(0, 0, 0, 100));	//noir semi-transparent
-	rect.setSize(sf::Vector2f(_window.getSize().x, 75));
+	rect.setSize(sf::Vector2f(float(_window.getSize().x), 75));
 	_window.draw(rect);
 
 	//Dessine le message
@@ -136,19 +133,20 @@ void Jeu::pause(std::string msg)
 	sf::Event event;
 
 	_window.pollEvent(event);	//L'event queue a presque assurément déjà un key press qui a causé l'entrée dans Jeu::pause, donc on pop cet éènement avant la boucle de pause
-	while (true)
+
+	bool loop = true;
+	while (loop)
 	{
 		_window.pollEvent(event);
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
 		{
 			//Attend qu'on relache avant de dépauser
-			while (true)
+			while (loop)
 			{
 				_window.pollEvent(event);
 				if (event.type == sf::Event::KeyReleased)
-					break;
+					loop = false;
 			}
-			break;
 		}
 	}
 }

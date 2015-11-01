@@ -41,13 +41,13 @@ void Fantome::buildHead(sf::VertexArray & vert) const
 	for (int i = 0; i < _smoothness / 2 + _smoothness % 2; i++)
 	{
 		//Premier point du triangle
-		pos.x = static_cast<float>(_width  * cos(2 * M_PI * (i - _smoothness / 2) / _smoothness) + _pos.x);
-		pos.y = static_cast<float>(_width / 1.5 * sin(2 * M_PI * (i - _smoothness / 2) / _smoothness) + _pos.y);
+		pos.x = static_cast<float>(_width  * cos(2 * M_PI * (i - static_cast<float>(_smoothness) / 2) / static_cast<float>(_smoothness)) + _pos.x);
+		pos.y = static_cast<float>(_width / 1.5 * sin(2 * M_PI * (i - static_cast<float>(_smoothness) / 2) / static_cast<float>(_smoothness)) + _pos.y);
 		vert.append(sf::Vertex(pos + _headOffset, _color));
 
 		//Second point du triangle
-		pos.x = static_cast<float>(_width  * cos(2 * M_PI * (i + 1 - _smoothness / 2) / _smoothness) + _pos.x);
-		pos.y = static_cast<float>(_width / 1.5 * sin(2 * M_PI * (i + 1 - _smoothness / 2) / _smoothness) + _pos.y);
+		pos.x = static_cast<float>(_width  * cos(2 * M_PI * (i + 1 - static_cast<float>(_smoothness) / 2) / static_cast<float>(_smoothness)) + _pos.x);
+		pos.y = static_cast<float>(_width / 1.5 * sin(2 * M_PI * (i + 1 - static_cast<float>(_smoothness) / 2) / static_cast<float>(_smoothness)) + _pos.y);
 		vert.append(sf::Vertex(pos + _headOffset, _color));
 
 		//Place le point central du triangle
