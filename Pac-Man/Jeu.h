@@ -18,7 +18,7 @@
 #include "PacMan.h"
 #include "map.h"
 #include "windowsAPIwrapper.h"
-#include <random>		
+#include <random>
 #include "algo.h"
 class Jeu
 {
@@ -33,7 +33,6 @@ class Jeu
 	Map _map;					//Carte du jeu
 	sf::Vector2f _startpos;		//Position de depart
 	sf::Vector2f _ghostStart;	//Position de depart des fantomes
-
 
 	sf::Font _font;
 

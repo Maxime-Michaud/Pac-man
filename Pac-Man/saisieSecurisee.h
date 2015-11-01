@@ -72,12 +72,12 @@ T strtonum(const char * num)
 #endif
 	//Pour les floats
 	if (std::is_floating_point<T>())
-		return strtold(num, nullptr);
+		return static_cast<T>(strtold(num, nullptr));
 	//Pour les ints unsigned
 	if (std::is_unsigned<T>())
-		return strtoull(num, nullptr, 10);
+		return static_cast<T>(strtoull(num, nullptr, 10));
 	//Il ne reste que les ints:
-	return strtoll(num, nullptr, 10);
+	return static_cast<T>(strtoll(num, nullptr, 10));
 }
 
 template <typename T, bool can_throw = true>

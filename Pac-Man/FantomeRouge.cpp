@@ -1,12 +1,10 @@
 #include "FantomeRouge.h"
 
-
 FantomeRouge::FantomeRouge()
 {
 	_color = sf::Color(255, 0, 0, 255);
 	_nom = "rouge";
 }
-
 
 FantomeRouge::~FantomeRouge()
 {
@@ -103,7 +101,6 @@ void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		aPritUnMauvaisChemin = true;
 		_direction = Fantome::inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
 	}
-
 }
 
 void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
@@ -156,7 +153,7 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 		else
 		{
 			if (_vertical == false)
- 				setPos(temp.getFin());
+				setPos(temp.getFin());
 			deciderLigne(posPacMan, map);
 		}
 		break;

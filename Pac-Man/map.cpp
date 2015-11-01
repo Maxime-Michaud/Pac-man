@@ -197,7 +197,6 @@ std::vector<sf::VertexArray> Map::getOutline() const
 	return lines;
 }
 
-
 std::vector<std::vector<bool>> Map::getBoolMap() const
 {
 	std::vector<std::vector<bool>> boolMap;

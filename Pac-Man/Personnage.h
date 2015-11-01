@@ -72,7 +72,6 @@ public:
 	virtual void move(char direction, Map &map);
 	bool changerDeLigne(char direction, Map &map);
 
-
 	char getDirection();
 	void setDirection(char d);
 	bool getVertical();

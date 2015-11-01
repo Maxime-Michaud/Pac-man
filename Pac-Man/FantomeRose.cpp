@@ -107,10 +107,10 @@ bool FantomeRose::esseyerLigne(char direction, int &ligneParcoursTheorique, std:
 		break;
 	}
 
-	int tempDebutX = map.getLigne(ligneParcoursTheorique).getDebut().x - posTheorique.x;
-	int tempDebutY = map.getLigne(ligneParcoursTheorique).getDebut().y - posTheorique.y;
-	int tempFinX = map.getLigne(ligneParcoursTheorique).getFin().x - posTheorique.x;
-	int tempFinY = map.getLigne(ligneParcoursTheorique).getFin().y - posTheorique.y;
+	auto tempDebutX = map.getLigne(ligneParcoursTheorique).getDebut().x - posTheorique.x;
+	auto tempDebutY = map.getLigne(ligneParcoursTheorique).getDebut().y - posTheorique.y;
+	auto tempFinX = map.getLigne(ligneParcoursTheorique).getFin().x - posTheorique.x;
+	auto tempFinY = map.getLigne(ligneParcoursTheorique).getFin().y - posTheorique.y;
 
 	if (ligneParcoursTheorique != temp)
 	{
@@ -188,7 +188,6 @@ void FantomeRose::tentativeAmbuscade(sf::Vector2f posPacMan, int LignePacMan, Ma
 			bonChemin.back()._direction = directionTheorique;
 			bonChemin.back()._nbEssaie++;
 			nombreEssais++;
-
 		}
 		else
 		{
@@ -215,23 +214,21 @@ void FantomeRose::tentativeAmbuscade(sf::Vector2f posPacMan, int LignePacMan, Ma
 		}
 		compteur++;
 	}
-	
+
 	int plusPetitVecteur = 1000;
 	int index = 0;
 	if (!tousBonsChemins.empty())
 	{
 		for (std::vector<std::deque<Direction>>::iterator i = tousBonsChemins.begin(); i != tousBonsChemins.end(); i++)
 		{
-
 			if ((*i).size() < plusPetitVecteur)
 			{
-				plusPetitVecteur = (*i).size();
-				index = i - tousBonsChemins.begin();
+				plusPetitVecteur = static_cast<int>((*i).size());
+				index = static_cast<int>(i - tousBonsChemins.begin());
 			}
 		}
 		_chemin = tousBonsChemins[index];
 	}
-	
 }
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
@@ -256,7 +253,6 @@ void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 					return;
 				}
 			}
-
 		}
 		break;
 	case 'd':
@@ -273,7 +269,6 @@ void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 					return;
 				}
 			}
-
 		}
 		break;
 	case 's':
@@ -290,7 +285,6 @@ void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 					return;
 				}
 			}
-
 		}
 		break;
 	case 'w':
@@ -307,7 +301,6 @@ void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 					return;
 				}
 			}
-
 		}
 		break;
 	default:
@@ -315,10 +308,9 @@ void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	}
 
 	tentativeAmbuscade(posPacMan, map.quelleLigne(posPacMan, -10), map);
-
 }
 
-void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
+void FantomeRose::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
 	if (_isDead)
 	{
@@ -340,7 +332,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		else
 		{
 			//if (_vertical == false)
-				setPos(temp.getDebut());
+			setPos(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -353,7 +345,6 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 				deciderLigne(posPacMan, map);
 				_nombreDintersectionsPassee = 0;
 			}
-				
 		}
 		break;
 
@@ -366,7 +357,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		else
 		{
 			//if (_vertical == true)
-				setPos(temp.getFin());
+			setPos(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -391,7 +382,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		else
 		{
 			//if (_vertical == false)
-				setPos(temp.getFin());
+			setPos(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -416,7 +407,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan,  Map &map)
 		else
 		{
 			//if (_vertical == true)
-				setPos(temp.getDebut());
+			setPos(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;

@@ -60,7 +60,7 @@ void Personnage::setDirection(char d)
 		if (!_vertical)
 			_direction = d;
 		break;
-	//Quitte la fonction si la direction n'est pas w a s d
+		//Quitte la fonction si la direction n'est pas w a s d
 	default:
 		return;
 	}

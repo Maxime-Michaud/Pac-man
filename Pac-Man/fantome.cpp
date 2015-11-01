@@ -8,13 +8,12 @@ Fantome::Fantome()
 	_vertical = true;
 	_direction = 's';
 
-
 	//variables pour le dessin
 	_headOffset = sf::Vector2f(0, -_width / 1.2);
 	_feetOffset = sf::Vector2f(0, -_width / 2);
 	_step = 0;
-	_feetWidth = (float)_width/3 ;
-	_eyeSize = (float)_width / 3.5;
+	_feetWidth = (float)_width / 3;
+	_eyeSize = double(_width) / 3.5;
 	_pupilSize = _eyeSize / 2;
 }
 
@@ -42,16 +41,16 @@ void Fantome::buildHead(sf::VertexArray & vert) const
 	for (int i = 0; i < _smoothness / 2 + _smoothness % 2; i++)
 	{
 		//Premier point du triangle
-		pos.x = _width  * cos(2 * (float)M_PI * (i - (float)_smoothness / 2) / (float)_smoothness) + _pos.x;
-		pos.y = _width / 1.5 * sin(2 * (float)M_PI * (i - (float)_smoothness / 2) / (float)_smoothness) + _pos.y;
+		pos.x = static_cast<float>(_width  * cos(2 * M_PI * (i - _smoothness / 2) / _smoothness) + _pos.x);
+		pos.y = static_cast<float>(_width / 1.5 * sin(2 * M_PI * (i - _smoothness / 2) / _smoothness) + _pos.y);
 		vert.append(sf::Vertex(pos + _headOffset, _color));
 
 		//Second point du triangle
-		pos.x = _width  * cos(2 * (float)M_PI * (i + 1 - (float)_smoothness / 2) / (float)_smoothness) + _pos.x;
-		pos.y = _width / 1.5 * sin(2 * (float)M_PI * (i + 1 - (float)_smoothness / 2) / (float)_smoothness) + _pos.y;
+		pos.x = static_cast<float>(_width  * cos(2 * M_PI * (i + 1 - _smoothness / 2) / _smoothness) + _pos.x);
+		pos.y = static_cast<float>(_width / 1.5 * sin(2 * M_PI * (i + 1 - _smoothness / 2) / _smoothness) + _pos.y);
 		vert.append(sf::Vertex(pos + _headOffset, _color));
 
-		//Place le poind central du triangle
+		//Place le point central du triangle
 		vert.append(sf::Vertex(_pos + _headOffset, _color));
 	}
 }
@@ -244,7 +243,6 @@ bool Fantome::isDead() const
 	return _isDead;
 }
 
-
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 {
@@ -253,7 +251,7 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
 	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
 
-	int distanceX = _pos.x - posPacMan.x;		//La distance de l'axe des X entre le fantome et pac man
+	auto distanceX = _pos.x - posPacMan.x;		//La distance de l'axe des X entre le fantome et pac man
 	//Si la distance X est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceX >= 0)
 		gaucheDroite = 'a';
@@ -264,7 +262,7 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		gaucheDroite = 'd';
 	}
 
-	int distanceY = _pos.y - posPacMan.y;		//La distance de l'axe des Y entre le fantome et pac man
+	auto distanceY = _pos.y - posPacMan.y;		//La distance de l'axe des Y entre le fantome et pac man
 	//Si la distance Y est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceY >= 0)
 		basHaut = 'w';
@@ -324,5 +322,5 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	if (_numLigne == tempNoLigne)
 	{
 		_direction = inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
-	}	
+	}
 }

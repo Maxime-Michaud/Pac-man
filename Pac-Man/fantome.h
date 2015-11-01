@@ -35,7 +35,7 @@ protected:
 	static const int _eyeSmooth = 8;	//Pour les yeux
 	static const int _pupilSmooth = 8;	//Pour les pupilles
 
-	float _eyeSize;						//Grosseur des yeux
+	double _eyeSize;						//Grosseur des yeux
 	float _pupilSize;					//grosseur des pupilles
 	float _feetWidth;					//Largeur des pieds
 

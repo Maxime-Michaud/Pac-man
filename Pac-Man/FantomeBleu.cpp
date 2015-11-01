@@ -7,7 +7,6 @@ FantomeBleu::FantomeBleu()
 	_nom = "bleu";
 }
 
-
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void FantomeBleu::deciderLigne(sf::Vector2f posFantomeRouge, Map &map)
 {
@@ -16,7 +15,7 @@ void FantomeBleu::deciderLigne(sf::Vector2f posFantomeRouge, Map &map)
 	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
 	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
 
-	int distanceX = _pos.x - posFantomeRouge.x;		//La distance de l'axe des X entre le fantome et pac man
+	auto distanceX = _pos.x - posFantomeRouge.x;		//La distance de l'axe des X entre le fantome et pac man
 	//Si la distance X est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceX >= 0)
 		gaucheDroite = 'a';
@@ -27,7 +26,7 @@ void FantomeBleu::deciderLigne(sf::Vector2f posFantomeRouge, Map &map)
 		gaucheDroite = 'd';
 	}
 
-	int distanceY = _pos.y - posFantomeRouge.y;		//La distance de l'axe des Y entre le fantome et pac man
+	auto distanceY = _pos.y - posFantomeRouge.y;		//La distance de l'axe des Y entre le fantome et pac man
 	//Si la distance Y est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceY >= 0)
 		basHaut = 'w';
@@ -99,7 +98,6 @@ void FantomeBleu::deciderLigne(sf::Vector2f posFantomeRouge, Map &map)
 		aPritUnMauvaisChemin = true;
 		_direction = Fantome::inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
 	}
-
 }
 
 void FantomeBleu::move(char direction, sf::Vector2f posFantomeRouge, Map &map)

@@ -43,8 +43,8 @@ void Laser::draw(sf::RenderTarget &rt, sf::RenderStates rs)const
 	debutLaser.append(sf::Vertex(_pos, sf::Color::White));
 	for (int i = 1; i <= nbCote + 1; i++)
 	{
-		pos.x = hauteurLaser * arrondir.x * cos(2 * (float)M_PI * (i + nbCote/2) / nbCote) + _pos.x + offset.x;   //largeur cercle
-		pos.y = hauteurLaser * arrondir.y * sin(2 * (float)M_PI * (i + nbCote/2) / nbCote) + _pos.y + offset.y;   //Hauteur cercle
+		pos.x = hauteurLaser * arrondir.x * cos(2 * (float)M_PI * (i + nbCote / 2) / nbCote) + _pos.x + offset.x;   //largeur cercle
+		pos.y = hauteurLaser * arrondir.y * sin(2 * (float)M_PI * (i + nbCote / 2) / nbCote) + _pos.y + offset.y;   //Hauteur cercle
 		debutLaser.append(sf::Vertex(_pos, sf::Color(255, 255, 255, 255)));
 		debutLaser.append(sf::Vertex(sf::Vertex(pos, sf::Color(0, 255, 255, 255))));
 	}

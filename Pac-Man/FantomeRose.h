@@ -31,4 +31,3 @@ public:
 	void tentativeAmbuscade(sf::Vector2f posPacMan, int LignePacMan, Map &map);
 	bool esseyerLigne(char direction, int &ligneParcoursTheorique, std::vector<sf::Vector2f> &pointsVisites, sf::Vector2f &posTheorique, Map &map, char directionArrivee);
 };
-

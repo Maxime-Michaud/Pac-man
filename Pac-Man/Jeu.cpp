@@ -19,11 +19,11 @@ Jeu::Jeu(std::string map)
 	std::ifstream in;
 	in.open(map);
 	_map.lireMap(in);
-	
+
 	//Initialisation des personnages
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
-	
+
 	_ghostStart = _map.getLigne(3).getFin();
 	_fantome.push_back(new FantomeRouge());
 	_fantome.push_back(new FantomeRose());
@@ -45,7 +45,7 @@ Jeu::Jeu(std::string map)
 
 Jeu::~Jeu()
 {
-	for (int i = _fantome.size() - 1; i >= 0; i--)
+	for (auto i = _fantome.size() - 1; i >= 0; i--)
 	{
 		delete _fantome[i];
 		_fantome.pop_back();
@@ -53,7 +53,7 @@ Jeu::~Jeu()
 }
 
 void Jeu::draw(bool display)
-{	
+{
 	_window.clear();
 	_window.draw(_map);
 
@@ -69,12 +69,11 @@ void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
 
-
 	while (_playing)
 	{
 		//Fais une pause a la fin de la boucle en attendant d'arriver a un temps voulu
 		sf::Clock clock;
-		
+
 		//Vérifie l'entrée de l'utilisateur
 		auto keys = getKeyPress();
 
@@ -112,7 +111,7 @@ std::string Jeu::getKeyPress()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		pause();
-	
+
 	return keys;
 }
 
@@ -120,7 +119,7 @@ void Jeu::pause(std::string msg)
 {
 	//Dessine le jeu
 	draw(false);
-	
+
 	//Dessine un background pour le message
 	sf::RectangleShape rect;
 	rect.setFillColor(sf::Color(0, 0, 0, 100));	//noir semi-transparent
@@ -133,7 +132,6 @@ void Jeu::pause(std::string msg)
 
 	//Affiche la fenêtre
 	_window.display();
-
 
 	sf::Event event;
 
@@ -152,7 +150,7 @@ void Jeu::pause(std::string msg)
 			}
 			break;
 		}
-	} 
+	}
 }
 
 void Jeu::shakeScreen()
@@ -160,18 +158,16 @@ void Jeu::shakeScreen()
 	if (_pacman.getLaser())
 	{
 		sf::Vector2i windowPos;
-		windowPos.x = _defaultWinPos.x +_window.getPosition().x / 2 + rand() % 15 - 4;
-		windowPos.y = _defaultWinPos.y +_window.getPosition().y / 2 + rand() % 15 - 4;
+		windowPos.x = _window.getPosition().x + rand() % 51 - 25;
+		windowPos.y = _window.getPosition().y + rand() % 51 - 25;
 		_window.setPosition(windowPos);
 	}
 	else
 		_window.setPosition(_defaultWinPos);
-
 }
 
 void Jeu::killPacman()
 {
-
 	while (!_pacman.hasDisappeared())
 	{
 		sf::Clock clock;
@@ -253,10 +249,10 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 	else
 	{
 		if ((isBetween(_pacman.getPos().x + 5 - _pacman.Width, fantome.getPos().x - fantome.Width, fantome.getPos().x + fantome.Width) || //Coté gauche de pacman dans le fantome
-			isBetween(_pacman.getPos().x  - 5+ _pacman.Width, fantome.getPos().x - fantome.Width, fantome.getPos().x + fantome.Width)) && //Coté droit de pacman dans le fantome
-			(isBetween(_pacman.getPos().y + 5- _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width) || //Coté haut de pacman dans le fantome
-			isBetween(_pacman.getPos().y  - 5+ _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width)) && //Coté bas de pacman dans le fantome
-			!fantome.isDead())	//Le fantome mort ne peut pas tuer pac-man	 
+			isBetween(_pacman.getPos().x - 5 + _pacman.Width, fantome.getPos().x - fantome.Width, fantome.getPos().x + fantome.Width)) && //Coté droit de pacman dans le fantome
+			(isBetween(_pacman.getPos().y + 5 - _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width) || //Coté haut de pacman dans le fantome
+				isBetween(_pacman.getPos().y - 5 + _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width)) && //Coté bas de pacman dans le fantome
+			!fantome.isDead())	//Le fantome mort ne peut pas tuer pac-man
 			killPacman();
 	}
 	return false;
