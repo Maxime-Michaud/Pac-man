@@ -41,6 +41,8 @@ Jeu::Jeu(std::string map)
 	_font.loadFromFile("steelfish rg.ttf");
 
 	_targetfps = 60;
+
+	_shake = 10;
 }
 
 Jeu::~Jeu()
@@ -155,13 +157,20 @@ void Jeu::shakeScreen()
 {
 	if (_pacman.getLaser())
 	{
+		if (_shake < 1) _shake = 1;
+		_shake++;
+
 		sf::Vector2i windowPos;
-		windowPos.x = _window.getPosition().x + rand() % 51 - 25;
-		windowPos.y = _window.getPosition().y + rand() % 51 - 25;
+		windowPos.x = static_cast<int>(_defaultWinPos.x + rand() % static_cast<int>(_shake) - _shake/ 2);
+		windowPos.y = static_cast<int>(_defaultWinPos.y + rand() % static_cast<int>(_shake) - _shake / 2);
 		_window.setPosition(windowPos);
 	}
 	else
+	{
+		_shake -= .5;
+
 		_window.setPosition(_defaultWinPos);
+	}
 }
 
 void Jeu::killPacman()

@@ -23,5 +23,4 @@ void main(int argc, char* argv[])
 	Jeu jeu(map);
 	jeu.play();
 
-	//system("C:\\Users\\Nicholas1\\Desktop\\pac-man\\x64\\Debug\\pac-man.exe map1.txt");
 }

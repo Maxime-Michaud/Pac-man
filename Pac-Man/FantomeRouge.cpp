@@ -18,24 +18,24 @@ void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
 	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
 
-	int distanceX = _pos.x - posPacMan.x;		//La distance de l'axe des X entre le fantome et pac man
+	int distanceX = static_cast<int>(_pos.x - posPacMan.x);		//La distance de l'axe des X entre le fantome et pac man
 	//Si la distance X est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceX >= 0)
 		gaucheDroite = 'a';
 	//Sinon il est à gauche de pac man et doit aller vers la droite
 	else
 	{
-		distanceX = posPacMan.x - _pos.x;
+		distanceX = static_cast<int>(posPacMan.x - _pos.x);
 		gaucheDroite = 'd';
 	}
 
-	int distanceY = _pos.y - posPacMan.y;		//La distance de l'axe des Y entre le fantome et pac man
+	int distanceY = static_cast<int>(_pos.y - posPacMan.y);		//La distance de l'axe des Y entre le fantome et pac man
 	//Si la distance Y est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceY >= 0)
 		basHaut = 'w';
 	else	//Sinon c'est le contraire
 	{
-		distanceY = posPacMan.y - _pos.y;
+		distanceY = static_cast<int>(posPacMan.y - _pos.y);
 		basHaut = 's';
 	}
 
@@ -107,7 +107,7 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
 	if (_isDead)
 	{
-		fantomeDead(map, posPacMan, sf::Vector2f(1000, 900));
+		fantomeDead(map, sf::Vector2f(1000, 900));
 		return;
 	}
 	//Personnage::move(direction, map);

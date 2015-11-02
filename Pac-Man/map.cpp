@@ -109,7 +109,7 @@ int Map::quelleLigne(sf::Vector2f ligne, int noLigne)
 
 void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	target.draw(getOutline()[0]);
+	target.draw(getOutline()[0], states);
 }
 
 std::vector<sf::VertexArray> Map::getOutline() const
@@ -131,16 +131,29 @@ std::vector<sf::VertexArray> Map::getOutline() const
 				if (_bools[i - 1][j])
 				{
 					//Point en haut de la ligne
-					if (!_bools[i - 1][j - 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width), lineColor));
+					if (!_bools[i - 1][j - 1]) 
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width - _width), lineColor));
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width - _width), lineColor));
 
 					//Point en bas de la ligne
 					if (!_bools[i - 1][j + 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width), lineColor));
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width + _width), lineColor));
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width + _width), lineColor));
+
+					//Point en haut de la ligne
+					if (!_bools[i - 1][j - 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width - _width), lineColor));
+
+					//Point en bas de la ligne
+					if (!_bools[i - 1][j + 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width + _width), lineColor));
+
 				}
 
 				//Mur vertical droit

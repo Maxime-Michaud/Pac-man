@@ -133,12 +133,12 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 			if (can_throw && std::is_unsigned<T>())
 				throw std::invalid_argument("Un nombre unsigned ne peux commencer par '-'!");
 
-			num += in.get();
+			num += static_cast<char>(in.get());
 		}
 
 		//Copie la partie intégrale dans le nombre
 		while (in.peek() >= '0' && in.peek() <= '9')
-			num += in.get();
+			num += static_cast<char>(in.get());
 
 		//Pour les nombres a virgule flottante
 		if (std::is_floating_point<T>() && in.peek() == separateurDecimal)
@@ -148,7 +148,7 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 			in.get();
 
 			while (in.peek() >= '0' && in.peek() <= '9')
-				num += in.get();
+				num += static_cast<char>(in.get());
 		}
 
 		//Si aucun nombre n'a été lu, quitte la boucle

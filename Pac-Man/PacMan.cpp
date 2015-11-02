@@ -11,7 +11,7 @@ PacMan::PacMan()
 	_direction = 'd';
 	_directionProchaine = 'd';
 	_deathCount = 0;
-	_deathIncrement = .4;
+	_deathIncrement = .4f;
 
 	_color = sf::Color(255, 255, 0, 255);
 

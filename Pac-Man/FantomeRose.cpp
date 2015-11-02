@@ -154,19 +154,17 @@ bool FantomeRose::esseyerLigne(char direction, int &ligneParcoursTheorique, std:
 		return false;
 }
 
-void FantomeRose::tentativeAmbuscade(sf::Vector2f posPacMan, int LignePacMan, Map &map)
+void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map)
 {
 	std::deque<Direction> bonChemin;
 	std::vector<sf::Vector2f> pointsVisites;						//Les lignes visités  théoriquement par le fantome
 	std::vector<std::deque<Direction>> tousBonsChemins;
 	sf::Vector2f posTheorique = _pos;
-	char directionDepart = _direction;
 	char directionTheorique = _direction;
 	int ligneParcoursTheorique = _numLigne;
 	pointsVisites.push_back(posTheorique);
 	bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique));
 	int nombreEssais = 0;
-	bool boolTest = true;
 	int compteur = 0;
 	while (bonChemin.size() >= 1)
 	{
@@ -233,7 +231,6 @@ void FantomeRose::tentativeAmbuscade(sf::Vector2f posPacMan, int LignePacMan, Ma
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 {
-	char directionArrivee = _direction;			//La direction de départ
 	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
 
 	//Si c'est un cul de sac, retourne sur ses pas
@@ -307,14 +304,14 @@ void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		break;
 	}
 
-	tentativeAmbuscade(posPacMan, map.quelleLigne(posPacMan, -10), map);
+	tentativeAmbuscade(map.quelleLigne(posPacMan, -10), map);
 }
 
 void FantomeRose::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
 	if (_isDead)
 	{
-		fantomeDead(map, posPacMan, sf::Vector2f(1000, 900));
+		fantomeDead(map, sf::Vector2f(1000, 900));
 		return;
 	}
 	//Personnage::move(direction, map);

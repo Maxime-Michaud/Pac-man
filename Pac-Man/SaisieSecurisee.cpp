@@ -111,11 +111,11 @@ char saisirCharValide(std::string message, char critere1, char critere2)
 {
 	char charSaisi;	//Charactere saisi par l'utilisateur
 
-	critere1 = tolower(critere1);
-	critere2 = tolower(critere2);
+	critere1 = static_cast<char>(tolower(critere1));
+	critere2 = static_cast<char>(tolower(critere2));
 
 	std::cout << '\n' << message << '(' << critere1 << "/" << critere2 << "): ";
-	charSaisi = tolower(std::cin.get());
+	charSaisi = static_cast<char>(tolower(std::cin.get()));
 
 	//Tant que le charactere est invalide
 	while (charSaisi != critere1 && charSaisi != critere2) {
@@ -124,9 +124,9 @@ char saisirCharValide(std::string message, char critere1, char critere2)
 		std::cout << '\n' << message << critere1 << "/" << critere2 << "): ";
 		viderBuffer(std::cin);
 
-		charSaisi = std::cin.get();
+		charSaisi = static_cast<char>(std::cin.get());
 		//met le charactere en majuscule pour avoir moins de vérifications
-		charSaisi = tolower(charSaisi);
+		charSaisi = static_cast<char>(tolower(charSaisi));
 	}
 
 	return charSaisi;
@@ -159,7 +159,7 @@ bool questionOuiNon(std::string message)
 
 	std::cout << message << " (o/n)";
 	std::cin >> reponse;
-	reponse = toupper(reponse);
+	reponse = static_cast<char>(toupper(reponse));
 
 	while (!(reponse == 'O' || reponse == 'N')) //Redemande si la réponse est invalide
 	{

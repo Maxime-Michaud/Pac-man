@@ -37,7 +37,7 @@ class Jeu
 	sf::Font _font;
 
 	int _targetfps;
-
+	float _shake;
 	bool _playing = true;
 public:
 	Jeu(std::string map);

@@ -131,16 +131,16 @@ void Fantome::buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const
 	for (int i = 0; i <= _eyeSmooth; i++)	//Simule un triangleFan
 	{
 		//Replace le dernier vertex
-		pos.x = _eyeSize * cos(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.x;
-		pos.y = _eyeSize * sin(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.y;
+		pos.x = static_cast<float>(_eyeSize) * cos(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.x;
+		pos.y = static_cast<float>(_eyeSize) * sin(2 * (float)M_PI * (i - 1) / _eyeSmooth) + eyePos.y;
 		vert.append(sf::Vertex(pos, sf::Color::White));
 
 		//Repositionne le centre
 		vert.append(sf::Vertex(eyePos, sf::Color::White));
 
 		//Position du nouveau vertex
-		pos.x = _eyeSize * cos(2 * (float)M_PI * i / _eyeSmooth) + eyePos.x;
-		pos.y = _eyeSize * sin(2 * (float)M_PI * i / _eyeSmooth) + eyePos.y;
+		pos.x = static_cast<float>(_eyeSize)* cos(2 * (float)M_PI * i / _eyeSmooth) + eyePos.x;
+		pos.y = static_cast<float>(_eyeSize)* sin(2 * (float)M_PI * i / _eyeSmooth) + eyePos.y;
 
 		vert.append(sf::Vertex(pos, sf::Color::White));
 	}
@@ -150,32 +150,32 @@ void Fantome::buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const
 	switch (_direction)
 	{
 	case 'a':
-		pupilOffset = sf::Vector2f(-(_eyeSize - _pupilSize), 0);
+		pupilOffset = sf::Vector2f(-static_cast<float>(_eyeSize - _pupilSize), 0);
 		break;
 	case 's':
-		pupilOffset = sf::Vector2f(0, _eyeSize - _pupilSize);
+		pupilOffset = sf::Vector2f(0, static_cast<float>(_eyeSize - _pupilSize));
 		break;
 	case 'w':
-		pupilOffset = sf::Vector2f(0, -(_eyeSize - _pupilSize));
+		pupilOffset = sf::Vector2f(0, -static_cast<float>(_eyeSize - _pupilSize));
 		break;
 	case 'd':
-		pupilOffset = sf::Vector2f(_eyeSize - _pupilSize, 0);
+		pupilOffset = sf::Vector2f(static_cast<float>(_eyeSize - _pupilSize), 0);
 		break;
 	}
 
 	for (int i = 0; i <= _pupilSmooth; i++)	//Simule un triangleFan
 	{
 		//Replace le dernier vertex
-		pos.x = _pupilSize * cos(2 * (float)M_PI * (i - 1) / _pupilSmooth) + eyePos.x + pupilOffset.x;
-		pos.y = _pupilSize * sin(2 * (float)M_PI * (i - 1) / _pupilSmooth) + eyePos.y + pupilOffset.y;
+		pos.x = static_cast<float>(_pupilSize) * cos(2 * (float)M_PI * (i - 1) / _pupilSmooth) + eyePos.x + pupilOffset.x;
+		pos.y = static_cast<float>(_pupilSize) * sin(2 * (float)M_PI * (i - 1) / _pupilSmooth) + eyePos.y + pupilOffset.y;
 		vert.append(sf::Vertex(pos, sf::Color::Black));
 
 		//Repositionne le centre
 		vert.append(sf::Vertex(eyePos + pupilOffset, sf::Color::Black));
 
 		//Position du nouveau vertex
-		pos.x = _pupilSize * cos(2 * (float)M_PI * i / _pupilSmooth) + eyePos.x + pupilOffset.x;
-		pos.y = _pupilSize * sin(2 * (float)M_PI * i / _pupilSmooth) + eyePos.y + pupilOffset.y;
+		pos.x = static_cast<float>(_pupilSize) * cos(2 * (float)M_PI * i / _pupilSmooth) + eyePos.x + pupilOffset.x;
+		pos.y = static_cast<float>(_pupilSize) * sin(2 * (float)M_PI * i / _pupilSmooth) + eyePos.y + pupilOffset.y;
 
 		vert.append(sf::Vertex(pos, sf::Color::Black));
 	}
@@ -195,7 +195,7 @@ void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	buildEye(vert, _pos + eyeOffset + _headOffset);
 	buildEye(vert, _pos - eyeOffset + _headOffset);
 
-	target.draw(vert);
+	target.draw(vert, states);
 }
 
 //Inverse la direction donnée
@@ -222,7 +222,7 @@ char Fantome::inverserDirection(char direction)
 }
 
 //L'animation et la placement du fantome quand il est mort
-void Fantome::fantomeDead(Map &map, sf::Vector2f pacManPos, sf::Vector2f window)
+void Fantome::fantomeDead(Map &map, sf::Vector2f window)
 {
 	if (_pos != sf::Vector2f(window.x / 2, window.y / 2))
 	{

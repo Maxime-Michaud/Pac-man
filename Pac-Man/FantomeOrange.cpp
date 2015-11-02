@@ -9,7 +9,6 @@ FantomeOrange::FantomeOrange()
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 {
-	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
 	char directionFantome = _direction;							//Contient une direction logique à prendre entre la gauche ou la droit
 
 	if (_nbIntersectionPasse >= _nombreIntersectionAvantChangerDirection)
@@ -148,7 +147,7 @@ void FantomeOrange::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
 	if (_isDead)
 	{
-		fantomeDead(map, sf::Vector2f(300, 300), sf::Vector2f(1000, 900));
+		fantomeDead(map, sf::Vector2f(1000, 900));
 		return;
 	}
 	//Personnage::move(direction, map);
