@@ -107,7 +107,7 @@ void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
 	if (_isDead)
 	{
-		fantomeDead(map, sf::Vector2f(1000, 900));
+		fantomeDead(map, sf::Vector2f(600, 600));
 		return;
 	}
 	//Personnage::move(direction, map);

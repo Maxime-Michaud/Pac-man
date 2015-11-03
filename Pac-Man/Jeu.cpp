@@ -43,6 +43,17 @@ Jeu::Jeu(std::string map)
 	_targetfps = 60;
 
 	_shake = 10;
+
+	auto temp = _map.getBoolMap();
+	_mangeable.resize(temp.size());
+	for (int i = 0; i < temp.size(); i++)
+	{
+		_mangeable[i].resize(temp[i].size());
+		for (int j = 0; j < temp[i].size(); j++)
+		{
+			_mangeable[i][j] = int(!temp[i][j]);
+		}
+	}
 }
 
 Jeu::~Jeu()
@@ -51,10 +62,39 @@ Jeu::~Jeu()
 		delete f;
 }
 
+void Jeu::drawMangeable()
+{
+	sf::CircleShape boule;
+	boule.setRadius(2);
+	boule.setFillColor(sf::Color::Yellow);
+	for (int i = 0; i < _mangeable.size(); i++)
+	{
+		for (int j = 0; j < _mangeable[i].size(); j++)
+		{
+			if (_mangeable[i][j])
+			{
+				if (_mangeable[i][j] & mangeable::boule)
+				{
+					boule.setPosition(i * 10, j * 10);
+					_window.draw(boule);
+				}
+				if (_mangeable[i][j] & mangeable::fruit)
+				{
+					//draw fruit
+				}
+				if (_mangeable[i][j] & mangeable::grosseBoule)
+				{
+					//draw grosseBoule rand 4 power up
+				}
+			}
+		}
+	}
+}
 void Jeu::draw(bool display)
 {
 	_window.clear();
 	_window.draw(_map);
+	drawMangeable();
 
 	_window.draw(_pacman);
 	for (auto f : _fantome)
@@ -82,6 +122,10 @@ void Jeu::play()
 		shakeScreen();
 
 		_pacman.move(_pacman.getDirection(), _map);
+		if (_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)])
+		{
+			_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)] = false;
+		}
 
 		for (auto f : _fantome)
 		{
@@ -125,17 +169,16 @@ void Jeu::pause(std::string msg)
 	rect.setSize(sf::Vector2f(float(_window.getSize().x), 75));
 	_window.draw(rect);
 
+	sf::Event event;
+
+	_window.pollEvent(event);
+
 	//Dessine le message
 	sf::Text pauseMsg(msg, _font, 60);
 	_window.draw(pauseMsg);
 
-	//Affiche la fenêtre
+	//Affiche la fenêtre	//L'event queue a presque assurément déjà un key press qui a causé l'entrée dans Jeu::pause, donc on pop cet éènement avant la boucle de pause
 	_window.display();
-
-	sf::Event event;
-
-	_window.pollEvent(event);	//L'event queue a presque assurément déjà un key press qui a causé l'entrée dans Jeu::pause, donc on pop cet éènement avant la boucle de pause
-
 	bool loop = true;
 	while (loop)
 	{
@@ -181,6 +224,7 @@ void Jeu::killPacman()
 		_window.clear();
 
 		_window.draw(_map);
+		drawMangeable();
 
 		for (auto f : _fantome)
 			_window.draw(*f);

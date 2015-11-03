@@ -20,6 +20,12 @@
 #include "windowsAPIwrapper.h"
 #include <random>
 #include "algo.h"
+enum mangeable
+{
+	boule = 1,
+	fruit = 2,
+	grosseBoule = 4
+};
 class Jeu
 {
 	sf::RenderWindow _window;		//Fenetre du jeu
@@ -39,11 +45,14 @@ class Jeu
 	int _targetfps;
 	float _shake;
 	bool _playing = true;
+	std::vector<std::vector<int>> _mangeable; //Les boules à manger sur la map
 public:
 	Jeu(std::string map);
 	~Jeu();
 
 	void draw(bool display = true);
+
+	void drawMangeable();
 
 	void play();
 

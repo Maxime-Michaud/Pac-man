@@ -178,6 +178,8 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map)
 			{
 				std::cout << "un chemin a ete pusher " << std::endl;
 				tousBonsChemins.push_back(bonChemin);
+				//break; //Effacer ici pour trouver LE PLUS EFFICACE
+
 			}
 		}
 		else if (nombreEssais < 4)
@@ -206,13 +208,12 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map)
 			directionTheorique = tourner(directionTheorique);
 			ligneParcoursTheorique = bonChemin.back()._ligne;
 			posTheorique = bonChemin.back()._posi;
-			//nombreEssais++;
-			//bonChemin.back()._nbEssaie++;
 			bonChemin.back()._direction = directionTheorique;
 		}
 		compteur++;
 	}
 
+	//Détemrine le chemin le plus court si on voulait plus d'un chemin (voir le commentaire plus haut danbs la boucle)
 	int plusPetitVecteur = 1000;
 	int index = 0;
 	if (!tousBonsChemins.empty())
@@ -311,7 +312,7 @@ void FantomeRose::move(char direction, sf::Vector2f posPacMan, Map &map)
 {
 	if (_isDead)
 	{
-		fantomeDead(map, sf::Vector2f(1000, 900));
+		fantomeDead(map, sf::Vector2f(600, 600));
 		return;
 	}
 	//Personnage::move(direction, map);
