@@ -82,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="laser.h">
       <Filter>Fichiers d%27en-tête</Filter>
+	</ClInclude>
+    <ClInclude Include="Personnage.h">
+      <Filter>Jeu\Personnage</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeTraveller.h">
+      <Filter>Jeu\Personnage</Filter>
     </ClInclude>
     <ClInclude Include="Jeu.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -98,5 +104,28 @@
     <ClInclude Include="FantomeRose.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="laser.h">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="divers">
+      <UniqueIdentifier>{a685fce0-dbd1-42a3-a03b-62726be27bc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu">
+      <UniqueIdentifier>{cd616e66-0f7d-4001-a7a1-c4410424ba3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Personnage">
+      <UniqueIdentifier>{4c07cefc-7f88-47ad-b1c2-70050cb738de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Personnage\Fantome">
+      <UniqueIdentifier>{baaf8eca-acb0-494f-ad87-f8b928aca902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Personnage\Pac Man">
+      <UniqueIdentifier>{94c87bce-040d-42c2-9e95-8b66356ae6ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jeu\Map">
+      <UniqueIdentifier>{38ee7eff-bcde-4200-94f0-381fa7de5302}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

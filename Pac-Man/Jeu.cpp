@@ -95,7 +95,7 @@ void Jeu::play()
 		draw();
 
 		for (int i = threads.size() - 1; i >= 0; i--)
-			threads[i].detach();
+			threads[i].join();
 
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
 	}
