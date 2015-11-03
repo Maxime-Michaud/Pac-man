@@ -28,7 +28,6 @@ public:
 	bool moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f posTheorique, Map &map);
 	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);			 //Prend une décision de la direction à un intersection
-	void tentativeAmbuscade(sf::Vector2f posPacMan, int LignePacMan, Map &map);
+	void tentativeAmbuscade(int LignePacMan, Map &map);
 	bool esseyerLigne(char direction, int &ligneParcoursTheorique, std::vector<sf::Vector2f> &pointsVisites, sf::Vector2f &posTheorique, Map &map, char directionArrivee);
 };
-

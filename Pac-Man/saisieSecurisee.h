@@ -72,12 +72,12 @@ T strtonum(const char * num)
 #endif
 	//Pour les floats
 	if (std::is_floating_point<T>())
-		return strtold(num, nullptr);
+		return static_cast<T>(strtold(num, nullptr));
 	//Pour les ints unsigned
 	if (std::is_unsigned<T>())
-		return strtoull(num, nullptr, 10);
+		return static_cast<T>(strtoull(num, nullptr, 10));
 	//Il ne reste que les ints:
-	return strtoll(num, nullptr, 10);
+	return static_cast<T>(strtoll(num, nullptr, 10));
 }
 
 template <typename T, bool can_throw = true>
@@ -133,12 +133,12 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 			if (can_throw && std::is_unsigned<T>())
 				throw std::invalid_argument("Un nombre unsigned ne peux commencer par '-'!");
 
-			num += in.get();
+			num += static_cast<char>(in.get());
 		}
 
 		//Copie la partie intégrale dans le nombre
 		while (in.peek() >= '0' && in.peek() <= '9')
-			num += in.get();
+			num += static_cast<char>(in.get());
 
 		//Pour les nombres a virgule flottante
 		if (std::is_floating_point<T>() && in.peek() == separateurDecimal)
@@ -148,7 +148,7 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 			in.get();
 
 			while (in.peek() >= '0' && in.peek() <= '9')
-				num += in.get();
+				num += static_cast<char>(in.get());
 		}
 
 		//Si aucun nombre n'a été lu, quitte la boucle

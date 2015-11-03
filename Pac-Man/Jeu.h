@@ -13,12 +13,22 @@
 #include <fstream>
 #include "FantomeRouge.h"
 #include "FantomeRose.h"
+#include "FantomeOrange.h"
+#include "FantomeBleu.h"
 #include "PacMan.h"
 #include "map.h"
 #include "windowsAPIwrapper.h"
-#include <random>		
+#include <random>
 #include "algo.h"
 #include <thread>
+
+enum mangeable
+{
+	boule = 1,
+	fruit = 2,
+	grosseBoule = 4
+};
+
 class Jeu
 {
 	sf::RenderWindow _window;		//Fenetre du jeu
@@ -33,17 +43,19 @@ class Jeu
 	sf::Vector2f _startpos;		//Position de depart
 	sf::Vector2f _ghostStart;	//Position de depart des fantomes
 
-
 	sf::Font _font;
 
 	int _targetfps;
-
+	float _shake;
 	bool _playing = true;
+	std::vector<std::vector<int>> _mangeable; //Les boules à manger sur la map
 public:
 	Jeu(std::string map);
 	~Jeu();
 
 	void draw(bool display = true);
+
+	void drawMangeable();
 
 	void play();
 

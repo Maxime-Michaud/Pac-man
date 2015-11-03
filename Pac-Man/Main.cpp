@@ -12,7 +12,6 @@ TODO ajouter une description
 #include "autosfml.h"	//Définis des macros pour inclure les .lib de SFML, like a paresseux
 #include "Jeu.h"
 
-
 void main(int argc, char* argv[])
 {
 	std::string map;
@@ -24,5 +23,4 @@ void main(int argc, char* argv[])
 	Jeu jeu(map);
 	jeu.play();
 
-	//system("C:\\Users\\Nicholas1\\Desktop\\pac-man\\x64\\Debug\\pac-man.exe map1.txt");
 }

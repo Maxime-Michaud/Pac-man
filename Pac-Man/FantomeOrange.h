@@ -1,10 +1,12 @@
 #pragma once
 #include "fantome.h"
-class FantomeRouge : public Fantome
+class FantomeOrange : public Fantome
 {
+	const int _nombreIntersectionAvantChangerDirection = 3;
+	int _nbIntersectionPasse = 0;
 public:
-	FantomeRouge();
-	~FantomeRouge();
+	FantomeOrange();
+	~FantomeOrange();
 	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);			 //Prend une décision de la direction à un intersection
 };

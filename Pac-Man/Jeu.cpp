@@ -19,15 +19,16 @@ Jeu::Jeu(std::string map)
 	std::ifstream in;
 	in.open(map);
 	_map.lireMap(in);
-	
+
 	//Initialisation des personnages
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
-	
+
 	_ghostStart = _map.getLigne(3).getFin();
 	_fantome.push_back(new FantomeRouge());
 	_fantome.push_back(new FantomeRose());
-	
+	_fantome.push_back(new FantomeOrange());
+	_fantome.push_back(new FantomeBleu());
 
 	for (auto f : _fantome)
 	{
@@ -40,21 +41,60 @@ Jeu::Jeu(std::string map)
 	_font.loadFromFile("steelfish rg.ttf");
 
 	_targetfps = 60;
+
+	_shake = 10;
+
+	auto temp = _map.getBoolMap();
+	_mangeable.resize(temp.size());
+	for (int i = 0; i < temp.size(); i++)
+	{
+		_mangeable[i].resize(temp[i].size());
+		for (int j = 0; j < temp[i].size(); j++)
+		{
+			_mangeable[i][j] = int(!temp[i][j]);
+		}
+	}
 }
 
 Jeu::~Jeu()
 {
-	for (int i = _fantome.size() - 1; i >= 0; i--)
-	{
-		delete _fantome[i];
-		_fantome.pop_back();
-	}
+	for (auto f : _fantome)
+		delete f;
 }
 
+void Jeu::drawMangeable()
+{
+	sf::CircleShape boule;
+	boule.setRadius(2);
+	boule.setFillColor(sf::Color::Yellow);
+	for (int i = 0; i < _mangeable.size(); i++)
+	{
+		for (int j = 0; j < _mangeable[i].size(); j++)
+		{
+			if (_mangeable[i][j])
+			{
+				if (_mangeable[i][j] & mangeable::boule)
+				{
+					boule.setPosition(i * 10, j * 10);
+					_window.draw(boule);
+				}
+				if (_mangeable[i][j] & mangeable::fruit)
+				{
+					//draw fruit
+				}
+				if (_mangeable[i][j] & mangeable::grosseBoule)
+				{
+					//draw grosseBoule rand 4 power up
+				}
+			}
+		}
+	}
+}
 void Jeu::draw(bool display)
-{	
-	_window.clear(sf::Color(200, 200, 200, 255));
+{
+	_window.clear();
 	_window.draw(_map);
+	drawMangeable();
 
 	_window.draw(_pacman);
 	for (auto f : _fantome)
@@ -68,12 +108,11 @@ void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
 
-
 	while (_playing)
 	{
 		//Fais une pause a la fin de la boucle en attendant d'arriver a un temps voulu
 		sf::Clock clock;
-		
+
 		//Vérifie l'entrée de l'utilisateur
 		auto keys = getKeyPress();
 
@@ -83,6 +122,10 @@ void Jeu::play()
 		shakeScreen();
 
 		_pacman.move(_pacman.getDirection(), _map);
+		if (_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)])
+		{
+			_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)] = false;
+		}
 
 		std::vector<std::thread> threads;
 
@@ -114,7 +157,7 @@ std::string Jeu::getKeyPress()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		pause();
-	
+
 	return keys;
 }
 
@@ -122,58 +165,69 @@ void Jeu::pause(std::string msg)
 {
 	//Dessine le jeu
 	draw(false);
-	
+
+	//Dessine un background pour le message
+	sf::RectangleShape rect;
+	rect.setFillColor(sf::Color(0, 0, 0, 100));	//noir semi-transparent
+	rect.setSize(sf::Vector2f(float(_window.getSize().x), 75));
+	_window.draw(rect);
+
+	sf::Event event;
+
+	_window.pollEvent(event);
+
 	//Dessine le message
 	sf::Text pauseMsg(msg, _font, 60);
 	_window.draw(pauseMsg);
 
-	//Affiche la fenêtre
+	//Affiche la fenêtre	//L'event queue a presque assurément déjà un key press qui a causé l'entrée dans Jeu::pause, donc on pop cet éènement avant la boucle de pause
 	_window.display();
-
-
-	sf::Event event;
-
-	_window.pollEvent(event);	//L'event queue a presque assurément déjà un key press qui a causé l'entrée dans Jeu::pause, donc on pop cet éènement avant la boucle de pause
-	while (true)
+	bool loop = true;
+	while (loop)
 	{
 		_window.pollEvent(event);
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
 		{
 			//Attend qu'on relache avant de dépauser
-			while (true)
+			while (loop)
 			{
 				_window.pollEvent(event);
 				if (event.type == sf::Event::KeyReleased)
-					break;
+					loop = false;
 			}
-			break;
 		}
-	} 
+	}
 }
 
 void Jeu::shakeScreen()
 {
 	if (_pacman.getLaser())
 	{
+		if (_shake < 1) _shake = 1;
+		_shake++;
+
 		sf::Vector2i windowPos;
-		windowPos.x = _defaultWinPos.x +_window.getPosition().x / 2 + rand() % 15 - 4;
-		windowPos.y = _defaultWinPos.y +_window.getPosition().y / 2 + rand() % 15 - 4;
+		windowPos.x = static_cast<int>(_defaultWinPos.x + rand() % static_cast<int>(_shake) - _shake/ 2);
+		windowPos.y = static_cast<int>(_defaultWinPos.y + rand() % static_cast<int>(_shake) - _shake / 2);
 		_window.setPosition(windowPos);
 	}
 	else
-		_window.setPosition(_defaultWinPos);
+	{
+		_shake -= .5;
 
+		_window.setPosition(_defaultWinPos);
+	}
 }
 
 void Jeu::killPacman()
 {
-
 	while (!_pacman.hasDisappeared())
 	{
 		sf::Clock clock;
-		_window.clear(sf::Color(200, 200, 200, 255));
+		_window.clear();
 
 		_window.draw(_map);
+		drawMangeable();
 
 		for (auto f : _fantome)
 			_window.draw(*f);
@@ -249,10 +303,10 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 	else
 	{
 		if ((isBetween(_pacman.getPos().x + 5 - _pacman.Width, fantome.getPos().x - fantome.Width, fantome.getPos().x + fantome.Width) || //Coté gauche de pacman dans le fantome
-			isBetween(_pacman.getPos().x  - 5+ _pacman.Width, fantome.getPos().x - fantome.Width, fantome.getPos().x + fantome.Width)) && //Coté droit de pacman dans le fantome
-			(isBetween(_pacman.getPos().y + 5- _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width) || //Coté haut de pacman dans le fantome
-			isBetween(_pacman.getPos().y  - 5+ _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width)) && //Coté bas de pacman dans le fantome
-			!fantome.isDead())	//Le fantome mort ne peut pas tuer pac-man	 
+			isBetween(_pacman.getPos().x - 5 + _pacman.Width, fantome.getPos().x - fantome.Width, fantome.getPos().x + fantome.Width)) && //Coté droit de pacman dans le fantome
+			(isBetween(_pacman.getPos().y + 5 - _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width) || //Coté haut de pacman dans le fantome
+				isBetween(_pacman.getPos().y - 5 + _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width)) && //Coté bas de pacman dans le fantome
+			!fantome.isDead())	//Le fantome mort ne peut pas tuer pac-man
 			killPacman();
 	}
 	return false;
@@ -269,6 +323,16 @@ std::thread Jeu::buildMoveThread(Fantome * fantome)
 	{
 		auto moveFunc = &FantomeRouge::move;
 		return std::thread(moveFunc, (FantomeRouge*)fantome, fantome->getDirection(), _pacman.getPos(), _map);
+	}
+	else if (typeid(*fantome).name() == typeid(FantomeOrange).name())
+	{
+		auto moveFunc = &FantomeOrange::move;
+		return std::thread(moveFunc, (FantomeOrange*)fantome, fantome->getDirection(), _pacman.getPos(), _map);
+	}
+	else if (typeid(*fantome).name() == typeid(FantomeBleu).name())
+	{
+		auto moveFunc = &FantomeBleu::move;
+		return std::thread(moveFunc, (FantomeBleu*)fantome, fantome->getDirection(), _fantome[0]->getPos(), _map);
 	}
 	throw std::exception("Le type de fantome est inconnu");
 }

@@ -11,14 +11,13 @@ PacMan::PacMan()
 	_direction = 'd';
 	_directionProchaine = 'd';
 	_deathCount = 0;
-	_deathIncrement = .4;
+	_deathIncrement = .4f;
 
 	_color = sf::Color(255, 255, 0, 255);
 
 	_pos = sf::Vector2f(300, 300);
 	_laserSB.loadFromFile("BWAAAAH.wav");
 	_laserSound.setBuffer(_laserSB);
-
 }
 
 PacMan::~PacMan()
@@ -136,8 +135,6 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		laser.draw(target, states);
 	}
 
-
-	
 	target.draw(vertices);
 }
 
@@ -145,7 +142,6 @@ void PacMan::deathAnimation(sf::RenderTarget & target) const
 {
 	auto vertices = buildPacMan();
 	_deathCount += _deathIncrement;
-
 
 	for (int i = 0; i < _deathCount &&
 		i + _step + 1 < vertices.getVertexCount();
@@ -178,5 +174,4 @@ void PacMan::respawn(sf::Vector2f pos)
 	_pos = pos;
 	_step = 0;
 	_deathCount = 0;
-
 }

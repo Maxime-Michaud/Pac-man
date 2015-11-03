@@ -41,7 +41,7 @@ public:
 	/// <summary>
 	/// Retourne dans le passé
 	/// </summary>
-	virtual void goBack() = 0;
+	//virtual void goBack();
 };
 
 template<typename T>

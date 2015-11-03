@@ -14,8 +14,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "map.h"
+#include "TimeTraveller.h"
 
-class Personnage : public sf::Drawable
+class Personnage : public sf::Drawable, public TimeTraveller <sf::Vector2f>
 {
 protected:
 	sf::Vector2f _pos;		//Position sur la map
@@ -69,8 +70,7 @@ public:
 	/// <param name="x">Déplacement horizontal</param>
 	/// <param name="y">Déplacement vertical</param>
 	virtual void move(char direction, Map &map);
-	void changerDeLigne(char direction, Map &map);
-
+	bool changerDeLigne(char direction, Map &map);
 
 	char getDirection();
 	void setDirection(char d);

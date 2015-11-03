@@ -19,6 +19,7 @@ class Fantome : public Personnage
 {
 protected:
 	//Variables pour les dessins====================================
+	std::string _nom;
 	sf::Color _color;					//Couleur du fantome
 
 	sf::Vector2f _headOffset;			//Décalage de la tête par rapport au centre
@@ -34,8 +35,8 @@ protected:
 	static const int _eyeSmooth = 8;	//Pour les yeux
 	static const int _pupilSmooth = 8;	//Pour les pupilles
 
-	float _eyeSize;						//Grosseur des yeux
-	float _pupilSize;					//grosseur des pupilles
+	double _eyeSize;						//Grosseur des yeux
+	double _pupilSize;					//grosseur des pupilles
 	float _feetWidth;					//Largeur des pieds
 
 	//Fin des variables pour les dessins============================
@@ -56,9 +57,10 @@ public:
 
 	const int Width = _width;
 
+	std::string getNom();	//Renvois le nom du fantome(nommer par sa couleur)
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
-	void fantomeDead(Map & map, sf::Vector2f pacManPos, sf::Vector2f window);													 //L'animation et la placement du fantome quand il est mort
+	void fantomeDead(Map & map, sf::Vector2f window);													 //L'animation et la placement du fantome quand il est mort
 	bool isDead() const;	//Obtiens si le fantome est mort ou vivant
 
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;

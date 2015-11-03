@@ -7,6 +7,7 @@ Map::~Map()
 Map::Map()
 {
 	_mapColor = sf::Color();
+	_mapSize = sf::Vector2i(70, 70);
 }
 
 void Map::ajouterLigne(Ligne ligne)
@@ -75,6 +76,8 @@ void Map::lireMap(std::istream & map)
 	{
 		ajouterLigne(Ligne(linePos[i], linePos[i + 1], linePos[i + 2], linePos[i + 3]));
 	}
+
+	_bools = getBoolMap();
 }
 
 bool Map::valideNouvelleLigne(Ligne & l)
@@ -106,24 +109,132 @@ int Map::quelleLigne(sf::Vector2f ligne, int noLigne)
 
 void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	sf::VertexArray quads(sf::Quads);
+	target.draw(getOutline()[0], states);
+}
 
-	sf::Vector2f offset(-_width, -_width);
-	//Pour chaque ligne, crée un rectangle et l'ajoute a quads
-	for (auto l : _map)
+std::vector<sf::VertexArray> Map::getOutline() const
+{
+	std::vector<sf::VertexArray> lines;
+
+	sf::Color lineColor = sf::Color(0, 0, 255, 255);
+
+	lines.push_back(sf::VertexArray(sf::Lines));
+
+	for (int i = 1; i < _bools.size() - 1; i++)
 	{
-		//Haut-Gauche
-		quads.append(sf::Vertex(l.getDebut() + offset, _mapColor));
+		for (int j = 1; j < _bools[i].size() - 1; j++)
+		{
+			//Si il s'agit d'une zone traversable
+			if (!_bools[i][j])
+			{
+				//Mur vertical gauche
+				if (_bools[i - 1][j])
+				{
+					//Point en haut de la ligne
+					if (!_bools[i - 1][j - 1]) 
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width - _width), lineColor));
 
-		//Haut-Droit
-		quads.append(sf::Vertex(sf::Vector2f(l.getFin().x - offset.x, l.getDebut().y + offset.y), _mapColor));
+					//Point en bas de la ligne
+					if (!_bools[i - 1][j + 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width + _width), lineColor));
 
-		//Bas-Droit
-		quads.append(sf::Vertex(l.getFin() - offset, _mapColor));
+					//Point en haut de la ligne
+					if (!_bools[i - 1][j - 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width - _width), lineColor));
 
-		//Bas-Gauche
-		quads.append(sf::Vertex(sf::Vector2f(l.getDebut().x + offset.x, l.getFin().y - offset.y), _mapColor));
+					//Point en bas de la ligne
+					if (!_bools[i - 1][j + 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width + _width), lineColor));
+
+				}
+
+				//Mur vertical droit
+				if (_bools[i + 1][j])
+				{
+					//Point en haut de la ligne
+					if (!_bools[i + 1][j - 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width), lineColor));
+
+					//Point en haut de la ligne
+					if (!_bools[i + 1][j + 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width), lineColor));
+				}
+
+				//Mur horizontal haut
+				if (_bools[i][j - 1])
+				{
+					//Point a gauche de la ligne
+					if (!_bools[i - 1][j - 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width - _width), lineColor));
+
+					//Point a droite de la ligne
+					if (!_bools[i + 1][j - 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width), lineColor));
+				}
+
+				//Mur horizontal bas
+				if (_bools[i][j + 1])
+				{
+					//Point a gauche de la ligne
+					if (!_bools[i - 1][j + 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width + _width), lineColor));
+
+					//Point a droite de la ligne
+					if (!_bools[i + 1][j + 1])
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width), lineColor));
+					else
+						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width), lineColor));
+				}
+			}
+		}
 	}
 
-	target.draw(quads);
+	return lines;
+}
+
+std::vector<std::vector<bool>> Map::getBoolMap() const
+{
+	std::vector<std::vector<bool>> boolMap;
+
+	boolMap.resize(_mapSize.x);
+
+	for (int i = 0; i < _mapSize.x; i++)
+	{
+		boolMap[i].resize(_mapSize.y);
+
+		for (int j = 0; j < _mapSize.y; j++)
+		{
+			//Valeur par défaut, qui représente un mur.
+			boolMap[i][j] = true;
+			//Position à laquelle on est rendu
+			sf::Vector2f pos(i * _width, j*_width);
+
+			for (auto it = _map.begin(); it != _map.end() && boolMap[i][j]; it++)
+			{
+				//Si la position est sur une ligne, elle ne représente pas un mur et on quitte la boucle
+				if (it->isOn(pos))
+					boolMap[i][j] = false;
+			}
+		}
+	}
+
+	return boolMap;
 }
