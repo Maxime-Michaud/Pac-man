@@ -20,7 +20,7 @@ public:
 	int quelleLigne(sf::Vector2f ligne, int numLigne);			//retourne le nu de la ligne selon la position
 
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states)const;
-	std::vector<sf::VertexArray> getOutline() const;
+	sf::VertexArray getOutline() const;
 
 	std::vector<std::vector<bool>> getBoolMap() const;
 private:

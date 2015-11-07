@@ -109,16 +109,14 @@ int Map::quelleLigne(sf::Vector2f ligne, int noLigne)
 
 void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	target.draw(getOutline()[0], states);
+	target.draw(getOutline(), states);
 }
 
-std::vector<sf::VertexArray> Map::getOutline() const
+sf::VertexArray Map::getOutline() const
 {
-	std::vector<sf::VertexArray> lines;
+	sf::VertexArray lines(sf::PrimitiveType::Lines);
 
 	sf::Color lineColor = sf::Color(0, 0, 255, 255);
-
-	lines.push_back(sf::VertexArray(sf::Lines));
 
 	for (int i = 1; i < _bools.size() - 1; i++)
 	{
@@ -132,27 +130,27 @@ std::vector<sf::VertexArray> Map::getOutline() const
 				{
 					//Point en haut de la ligne
 					if (!_bools[i - 1][j - 1]) 
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width - _width), lineColor));
 
 					//Point en bas de la ligne
 					if (!_bools[i - 1][j + 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width + _width), lineColor));
 
 					//Point en haut de la ligne
 					if (!_bools[i - 1][j - 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width - _width), lineColor));
 
 					//Point en bas de la ligne
 					if (!_bools[i - 1][j + 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width + _width), lineColor));
 
 				}
 
@@ -161,15 +159,27 @@ std::vector<sf::VertexArray> Map::getOutline() const
 				{
 					//Point en haut de la ligne
 					if (!_bools[i + 1][j - 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width -1, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width -1, j*_width - _width), lineColor));
 
 					//Point en haut de la ligne
 					if (!_bools[i + 1][j + 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width -1, j*_width), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width-1, j*_width + _width), lineColor));
+
+					//Point en haut de la ligne
+					if (!_bools[i + 1][j - 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width - _width), lineColor));
+
+					//Point en haut de la ligne
+					if (!_bools[i + 1][j + 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width + _width), lineColor));
 				}
 
 				//Mur horizontal haut
@@ -177,15 +187,27 @@ std::vector<sf::VertexArray> Map::getOutline() const
 				{
 					//Point a gauche de la ligne
 					if (!_bools[i - 1][j - 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width -1), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width - _width -1), lineColor));
 
 					//Point a droite de la ligne
 					if (!_bools[i + 1][j - 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width -1), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width-1), lineColor));
+
+					//Point a gauche de la ligne
+					if (!_bools[i - 1][j - 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width +1), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width - _width  +1), lineColor));
+
+					//Point a droite de la ligne
+					if (!_bools[i + 1][j - 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width+1), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width+1), lineColor));
 				}
 
 				//Mur horizontal bas
@@ -193,15 +215,26 @@ std::vector<sf::VertexArray> Map::getOutline() const
 				{
 					//Point a gauche de la ligne
 					if (!_bools[i - 1][j + 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width -1), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width + _width-1), lineColor));
 
 					//Point a droite de la ligne
 					if (!_bools[i + 1][j + 1])
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width-1), lineColor));
 					else
-						lines[0].append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width-1), lineColor));
+					//Point a gauche de la ligne
+					if (!_bools[i - 1][j + 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width+1), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width + _width+1), lineColor));
+
+					//Point a droite de la ligne
+					if (!_bools[i + 1][j + 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width+1), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width+1), lineColor));
 				}
 			}
 		}
