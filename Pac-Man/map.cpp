@@ -114,9 +114,10 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 sf::VertexArray Map::getOutline() const
 {
-	sf::VertexArray lines(sf::PrimitiveType::Lines);
+	sf::VertexArray lines(sf::PrimitiveType::Quads);
 
 	sf::Color lineColor = sf::Color(0, 0, 255, 255);
+	sf::Color black;
 
 	for (int i = 1; i < _bools.size() - 1; i++)
 	{
@@ -128,113 +129,118 @@ sf::VertexArray Map::getOutline() const
 				//Mur vertical gauche
 				if (_bools[i - 1][j])
 				{
-					//Point en haut de la ligne
+					//Point en haut à gauche
 					if (!_bools[i - 1][j - 1]) 
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width - _thickness), lineColor));
 
-					//Point en bas de la ligne
+					//Point en bas à gauche
 					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - 1 - _width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width + _thickness), lineColor));
 
-					//Point en haut de la ligne
+
+					//Point en bas à droite
+					if (!_bools[i - 1][j + 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width + _thickness), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width + _width + _thickness), lineColor));
+
+					//Point en haut à droite
 					if (!_bools[i - 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width - _width), lineColor));
-
-					//Point en bas de la ligne
-					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width), lineColor));
-					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + 1 - _width, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width - _width - _thickness), lineColor));
 
 				}
 
 				//Mur vertical droit
 				if (_bools[i + 1][j])
 				{
-					//Point en haut de la ligne
+					//Point en haut¸à gauche
 					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width -1, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width -1, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width - _width - _thickness), lineColor));
 
-					//Point en haut de la ligne
+					//Point en bas à gauche
 					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width -1, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width-1, j*_width + _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width + _width+ _thickness), lineColor));
 
-					//Point en haut de la ligne
+					//Point en bas à droite
+					if (!_bools[i + 1][j + 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+ _thickness, j*_width + _thickness), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+ _thickness, j*_width + _width + _thickness), lineColor));
+
+					//Point en haut¸à droite
 					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width + _thickness, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width - _width), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width + _thickness, j*_width - _thickness -_width), lineColor));
 
-					//Point en haut de la ligne
-					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width), lineColor));
-					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+1, j*_width + _width), lineColor));
 				}
 
 				//Mur horizontal haut
 				if (_bools[i][j - 1])
 				{
-					//Point a gauche de la ligne
+					//Point en haut à gauche 
 					if (!_bools[i - 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width -1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width - _width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width - _width -1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width - _thickness), lineColor));
 
-					//Point a droite de la ligne
+					//Point en haut à droite
 					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width -1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width - _width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width-1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width - _width- _thickness), lineColor));
 
-					//Point a gauche de la ligne
+					//Point en bas à droite
+					if (!_bools[i + 1][j - 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness, j*_width - _width + _thickness), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width - _width + _thickness), lineColor));
+
+					//Point en bas à gauche
 					if (!_bools[i - 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width +1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width - _width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width - _width  +1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width  + _thickness), lineColor));
 
-					//Point a droite de la ligne
-					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width - _width+1), lineColor));
-					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width - _width+1), lineColor));
 				}
 
 				//Mur horizontal bas
 				if (_bools[i][j + 1])
 				{
-					//Point a gauche de la ligne
+					//Point en haut à gauche
 					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width -1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width + _width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width + _width-1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width- _thickness), lineColor));
 
-					//Point a droite de la ligne
+					//Point en haut à droite
 					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width-1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width + _width- _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width-1), lineColor));
-					//Point a gauche de la ligne
+						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width + _width- _thickness), lineColor));
+
+					//Point en bas à droite
+					if (!_bools[i + 1][j + 1])
+						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width + _width + _thickness), lineColor));
+					else
+						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness + _width, j*_width + _width + _thickness), lineColor));
+
+					//Point en bas à gauche
 					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width+1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width- _thickness, j*_width + _width+ _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _width, j*_width + _width+1), lineColor));
+						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width+ _thickness), lineColor));
 
-					//Point a droite de la ligne
-					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width, j*_width + _width+1), lineColor));
-					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width, j*_width + _width+1), lineColor));
 				}
 			}
 		}

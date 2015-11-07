@@ -28,6 +28,7 @@ private:
 	sf::Vector2i _mapSize;
 	std::vector<Ligne> _map;		//Contient toutes les lignes
 	const float _width = 10;		//Largeur des lignes
+	static const int _thickness = 3;
 	sf::Color _mapColor;
 	std::vector<std::vector<bool>> _bools;
 	sf::Vector2f _ghostStart;
