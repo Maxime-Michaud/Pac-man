@@ -20,6 +20,9 @@
 #include "windowsAPIwrapper.h"
 #include <random>
 #include "algo.h"
+#include <ctime>
+#include <list>
+
 enum mangeable
 {
 	boule = 1,
@@ -45,7 +48,12 @@ class Jeu
 	int _targetfps;
 	float _shake;
 	bool _playing = true;
+	std::vector<sf::Vector2f> _posValides;    //Les positions valides dans la map
 	std::vector<std::vector<int>> _mangeable; //Les boules à manger sur la map
+	std::list<std::string> _fruits;			  //Une liste de tous les fruits possibles
+	std::clock_t _temps;					  //Sert à calculer le temps passé dans le jeu
+	bool _fermerHorloge = false;			  //Pour éviter de rouler plusieurs fois le script de x secondes
+	int _nombreFruit = 0;					  //le nombre de fruit présent dans la map
 public:
 	Jeu(std::string map);
 	~Jeu();
@@ -65,4 +73,14 @@ public:
 	void killPacman();
 
 	bool verifieSiMort(Fantome &fantome);
+	
+	//Choisi un position random pour le fruit
+	sf::Vector2f choisirPosRandom();
+
+	//Choisit un fruit dans la liste et le dessine
+	void choisirDessinerFruit(sf::Vector2f &pos);
+
+	//Ajoute un fruit random dans la liste
+	void ajouterFruitListe();
+
 };

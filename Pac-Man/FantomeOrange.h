@@ -2,7 +2,7 @@
 #include "fantome.h"
 class FantomeOrange : public Fantome
 {
-	const int _nombreIntersectionAvantChangerDirection = 3;
+	const int _nombreIntersectionAvantChangerDirection = 2;
 	int _nbIntersectionPasse = 0;
 public:
 	FantomeOrange();

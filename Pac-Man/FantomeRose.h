@@ -12,13 +12,15 @@ public:
 		char _direction;
 		int _nbEssaie = 0;
 		sf::Vector2f _posi;
+		int _nbEloignement = 0;
 
-		Direction::Direction(int ligne, char direction, int nbEssaie, sf::Vector2f posi)
+		Direction::Direction(int ligne, char direction, int nbEssaie, sf::Vector2f posi, int nbEloignement)
 		{
 			_ligne = ligne;
 			_direction = direction;
 			_nbEssaie = nbEssaie;
 			_posi = posi;
+			_nbEloignement = nbEloignement;
 		}
 	};
 
@@ -28,6 +30,6 @@ public:
 	bool moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f posTheorique, Map &map);
 	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);			 //Prend une décision de la direction à un intersection
-	void tentativeAmbuscade(int LignePacMan, Map &map);
+	void tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &posPacMan);
 	bool esseyerLigne(char direction, int &ligneParcoursTheorique, std::vector<sf::Vector2f> &pointsVisites, sf::Vector2f &posTheorique, Map &map, char directionArrivee);
 };

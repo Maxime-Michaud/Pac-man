@@ -44,6 +44,7 @@ Jeu::Jeu(std::string map)
 
 	_shake = 10;
 
+	//Initialise les boules jaune à manger sur tout la map
 	auto temp = _map.getBoolMap();
 	_mangeable.resize(temp.size());
 	for (int i = 0; i < temp.size(); i++)
@@ -52,8 +53,23 @@ Jeu::Jeu(std::string map)
 		for (int j = 0; j < temp[i].size(); j++)
 		{
 			_mangeable[i][j] = int(!temp[i][j]);
+			if (_mangeable[i][j])
+			{
+				_posValides.push_back(sf::Vector2f(i * 10, j * 10));
+			}
+			//Si la boule est dans un coin, elle devient une grosse boule
+			if ((i > 0 && i < temp.size() - 1 && j > 0 && j < temp[i].size() - 1) &&
+				((temp[i - 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
+				(temp[i + 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i - 1][j] == false && temp[i][j] == false) ||
+				(temp[i - 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
+				(temp[i + 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i - 1][j] == false && temp[i][j] == false)))
+			{
+				_mangeable[i][j] = mangeable::grosseBoule;
+			}
 		}
 	}
+	_temps = std::clock();
+
 }
 
 Jeu::~Jeu()
@@ -80,11 +96,15 @@ void Jeu::drawMangeable()
 				}
 				if (_mangeable[i][j] & mangeable::fruit)
 				{
-					//draw fruit
+
+					choisirDessinerFruit(sf::Vector2f((i * 10) - 5, (j * 10) - 4));
 				}
 				if (_mangeable[i][j] & mangeable::grosseBoule)
 				{
-					//draw grosseBoule rand 4 power up
+					boule.setRadius(5);
+					boule.setPosition(i * 10 - 3, j * 10 - 3 );
+					_window.draw(boule);
+					boule.setRadius(2);
 				}
 			}
 		}
@@ -104,6 +124,108 @@ void Jeu::draw(bool display)
 		_window.display();
 }
 
+sf::Vector2f Jeu::choisirPosRandom()
+{
+	int random = rand() % _posValides.size();
+	return _posValides.at(random);
+}
+
+void Jeu::choisirDessinerFruit(sf::Vector2f &posFruit)
+{
+	sf::Vector2f pos;
+	sf::VertexArray trucADessiner(sf::Triangles);
+	switch (_fruits.front()[0])
+	{
+	case 'p':
+		break;
+	case 'o':
+		break;
+	case 'c':			//CERISE
+		//Les boules de la cerise
+		for (int k = 0; k < 2; k++)
+		{
+			for (int i = 0; i <= 8; i++)
+			{
+				pos.x = 4 * cos(2 * (float)M_PI * (i - 1) / 8) + posFruit.x + k * 9;
+				pos.y = 4 * sin(2 * (float)M_PI * (i - 1) / 8) + posFruit.y + 4;
+				trucADessiner.append(sf::Vertex(pos, sf::Color::Red));
+
+				//Repositionne le centre
+				trucADessiner.append(sf::Vertex(sf::Vector2f(posFruit.x + k * 9, posFruit.y + 4), sf::Color(128, 0, 0, 255)));
+
+				//Position du nouveau vertex
+				pos.x = 4 * cos(2 * (float)M_PI * i / 8) + posFruit.x + k * 9;
+				pos.y = 4 * sin(2 * (float)M_PI * i / 8) + posFruit.y + 4;
+
+				trucADessiner.append(sf::Vertex(pos, sf::Color::Red));
+			}
+		}
+
+		//La queue de la cerise
+		//Première partie de la queue
+		pos = sf::Vector2f(posFruit.x, posFruit.y + 4);
+		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
+		pos.x += 6;
+		pos.y -= 10;
+		trucADessiner.append(sf::Vertex(pos, sf::Color(100, 0, 0, 255)));
+		pos.x += 3;
+		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
+
+		//Deuxième partie de la queue
+		pos = sf::Vector2f(posFruit.x + 10, posFruit.y + 4);
+		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
+		pos.x -= 6;
+		pos.y -= 10;
+		trucADessiner.append(sf::Vertex(pos, sf::Color(100, 0, 0, 255)));
+		pos.x -= 3;
+		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
+		break;
+	case 'b':
+		break;
+	case 'f':
+		break;
+	case 'm':
+		break;
+	case 'a':
+		break;
+	default:
+		break;
+	}
+
+	_window.draw(trucADessiner);
+}
+
+void Jeu::ajouterFruitListe()
+{
+	//int random = rand() % 7 + 1;
+	int random = 3;
+	switch (random)
+	{
+	case 1:
+		_fruits.push_back("pomme");
+		break;
+	case 2:
+		_fruits.push_back("orange");
+		break;
+	case 3:
+		_fruits.push_back("cerise");
+		break;
+	case 4:
+		_fruits.push_back("banane");
+		break;
+	case 5:
+		_fruits.push_back("fraise");
+		break;
+	case 6:
+		_fruits.push_back("mure");
+		break;
+	case 8:
+		_fruits.push_back("anana");
+		break;
+	default:
+		break;
+	}
+}
 void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
@@ -124,7 +246,11 @@ void Jeu::play()
 		_pacman.move(_pacman.getDirection(), _map);
 		if (_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)])
 		{
-			_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)] = false;
+			if (_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)] & mangeable::fruit)
+			{
+				_nombreFruit--;
+			}
+			_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)] = 0;
 		}
 
 		for (auto f : _fantome)
@@ -135,6 +261,26 @@ void Jeu::play()
 				f->move(f->getDirection(), _fantome[0]->getPos(), _map);
 			verifieSiMort(*f);
 		}
+
+		//Le temps passé est vérifié
+		int duration = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
+		//À chauque 20 secondes, un fruit au hasard apparait
+		if (duration % 3 == 0)
+		{
+			if (!_fermerHorloge)
+			{
+				ajouterFruitListe();
+				if (_nombreFruit <=2)
+				{
+					_nombreFruit++;
+					sf::Vector2f randomV = choisirPosRandom();
+					_mangeable[randomV.x / 10][randomV.y / 10] += mangeable::fruit;
+				}
+				_fermerHorloge = true;
+			}
+		}
+		else
+			_fermerHorloge = false;
 
 		draw();
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);

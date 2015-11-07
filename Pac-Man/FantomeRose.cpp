@@ -154,34 +154,43 @@ bool FantomeRose::esseyerLigne(char direction, int &ligneParcoursTheorique, std:
 		return false;
 }
 
-void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map)
+void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &posPacMan)
 {
-	std::deque<Direction> bonChemin;
-	std::vector<sf::Vector2f> pointsVisites;						//Les lignes visités  théoriquement par le fantome
-	std::vector<std::deque<Direction>> tousBonsChemins;
-	sf::Vector2f posTheorique = _pos;
-	char directionTheorique = _direction;
-	int ligneParcoursTheorique = _numLigne;
-	pointsVisites.push_back(posTheorique);
-	bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique));
+	std::deque<Direction> bonChemin;					//Contient les directions pour le bon chemin vers pacman
+	std::vector<sf::Vector2f> pointsVisites;			//Les intersections visités  théoriquement par le fantome
+	std::vector<std::deque<Direction>> tousBonsChemins;	//Tous les bons chemin obtenus dans le calcul	
+	sf::Vector2f posTheorique = _pos;					//La position théorique du fantome
+	char directionTheorique = _direction;				//La direction théorique du fantome
+	int ligneParcoursTheorique = _numLigne;				//La ligne sur laquel le fantome se trouve théoriquement
+	int distanceXYAvant = 0;	//Distance entre le fantome et pacman avant un déplacement théorique
+	int distanceXYApres = 0;	//Distance entre le fantome et pacman apres un déplacement théorique
+	pointsVisites.push_back(posTheorique);	//Pousse l'intersection du début et sa direction
+	bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique, 0));
 	int nombreEssais = 0;
-	int compteur = 0;
 	while (bonChemin.size() >= 1)
 	{
-		if (nombreEssais < 4 && esseyerLigne(directionTheorique, ligneParcoursTheorique, pointsVisites, posTheorique, map, bonChemin.back()._direction))
-		{
+		//Calcul la distance avant le déplacement théorique pour pouvoir comparer avec après
+		distanceXYAvant = abs((posTheorique.x - posPacMan.x)) + abs(posTheorique.y - posPacMan.y);
+		//Si le déplacement rencontre les normes d'un bon déplacement (ne s'éloigne pas plus de 2 fois, est sur une ligne valide et cette direction n'a pas été tenter encore)
+		if (nombreEssais < 4 && esseyerLigne(directionTheorique, ligneParcoursTheorique, pointsVisites, posTheorique, map, bonChemin.back()._direction) && bonChemin.back()._nbEloignement <= 1)
+		{	
+			distanceXYApres = abs((posTheorique.x - posPacMan.x)) + abs(posTheorique.y - posPacMan.y);
 			pointsVisites.push_back(posTheorique);
 			bonChemin.back()._nbEssaie++;
-			bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique));
+			//Si le fantome s'éloigne de pacman avec cette direction, augmente le compteur d'éloignement
+			if (distanceXYApres > distanceXYAvant)
+				bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique, 1 + bonChemin.back()._nbEloignement));
+			//Sinon push la direction normalement
+			else
+				bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique, 0));
 			nombreEssais = 0;
+			//Si le fantome se trouve sur la même ligne que pac-man, enregistre ce chemin
 			if (ligneParcoursTheorique == LignePacMan)
 			{
-				std::cout << "un chemin a ete pusher " << std::endl;
 				tousBonsChemins.push_back(bonChemin);
-				//break; //Effacer ici pour trouver LE PLUS EFFICACE
-
 			}
 		}
+		//Sinon si les essais sont moins que 4, tourne vers la droite
 		else if (nombreEssais < 4)
 		{
 			directionTheorique = tourner(directionTheorique);
@@ -189,13 +198,13 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map)
 			bonChemin.back()._nbEssaie++;
 			nombreEssais++;
 		}
+		//Sinon, revient en arrière le chemin n'était pas bon
 		else
 		{
 			bonChemin.pop_back();
 			pointsVisites.pop_back();
 			if (bonChemin.empty())
 			{
-				std::cout << "bon chemin vide   " << std::endl;
 				if (tousBonsChemins.empty())
 				{
 					_direction = inverserDirection(_direction);
@@ -210,10 +219,9 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map)
 			posTheorique = bonChemin.back()._posi;
 			bonChemin.back()._direction = directionTheorique;
 		}
-		compteur++;
 	}
 
-	//Détemrine le chemin le plus court si on voulait plus d'un chemin (voir le commentaire plus haut danbs la boucle)
+	//Détemrine le chemin le plus court si on voulait plus d'un chemin
 	int plusPetitVecteur = 1000;
 	int index = 0;
 	if (!tousBonsChemins.empty())
@@ -232,80 +240,7 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map)
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
 {
-	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
-
-	//Si c'est un cul de sac, retourne sur ses pas
-	switch (_direction)
-	{
-	case 'a':
-		tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x - 1, _pos.y), tempNoLigne);
-		if (tempNoLigne == _numLigne)
-		{
-			tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y + 1), tempNoLigne);
-			if (tempNoLigne == _numLigne)
-			{
-				tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y - 1), tempNoLigne);
-				if (tempNoLigne == _numLigne)
-				{
-					_direction = inverserDirection(_direction);
-					return;
-				}
-			}
-		}
-		break;
-	case 'd':
-		tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x + 1, _pos.y), tempNoLigne);
-		if (tempNoLigne == _numLigne)
-		{
-			tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y + 1), tempNoLigne);
-			if (tempNoLigne == _numLigne)
-			{
-				tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y - 1), tempNoLigne);
-				if (tempNoLigne == _numLigne)
-				{
-					_direction = inverserDirection(_direction);
-					return;
-				}
-			}
-		}
-		break;
-	case 's':
-		tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y + 1), tempNoLigne);
-		if (tempNoLigne == _numLigne)
-		{
-			tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x + 1, _pos.y), tempNoLigne);
-			if (tempNoLigne == _numLigne)
-			{
-				tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x - 1, _pos.y), tempNoLigne);
-				if (tempNoLigne == _numLigne)
-				{
-					_direction = inverserDirection(_direction);
-					return;
-				}
-			}
-		}
-		break;
-	case 'w':
-		tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x, _pos.y - 1), tempNoLigne);
-		if (tempNoLigne == _numLigne)
-		{
-			tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x + 1, _pos.y), tempNoLigne);
-			if (tempNoLigne == _numLigne)
-			{
-				tempNoLigne = map.quelleLigne(sf::Vector2f(_pos.x - 1, _pos.y), tempNoLigne);
-				if (tempNoLigne == _numLigne)
-				{
-					_direction = inverserDirection(_direction);
-					return;
-				}
-			}
-		}
-		break;
-	default:
-		break;
-	}
-
-	tentativeAmbuscade(map.quelleLigne(posPacMan, -10), map);
+	tentativeAmbuscade(map.quelleLigne(posPacMan, -10), map, posPacMan);
 }
 
 void FantomeRose::move(char direction, sf::Vector2f posPacMan, Map &map)
