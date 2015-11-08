@@ -109,15 +109,19 @@ int Map::quelleLigne(sf::Vector2f ligne, int noLigne)
 
 void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	target.draw(getOutline(), states);
+	if (_hasChanged)
+	{
+		_mapOutline = getOutline();
+		_hasChanged = false;
+	}
+	target.draw(_mapOutline, states);
 }
 
 sf::VertexArray Map::getOutline() const
 {
-	sf::VertexArray lines(sf::PrimitiveType::Quads);
+	sf::VertexArray walls(sf::Quads);
 
 	sf::Color lineColor = sf::Color(0, 0, 255, 255);
-	sf::Color black;
 
 	for (int i = 1; i < _bools.size() - 1; i++)
 	{
@@ -131,28 +135,27 @@ sf::VertexArray Map::getOutline() const
 				{
 					//Point en haut à gauche
 					if (!_bools[i - 1][j - 1]) 
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width - _thickness), lineColor));
 
 					//Point en bas à gauche
 					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width + _thickness), lineColor));
-
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width + _thickness), lineColor));
 
 					//Point en bas à droite
 					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width + _width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width + _width + _thickness), lineColor));
 
 					//Point en haut à droite
 					if (!_bools[i - 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width - _width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness - _width, j*_width - _width - _thickness), lineColor));
 
 				}
 
@@ -161,27 +164,27 @@ sf::VertexArray Map::getOutline() const
 				{
 					//Point en haut¸à gauche
 					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width - _width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width - _width - _thickness), lineColor));
 
 					//Point en bas à gauche
 					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width + _width+ _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width - _thickness, j*_width + _width+ _thickness), lineColor));
 
 					//Point en bas à droite
 					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+ _thickness, j*_width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width+ _thickness, j*_width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width+ _thickness, j*_width + _width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width+ _thickness, j*_width + _width + _thickness), lineColor));
 
 					//Point en haut¸à droite
 					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width + _thickness, j*_width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width + _thickness, j*_width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _width + _thickness, j*_width - _thickness -_width), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _width + _thickness, j*_width - _thickness -_width), lineColor));
 
 				}
 
@@ -190,27 +193,27 @@ sf::VertexArray Map::getOutline() const
 				{
 					//Point en haut à gauche 
 					if (!_bools[i - 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width - _width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width - _width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width - _thickness), lineColor));
 
 					//Point en haut à droite
 					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width - _width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width - _width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width - _width- _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width - _width- _thickness), lineColor));
 
 					//Point en bas à droite
 					if (!_bools[i + 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness, j*_width - _width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness, j*_width - _width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width - _width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width - _width + _thickness), lineColor));
 
 					//Point en bas à gauche
 					if (!_bools[i - 1][j - 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width - _width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width - _width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width  + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width - _width  + _thickness), lineColor));
 
 				}
 
@@ -219,34 +222,34 @@ sf::VertexArray Map::getOutline() const
 				{
 					//Point en haut à gauche
 					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width + _width - _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness, j*_width + _width - _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width- _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width- _thickness), lineColor));
 
 					//Point en haut à droite
 					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width + _width- _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width + _width- _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width + _width- _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width + _thickness + _width, j*_width + _width- _thickness), lineColor));
 
 					//Point en bas à droite
 					if (!_bools[i + 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width + _width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness, j*_width + _width + _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness + _width, j*_width + _width + _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width+ _thickness + _width, j*_width + _width + _thickness), lineColor));
 
 					//Point en bas à gauche
 					if (!_bools[i - 1][j + 1])
-						lines.append(sf::Vertex(sf::Vector2f(i*_width- _thickness, j*_width + _width+ _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width- _thickness, j*_width + _width+ _thickness), lineColor));
 					else
-						lines.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width+ _thickness), lineColor));
+						walls.append(sf::Vertex(sf::Vector2f(i*_width - _thickness - _width, j*_width + _width+ _thickness), lineColor));
 
 				}
 			}
 		}
 	}
 
-	return lines;
+	return walls;
 }
 
 std::vector<std::vector<bool>> Map::getBoolMap() const
