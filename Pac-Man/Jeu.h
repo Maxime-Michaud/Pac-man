@@ -22,7 +22,7 @@
 #include "algo.h"
 #include <ctime>
 #include <list>
-
+#include "VecteurDeFantome.h"
 enum mangeable
 {
 	boule = 1,
@@ -36,7 +36,7 @@ class Jeu
 
 	//Personnages
 	PacMan _pacman;					//Personnage principal
-	std::vector<Fantome*> _fantome;			//Fantomes
+	VecteurDeFantome _fantome;			//Fantomes
 
 	//Carte
 	Map _map;					//Carte du jeu

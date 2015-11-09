@@ -23,12 +23,14 @@ Jeu::Jeu(std::string map)
 	//Initialisation des personnages
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
-
+	srand(std::time(NULL));
 	_ghostStart = _map.getLigne(3).getFin();
-	_fantome.push_back(new FantomeRouge());
-	_fantome.push_back(new FantomeRose());
-	_fantome.push_back(new FantomeOrange());
-	_fantome.push_back(new FantomeBleu());
+	/*_fantome.add(new FantomeRouge());
+	_fantome.add(new FantomeRose());
+	_fantome.add(new FantomeOrange());
+	_fantome.add(new FantomeBleu());*/
+	for (int i = 0; i < 100; i++)
+		_fantome.add(new FantomeOrange());
 
 	for (auto f : _fantome)
 	{
@@ -83,6 +85,7 @@ void Jeu::drawMangeable()
 	sf::CircleShape boule;
 	boule.setRadius(2);
 	boule.setFillColor(sf::Color::Yellow);
+
 	for (int i = 0; i < _mangeable.size(); i++)
 	{
 		for (int j = 0; j < _mangeable[i].size(); j++)
@@ -117,8 +120,7 @@ void Jeu::draw(bool display)
 	drawMangeable();
 
 	_window.draw(_pacman);
-	for (auto f : _fantome)
-		_window.draw(*f);
+	_window.draw(_fantome);
 
 	if (display)
 		_window.display();

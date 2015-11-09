@@ -57,13 +57,14 @@ public:
 
 	const int Width = _width;
 
+
 	std::string getNom();	//Renvois le nom du fantome(nommer par sa couleur)
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
 	void fantomeDead(Map & map, sf::Vector2f window);													 //L'animation et la placement du fantome quand il est mort
 	bool isDead() const;	//Obtiens si le fantome est mort ou vivant
-
+	sf::VertexArray getVertexArray()const;
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-	virtual void move(char direction, sf::Vector2f posPacMan, Map &map) = 0;	 //Fait bouger le fantome
+	virtual void move(char direction, sf::Vector2f& posPacMan, Map &map) = 0;	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
 };

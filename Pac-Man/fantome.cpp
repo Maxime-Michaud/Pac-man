@@ -181,7 +181,7 @@ void Fantome::buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const
 	}
 }
 
-void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
+sf::VertexArray Fantome::getVertexArray()const
 {
 	sf::Vector2f eyeOffset(_width / 3, 0);
 
@@ -194,8 +194,11 @@ void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 	buildEye(vert, _pos + eyeOffset + _headOffset);
 	buildEye(vert, _pos - eyeOffset + _headOffset);
-
-	target.draw(vert, states);
+	return vert;
+}
+void Fantome::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	target.draw(getVertexArray(), states);
 }
 
 //Inverse la direction donnée

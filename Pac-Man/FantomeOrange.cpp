@@ -7,7 +7,7 @@ FantomeOrange::FantomeOrange()
 }
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
-void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
+void FantomeOrange::deciderLigne(sf::Vector2f &posPacMan, Map &map)
 {
 	if (_nbIntersectionPasse >= _nombreIntersectionAvantChangerDirection)
 	{
@@ -43,7 +43,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 			aPritUnMauvaisChemin = false;
 			return;
 		}
-		else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
+		/*else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
 		{
 			Personnage::changerDeLigne('w', map);
 			return;
@@ -52,7 +52,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		{
 			Personnage::changerDeLigne('s', map);
 			return;
-		}
+		}*/
 		else
 		{
 			_direction = inverserDirection(_direction);
@@ -67,7 +67,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 			aPritUnMauvaisChemin = false;
 			return;
 		}
-		else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
+		/*else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
 		{
 			Personnage::changerDeLigne('w', map);
 			return;
@@ -76,7 +76,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		{
 			Personnage::changerDeLigne('s', map);
 			return;
-		}
+		}*/
 		else
 		{
 			_direction = inverserDirection(_direction);
@@ -91,7 +91,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 			aPritUnMauvaisChemin = false;
 			return;
 		}
-		else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x - 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x - 1, _pos.y))))
+		/*else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x - 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x - 1, _pos.y))))
 		{
 			Personnage::changerDeLigne('a', map);
 			return;
@@ -100,7 +100,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 		{
 			Personnage::changerDeLigne('d', map);
 			return;
-		}
+		}*/
 		else
 		{
 			_direction = inverserDirection(_direction);
@@ -115,7 +115,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 			aPritUnMauvaisChemin = false;
 			return;
 		}
-		else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x - 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x - 1, _pos.y))))
+		/*else if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x - 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x - 1, _pos.y))))
 		{
 			Personnage::changerDeLigne('a', map);
 			return;
@@ -125,7 +125,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 			Personnage::changerDeLigne('d', map);
 			return;
 		}
-		else
+		else*/
 		{
 			_direction = inverserDirection(_direction);
 			aPritUnMauvaisChemin = true;
@@ -137,7 +137,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	}
 }
 
-void FantomeOrange::move(char direction, sf::Vector2f posPacMan, Map &map)
+void FantomeOrange::move(char direction, sf::Vector2f& posPacMan, Map &map)
 {
 	if (_isDead)
 	{

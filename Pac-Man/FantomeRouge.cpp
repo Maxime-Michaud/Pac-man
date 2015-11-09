@@ -11,7 +11,7 @@ FantomeRouge::~FantomeRouge()
 }
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
-void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
+void FantomeRouge::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 {
 	char directionArrivee = _direction;			//La direction de départ
 	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
@@ -103,7 +103,7 @@ void FantomeRouge::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	}
 }
 
-void FantomeRouge::move(char direction, sf::Vector2f posPacMan, Map &map)
+void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 {
 	if (_isDead)
 	{

@@ -46,6 +46,7 @@
     <ClCompile Include="FantomeBleu.cpp">
       <Filter>Jeu\Personnage\Fantome</Filter>
     </ClCompile>
+    <ClCompile Include="VecteurDeFantome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FantomeOrange.h">
@@ -96,6 +97,7 @@
     <ClInclude Include="FantomeBleu.h">
       <Filter>Jeu\Personnage\Fantome</Filter>
     </ClInclude>
+    <ClInclude Include="VecteurDeFantome.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="divers">

@@ -27,9 +27,9 @@ public:
 	std::deque<Direction> _chemin;
 	FantomeRose();
 	~FantomeRose();
-	bool moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f posTheorique, Map &map);
-	virtual void move(char direction, sf::Vector2f posPacMan, Map &map);	 //Fait bouger le fantome
-	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);			 //Prend une décision de la direction à un intersection
+	bool moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f& posTheorique, Map &map);
+	virtual void move(char direction, sf::Vector2f& posPacMan, Map &map);	 //Fait bouger le fantome
+	virtual void deciderLigne(sf::Vector2f& posPacMan, Map &map);			 //Prend une décision de la direction à un intersection
 	void tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &posPacMan);
 	bool esseyerLigne(char direction, int &ligneParcoursTheorique, std::vector<sf::Vector2f> &pointsVisites, sf::Vector2f &posTheorique, Map &map, char directionArrivee);
 };

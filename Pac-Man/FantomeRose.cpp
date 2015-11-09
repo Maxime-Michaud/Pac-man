@@ -30,7 +30,7 @@ char tourner(char direction)
 }
 
 //Permet au fantôme rose de se déplacer théoriquement sans changer sa position actuelle
-bool FantomeRose::moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f posTheorique, Map &map)
+bool FantomeRose::moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f& posTheorique, Map &map)
 {
 	Ligne temp = map.getLigne(ligneTheorique);
 	sf::Vector2f vtemp(posTheorique);
@@ -238,12 +238,12 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 	}
 }
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
-void FantomeRose::deciderLigne(sf::Vector2f posPacMan, Map &map)
+void FantomeRose::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 {
 	tentativeAmbuscade(map.quelleLigne(posPacMan, -10), map, posPacMan);
 }
 
-void FantomeRose::move(char direction, sf::Vector2f posPacMan, Map &map)
+void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 {
 	if (_isDead)
 	{
