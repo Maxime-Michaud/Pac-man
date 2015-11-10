@@ -25,12 +25,12 @@ Jeu::Jeu(std::string map)
 	_pacman.setPos(_startpos);
 	srand(std::time(NULL));
 	_ghostStart = _map.getLigne(3).getFin();
-	/*_fantome.add(new FantomeRouge());
+	_fantome.add(new FantomeRouge());
 	_fantome.add(new FantomeRose());
 	_fantome.add(new FantomeOrange());
-	_fantome.add(new FantomeBleu());*/
-	for (int i = 0; i < 100; i++)
-		_fantome.add(new FantomeOrange());
+	_fantome.add(new FantomeBleu());
+	/*for (int i = 0; i < 100; i++)
+		_fantome.add(new FantomeOrange());*/
 
 	for (auto f : _fantome)
 	{
@@ -72,6 +72,10 @@ Jeu::Jeu(std::string map)
 	}
 	_temps = std::clock();
 
+	_laserText = sf::Text("Laser overdredive:", _font, 40);
+	_laserText.setPosition(sf::Vector2f(650, 150));
+	_alarmBuffer.loadFromFile("alarm.wav");
+	_alarmSound.setBuffer(_alarmBuffer);
 }
 
 Jeu::~Jeu()
@@ -113,12 +117,79 @@ void Jeu::drawMangeable()
 		}
 	}
 }
+
+void Jeu::drawLaserUi()
+{
+	_window.draw(_laserText);
+	sf::VertexArray laserGauge(sf::Quads);
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 200), sf::Color(200, 200, 200, 255))));
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 200), sf::Color(255, 255, 255, 255))));
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 220), sf::Color(255, 255, 255, 255))));
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 220), sf::Color(200, 200, 200, 255))));
+
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(0, 0, 0, 255))));
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(0, 0, 0, 255))));
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(0, 0, 0, 255))));
+	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(0, 0, 0, 255))));
+	if (_pacman.getLaser())
+	{
+		if (_tempsEntreLaserEtStop2 < sf::milliseconds(0))
+		{
+			_tempsEntreLaserEtStop2 = sf::milliseconds(0);
+		}
+		 sf::Time tempsMs = _tempsEntreLaserEtStop = _tempsEntreLaserEtStop2 + _pacman.getTempsLaser();
+		
+		double ratio = tempsMs / sf::milliseconds(4000);
+		if (tempsMs < sf::milliseconds(4000))
+		{
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255-(255 * ratio), 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+		}
+		else
+		{
+			if (!_jouerSonAlarme)
+			{
+				_alarmSound.play();
+				_jouerSonAlarme = true;
+			}
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
+		}
+	}
+	else
+	{
+		sf::Time tempsMs = _tempsEntreLaserEtStop2 = _tempsEntreLaserEtStop - _pacman.getTempsSansLaser();
+		double ratio = tempsMs / sf::milliseconds(4000);
+		if (tempsMs > sf::milliseconds(0) && tempsMs < sf::milliseconds(4000))
+		{
+			_alarmSound.stop();
+			_jouerSonAlarme = false;
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+		}
+		else if (tempsMs > sf::milliseconds(4000))
+		{
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
+		}
+	}
+	_window.draw(laserGauge);
+}
+
 void Jeu::draw(bool display)
 {
 	_window.clear();
 	_window.draw(_map);
 	drawMangeable();
-
+	drawLaserUi();
 	_window.draw(_pacman);
 	_window.draw(_fantome);
 
@@ -265,9 +336,9 @@ void Jeu::play()
 		}
 
 		//Le temps passé est vérifié
-		int duration = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
+		int duratio = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
 		//À chauque 20 secondes, un fruit au hasard apparait
-		if (duration % 3 == 0)
+		if (duratio % 3 == 0)
 		{
 			if (!_fermerHorloge)
 			{
@@ -349,7 +420,7 @@ void Jeu::shakeScreen()
 	if (_pacman.getLaser())
 	{
 		if (_shake < 1) _shake = 1;
-		_shake++;
+		_shake+= 0.4;
 
 		sf::Vector2i windowPos;
 		windowPos.x = static_cast<int>(_defaultWinPos.x + rand() % static_cast<int>(_shake) - _shake/ 2);
@@ -358,7 +429,7 @@ void Jeu::shakeScreen()
 	}
 	else
 	{
-		_shake -= .5;
+		_shake -= 1;
 
 		_window.setPosition(_defaultWinPos);
 	}

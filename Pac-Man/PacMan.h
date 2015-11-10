@@ -34,16 +34,19 @@ class PacMan : public Personnage
 	mutable bool _keepFiring = false;
 	sf::SoundBuffer _laserSB;
 	mutable sf::Sound _laserSound;
-
+	mutable sf::Clock _tempsLaser;						//Sert à calculer le temps depuis la partie du laser
+	mutable sf::Clock _tempsSansLaser;
 	sf::VertexArray buildPacMan() const;
 public:
 	PacMan();
 	~PacMan();
 
 	//Fire et stop sont const pour pouvoir les utiliser dans sf::draw
-	void fire() const;
-	void stop() const;
+	void fire()const;
+	void stop()const;			
 
+	sf::Time getTempsLaser();	//Retourne le temps en milisecondes passé a faire le laser
+	sf::Time getTempsSansLaser();	//Retourne le temps en milisecondes passé a faire le laser
 	bool getLaser();
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 

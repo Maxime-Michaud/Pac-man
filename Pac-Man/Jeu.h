@@ -54,6 +54,12 @@ class Jeu
 	std::clock_t _temps;					  //Sert à calculer le temps passé dans le jeu
 	bool _fermerHorloge = false;			  //Pour éviter de rouler plusieurs fois le script de x secondes
 	int _nombreFruit = 0;					  //le nombre de fruit présent dans la map
+	sf::Text _laserText;					  //Le texte du ui du laser (Laser overdrive)
+	sf::Time _tempsEntreLaserEtStop;		  //La temps passé à faire le laser
+	sf::Time _tempsEntreLaserEtStop2;		  //Le temps passé à ne pas faire de laser
+	sf::SoundBuffer _alarmBuffer;
+	mutable sf::Sound _alarmSound;
+	bool _jouerSonAlarme = false;			  //Permet de jouer le son une seule fois
 public:
 	Jeu(std::string map);
 	~Jeu();
@@ -62,6 +68,7 @@ public:
 
 	void drawMangeable();
 
+	void drawLaserUi();
 	void play();
 
 	std::string getKeyPress();
