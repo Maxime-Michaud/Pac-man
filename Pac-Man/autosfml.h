@@ -16,6 +16,7 @@
 #pragma comment(lib, "sfml-network-s-d.lib")
 #pragma comment(lib, "sfml-system-s-d.lib")
 #pragma comment(lib, "sfml-window-s-d.lib")
+#pragma comment(lib, "sfeMovie-d.lib")
 #pragma comment(lib, "flac.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "freetype.lib")
@@ -36,6 +37,7 @@
 #pragma comment(lib, "sfml-network-d.lib")
 #pragma comment(lib, "sfml-system-d.lib")
 #pragma comment(lib, "sfml-window-d.lib")
+#pragma comment(lib, "sfeMovie-d.lib")
 #endif
 
 
@@ -69,5 +71,5 @@
 #pragma comment(lib, "sfml-network.lib")
 #pragma comment(lib, "sfml-system.lib")
 #pragma comment(lib, "sfml-window.lib")
-
+#pragma comment(lib, "sfeMovie-d.lib")
 #endif

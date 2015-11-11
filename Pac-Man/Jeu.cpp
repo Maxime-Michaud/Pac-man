@@ -76,6 +76,7 @@ Jeu::Jeu(std::string map)
 	_laserText.setPosition(sf::Vector2f(650, 150));
 	_alarmBuffer.loadFromFile("alarm.wav");
 	_alarmSound.setBuffer(_alarmBuffer);
+	_explosionNucleaire.openFromFile("exp.ogg");
 }
 
 Jeu::~Jeu()
@@ -118,10 +119,12 @@ void Jeu::drawMangeable()
 	}
 }
 
+//Draw le ui du laser
 void Jeu::drawLaserUi()
 {
 	_window.draw(_laserText);
 	sf::VertexArray laserGauge(sf::Quads);
+	//Draw la boite qui contient la jauge
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 200), sf::Color(200, 200, 200, 255))));
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 200), sf::Color(255, 255, 255, 255))));
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 220), sf::Color(255, 255, 255, 255))));
@@ -131,7 +134,7 @@ void Jeu::drawLaserUi()
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(0, 0, 0, 255))));
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(0, 0, 0, 255))));
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(0, 0, 0, 255))));
-	if (_pacman.getLaser())
+	if (_pacman.getLaser())	//Si le laser est activer
 	{
 		if (_tempsEntreLaserEtStop2 < sf::milliseconds(0))
 		{
@@ -158,6 +161,25 @@ void Jeu::drawLaserUi()
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
+			if (tempsMs > sf::milliseconds(8000))
+			{
+				_window.setFramerateLimit(60);
+				_explosionNucleaire.fit(sf::FloatRect(0, 0, _window.getSize().x, _window.getSize().y));
+				_explosionNucleaire.play();
+				_explosionNucleaire.update();
+				while (_explosionNucleaire.getStatus())
+				{
+					_window.clear();
+					_explosionNucleaire.update();
+					_window.draw(_explosionNucleaire);
+					_window.display();
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+					{
+						break;
+					}
+				}
+				_playing = false;
+			}
 		}
 	}
 	else
@@ -180,6 +202,7 @@ void Jeu::drawLaserUi()
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
 		}
+
 	}
 	_window.draw(laserGauge);
 }
@@ -369,7 +392,7 @@ std::string Jeu::getKeyPress()
 		if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)i))
 			keys += char(i + 'a');
 
-	_playing = !sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
+		_playing = !sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		pause();

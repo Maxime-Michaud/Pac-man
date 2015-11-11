@@ -23,6 +23,8 @@
 #include <ctime>
 #include <list>
 #include "VecteurDeFantome.h"
+#include <sfeMovie\Movie.hpp>
+
 enum mangeable
 {
 	boule = 1,
@@ -60,6 +62,8 @@ class Jeu
 	sf::SoundBuffer _alarmBuffer;
 	mutable sf::Sound _alarmSound;
 	bool _jouerSonAlarme = false;			  //Permet de jouer le son une seule fois
+	
+	sfe::Movie _explosionNucleaire;
 public:
 	Jeu(std::string map);
 	~Jeu();
