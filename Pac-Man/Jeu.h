@@ -21,9 +21,9 @@
 #include <random>
 #include "algo.h"
 #include <ctime>
-#include <list>
 #include "VecteurDeFantome.h"
 #include <sfeMovie\Movie.hpp>
+#include "Fruits.h"
 
 enum mangeable
 {
@@ -52,16 +52,27 @@ class Jeu
 	bool _playing = true;
 	std::vector<sf::Vector2f> _posValides;    //Les positions valides dans la map
 	std::vector<std::vector<int>> _mangeable; //Les boules à manger sur la map
-	std::list<std::string> _fruits;			  //Une liste de tous les fruits possibles
+	Fruits _fruits;							  //Les fruits dans la map
 	std::clock_t _temps;					  //Sert à calculer le temps passé dans le jeu
 	bool _fermerHorloge = false;			  //Pour éviter de rouler plusieurs fois le script de x secondes
-	int _nombreFruit = 0;					  //le nombre de fruit présent dans la map
 	sf::Text _laserText;					  //Le texte du ui du laser (Laser overdrive)
 	sf::Time _tempsEntreLaserEtStop;		  //La temps passé à faire le laser
 	sf::Time _tempsEntreLaserEtStop2;		  //Le temps passé à ne pas faire de laser
+
+	//LES SONS ET VIDÉO	
 	sf::SoundBuffer _alarmBuffer;
-	mutable sf::Sound _alarmSound;
-	bool _jouerSonAlarme = false;			  //Permet de jouer le son une seule fois
+	mutable sf::Sound _alarmSound;			  //Son de l'alarme quand le laser est trop utilisé
+	mutable sf::Sound _intro;				  //Son de l'intro
+	sf::SoundBuffer _introBuffer;
+	mutable sf::Sound _chomp;				  //Son quand pac-man mange une boule
+	sf::SoundBuffer _chompBuffer;
+	mutable sf::Sound _fruit;				  //Son quand pac-man mange un fruit
+	sf::SoundBuffer _fruitBuffer;
+	mutable sf::Sound _mort;				  //Son quand pac-man meurt
+	sf::SoundBuffer _mortBuffer;
+	mutable sf::Sound _continue;			  //Son quand le joueur continue
+	sf::SoundBuffer _continueBuffer;
+
 	
 	sfe::Movie _explosionNucleaire;
 public:
@@ -87,11 +98,5 @@ public:
 	
 	//Choisi un position random pour le fruit
 	sf::Vector2f choisirPosRandom();
-
-	//Choisit un fruit dans la liste et le dessine
-	void choisirDessinerFruit(sf::Vector2f &pos);
-
-	//Ajoute un fruit random dans la liste
-	void ajouterFruitListe();
 
 };

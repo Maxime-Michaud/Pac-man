@@ -9,6 +9,7 @@
 
 Jeu::Jeu(std::string map)
 {
+	srand(time(NULL));
 	using namespace winapi;
 	//Initialisation de la fenêtre
 	_window.create(sf::VideoMode(ScreenWidth, ScreenHeight), "Pac-Man");
@@ -72,11 +73,23 @@ Jeu::Jeu(std::string map)
 	}
 	_temps = std::clock();
 
+	//SET DES SONS, TEXTES ET VIDÉOS
 	_laserText = sf::Text("Laser overdredive:", _font, 40);
 	_laserText.setPosition(sf::Vector2f(650, 150));
-	_alarmBuffer.loadFromFile("alarm.wav");
+	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
 	_alarmSound.setBuffer(_alarmBuffer);
-	_explosionNucleaire.openFromFile("exp.ogg");
+	_introBuffer.loadFromFile("intro.wav");				  //La petite musique d'intro
+	_intro.setBuffer(_introBuffer);
+	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
+	_intro.play();
+	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
+	_chomp.setBuffer(_chompBuffer);
+	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
+	_fruit.setBuffer(_fruitBuffer);
+	_mortBuffer.loadFromFile("mort.wav");				  //Son quand pac-man meurt
+	_mort.setBuffer(_mortBuffer);
+	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
+	_continue.setBuffer(_continueBuffer);
 }
 
 Jeu::~Jeu()
@@ -87,10 +100,10 @@ Jeu::~Jeu()
 
 void Jeu::drawMangeable()
 {
-	sf::CircleShape boule;
-	boule.setRadius(2);
-	boule.setFillColor(sf::Color::Yellow);
 
+	sf::Vector2f pos;				//Pour dessiner les triangles de la boule
+	sf::Vector2f posBoule;			//La position de la boule
+	sf::VertexArray boule(sf::Triangles);
 	for (int i = 0; i < _mangeable.size(); i++)
 	{
 		for (int j = 0; j < _mangeable[i].size(); j++)
@@ -99,24 +112,47 @@ void Jeu::drawMangeable()
 			{
 				if (_mangeable[i][j] & mangeable::boule)
 				{
-					boule.setPosition(i * 10, j * 10);
-					_window.draw(boule);
-				}
-				if (_mangeable[i][j] & mangeable::fruit)
-				{
+					posBoule = sf::Vector2f(i * 10, j * 10);
+					for (int i = 0; i <= 8; i++)
+					{
+						//Position du premier point du triangle
+						pos.x = 2 * cos(2 * (float)M_PI * (i - 1) / 8) + posBoule.x;
+						pos.y = 2 * sin(2 * (float)M_PI * (i - 1) / 8) + posBoule.y;
+						boule.append(sf::Vertex(pos, sf::Color::Yellow));
 
-					choisirDessinerFruit(sf::Vector2f((i * 10) - 5, (j * 10) - 4));
+						//Repositionne le centre
+						boule.append(sf::Vertex(posBoule, sf::Color::Yellow));
+
+						//Position du nouveau dernier point
+						pos.x = 2 * cos(2 * (float)M_PI * i / 8) + posBoule.x;
+						pos.y = 2 * sin(2 * (float)M_PI * i / 8) + posBoule.y;
+						boule.append(sf::Vertex(pos, sf::Color::Yellow));
+					}
 				}
 				if (_mangeable[i][j] & mangeable::grosseBoule)
 				{
-					boule.setRadius(5);
-					boule.setPosition(i * 10 - 3, j * 10 - 3 );
-					_window.draw(boule);
-					boule.setRadius(2);
+					posBoule = sf::Vector2f(i * 10, j * 10);
+					for (int i = 0; i <= 8; i++)
+					{
+						//Position du premier point du triangle
+						pos.x = 5 * cos(2 * (float)M_PI * (i - 1) / 8) + posBoule.x;
+						pos.y = 5 * sin(2 * (float)M_PI * (i - 1) / 8) + posBoule.y;
+						boule.append(sf::Vertex(pos, sf::Color::Yellow));
+
+						//Repositionne le centre
+						boule.append(sf::Vertex(posBoule, sf::Color::Yellow));
+
+						//Position du nouveau dernier point
+						pos.x = 5 * cos(2 * (float)M_PI * i / 8) + posBoule.x;
+						pos.y = 5 * sin(2 * (float)M_PI * i / 8) + posBoule.y;
+						boule.append(sf::Vertex(pos, sf::Color::Yellow));
+					}
 				}
 			}
 		}
 	}
+	_window.draw(boule);
+	_fruits.dessinerFruits(_window);
 }
 
 //Draw le ui du laser
@@ -142,32 +178,33 @@ void Jeu::drawLaserUi()
 		}
 		 sf::Time tempsMs = _tempsEntreLaserEtStop = _tempsEntreLaserEtStop2 + _pacman.getTempsLaser();
 		
-		double ratio = tempsMs / sf::milliseconds(4000);
-		if (tempsMs < sf::milliseconds(4000))
+		double ratio = tempsMs / sf::milliseconds(4000);		//Le ration de sonconde passé /4
+		if (tempsMs < sf::milliseconds(4000))					//Dessine la barre verte qui monte
 		{
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255-(255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 		}
-		else
+		else		//Sinon le laser est en over load et dessine la barre rouge seulement et joue le son d'alerte
 		{
-			if (!_jouerSonAlarme)
+			if (!_alarmSound.getStatus())
 			{
 				_alarmSound.play();
-				_jouerSonAlarme = true;
 			}
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
-			if (tempsMs > sf::milliseconds(8000))
+			if (tempsMs > sf::milliseconds(8000))	//Si le laser atteint le point de non retour de 8 secondes, tout explose
 			{
 				_window.setFramerateLimit(60);
 				_explosionNucleaire.fit(sf::FloatRect(0, 0, _window.getSize().x, _window.getSize().y));
 				_explosionNucleaire.play();
 				_explosionNucleaire.update();
-				while (_explosionNucleaire.getStatus())
+				_window.setPosition(sf::Vector2i(0, 0));
+				_alarmSound.stop();
+				while (_explosionNucleaire.getStatus())		//Joue le vidéo de l'explosion nucléaire et ferme le jeu
 				{
 					_window.clear();
 					_explosionNucleaire.update();
@@ -182,20 +219,19 @@ void Jeu::drawLaserUi()
 			}
 		}
 	}
-	else
+	else	//Si le laser n'est pas activé
 	{
 		sf::Time tempsMs = _tempsEntreLaserEtStop2 = _tempsEntreLaserEtStop - _pacman.getTempsSansLaser();
 		double ratio = tempsMs / sf::milliseconds(4000);
-		if (tempsMs > sf::milliseconds(0) && tempsMs < sf::milliseconds(4000))
+		if (tempsMs > sf::milliseconds(0) && tempsMs < sf::milliseconds(4000))	//Si il est entre 0 et 4 seconde, dessine la barre qui monte ou descend
 		{
 			_alarmSound.stop();
-			_jouerSonAlarme = false;
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 		}
-		else if (tempsMs > sf::milliseconds(4000))
+		else if (tempsMs > sf::milliseconds(4000))			//Sinon si il est a plus de 4 seconde, dessine la barre en rouge
 		{
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
@@ -222,106 +258,18 @@ void Jeu::draw(bool display)
 
 sf::Vector2f Jeu::choisirPosRandom()
 {
-	int random = rand() % _posValides.size();
+	int random;
+	do		//Tant que la position choisi au hasard est a 30 pixel en x et y de pacman et ne contient pas de fruit ou de grosses boules
+	{
+		random = rand() % _posValides.size();
+	} while (_mangeable[_posValides.at(random).x / 10][_posValides.at(random).y / 10] &! mangeable::fruit &&
+		_mangeable[_posValides.at(random).x / 10][_posValides.at(random).y / 10] & !mangeable::grosseBoule && 
+		abs(_posValides.at(random).x - _pacman.getPos().x) < 30
+		&& abs(_posValides.at(random).y - _pacman.getPos().y) < 30);
+
 	return _posValides.at(random);
 }
 
-void Jeu::choisirDessinerFruit(sf::Vector2f &posFruit)
-{
-	sf::Vector2f pos;
-	sf::VertexArray trucADessiner(sf::Triangles);
-	switch (_fruits.front()[0])
-	{
-	case 'p':
-		break;
-	case 'o':
-		break;
-	case 'c':			//CERISE
-		//Les boules de la cerise
-		for (int k = 0; k < 2; k++)
-		{
-			for (int i = 0; i <= 8; i++)
-			{
-				pos.x = 4 * cos(2 * (float)M_PI * (i - 1) / 8) + posFruit.x + k * 9;
-				pos.y = 4 * sin(2 * (float)M_PI * (i - 1) / 8) + posFruit.y + 4;
-				trucADessiner.append(sf::Vertex(pos, sf::Color::Red));
-
-				//Repositionne le centre
-				trucADessiner.append(sf::Vertex(sf::Vector2f(posFruit.x + k * 9, posFruit.y + 4), sf::Color(128, 0, 0, 255)));
-
-				//Position du nouveau vertex
-				pos.x = 4 * cos(2 * (float)M_PI * i / 8) + posFruit.x + k * 9;
-				pos.y = 4 * sin(2 * (float)M_PI * i / 8) + posFruit.y + 4;
-
-				trucADessiner.append(sf::Vertex(pos, sf::Color::Red));
-			}
-		}
-
-		//La queue de la cerise
-		//Première partie de la queue
-		pos = sf::Vector2f(posFruit.x, posFruit.y + 4);
-		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
-		pos.x += 6;
-		pos.y -= 10;
-		trucADessiner.append(sf::Vertex(pos, sf::Color(100, 0, 0, 255)));
-		pos.x += 3;
-		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
-
-		//Deuxième partie de la queue
-		pos = sf::Vector2f(posFruit.x + 10, posFruit.y + 4);
-		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
-		pos.x -= 6;
-		pos.y -= 10;
-		trucADessiner.append(sf::Vertex(pos, sf::Color(100, 0, 0, 255)));
-		pos.x -= 3;
-		trucADessiner.append(sf::Vertex(pos, sf::Color(139, 69, 19, 255)));
-		break;
-	case 'b':
-		break;
-	case 'f':
-		break;
-	case 'm':
-		break;
-	case 'a':
-		break;
-	default:
-		break;
-	}
-
-	_window.draw(trucADessiner);
-}
-
-void Jeu::ajouterFruitListe()
-{
-	//int random = rand() % 7 + 1;
-	int random = 3;
-	switch (random)
-	{
-	case 1:
-		_fruits.push_back("pomme");
-		break;
-	case 2:
-		_fruits.push_back("orange");
-		break;
-	case 3:
-		_fruits.push_back("cerise");
-		break;
-	case 4:
-		_fruits.push_back("banane");
-		break;
-	case 5:
-		_fruits.push_back("fraise");
-		break;
-	case 6:
-		_fruits.push_back("mure");
-		break;
-	case 8:
-		_fruits.push_back("anana");
-		break;
-	default:
-		break;
-	}
-}
 void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
@@ -340,15 +288,27 @@ void Jeu::play()
 		shakeScreen();
 
 		_pacman.move(_pacman.getDirection(), _map);
-		if (_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)])
+
+		int x = round(_pacman.getPos().x / 10);
+		int y = round(_pacman.getPos().y / 10);
+		//Vérifie si la case contient un élément mangeable
+		if (_mangeable[x][y])
 		{
-			if (_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)] & mangeable::fruit)
+			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
 			{
-				_nombreFruit--;
+				std::cout << x * 10 << ", " << y * 10 << " no2" << std::endl;
+				if (!_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10)))
+					system("pause");
+				_fruit.play();
 			}
-			_mangeable[round(_pacman.getPos().x / 10)][round(_pacman.getPos().y / 10)] = 0;
+			else if (!_chomp.getStatus())
+			{
+				_chomp.play();
+			}
+			_mangeable[x][y] = 0;
 		}
 
+		//Fait les mouvements des fantomes
 		for (auto f : _fantome)
 		{
 			if (f->getNom() != "bleu")
@@ -359,19 +319,15 @@ void Jeu::play()
 		}
 
 		//Le temps passé est vérifié
-		int duratio = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
+		int duration = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
 		//À chauque 20 secondes, un fruit au hasard apparait
-		if (duratio % 3 == 0)
+		if (duration % 3 == 0)
 		{
 			if (!_fermerHorloge)
 			{
-				ajouterFruitListe();
-				if (_nombreFruit <=2)
-				{
-					_nombreFruit++;
-					sf::Vector2f randomV = choisirPosRandom();
-					_mangeable[randomV.x / 10][randomV.y / 10] += mangeable::fruit;
-				}
+				sf::Vector2f randomV = choisirPosRandom();
+				std::cout << randomV.x << ", " << randomV.y << " no1" << std::endl;
+				_fruits.ajouterFruitListe(randomV, _mangeable[randomV.x / 10][randomV.y / 10]);
 				_fermerHorloge = true;
 			}
 		}
@@ -452,7 +408,7 @@ void Jeu::shakeScreen()
 	}
 	else
 	{
-		_shake -= 1;
+		_shake -= 0.4;
 
 		_window.setPosition(_defaultWinPos);
 	}
@@ -488,6 +444,7 @@ void Jeu::killPacman()
 
 	else
 	{
+		_continue.play();
 		_pacman.respawn(_startpos);
 		_pacman.setLigne(_map.quelleLigne(_startpos, 0));
 		_pacman.setVertical(_map.getLigne(_map.quelleLigne(_startpos, 0)).isVertical());
@@ -546,7 +503,12 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			(isBetween(_pacman.getPos().y + 5 - _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width) || //Coté haut de pacman dans le fantome
 				isBetween(_pacman.getPos().y - 5 + _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width)) && //Coté bas de pacman dans le fantome
 			!fantome.isDead())	//Le fantome mort ne peut pas tuer pac-man
-			killPacman();
+		{
+			_mort.play();
+			killPacman();		
+		}
+			
+
 	}
 	return false;
 }
