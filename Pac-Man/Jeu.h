@@ -24,6 +24,7 @@
 #include "VecteurDeFantome.h"
 #include <sfeMovie\Movie.hpp>
 #include "Fruits.h"
+#include <windows.h>
 
 enum mangeable
 {
@@ -46,6 +47,7 @@ class Jeu
 	sf::Vector2f _ghostStart;	//Position de depart des fantomes
 
 	sf::Font _font;
+	sf::Font _8bitFont;
 
 	int _targetfps;
 	float _shake;
@@ -58,6 +60,10 @@ class Jeu
 	sf::Text _laserText;					  //Le texte du ui du laser (Laser overdrive)
 	sf::Time _tempsEntreLaserEtStop;		  //La temps passé à faire le laser
 	sf::Time _tempsEntreLaserEtStop2;		  //Le temps passé à ne pas faire de laser
+	sf::Text _scoreTxt;
+	int _score = 0;
+	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
+	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 
 	//LES SONS ET VIDÉO	
 	sf::SoundBuffer _alarmBuffer;
@@ -72,9 +78,9 @@ class Jeu
 	sf::SoundBuffer _mortBuffer;
 	mutable sf::Sound _continue;			  //Son quand le joueur continue
 	sf::SoundBuffer _continueBuffer;
-
-	
-	sfe::Movie _explosionNucleaire;
+	mutable sf::Sound _gg;					  //Son quand le joueur gagne un tableau
+	sf::SoundBuffer _ggBuffer;
+	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
 public:
 	Jeu(std::string map);
 	~Jeu();

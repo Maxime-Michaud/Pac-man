@@ -42,6 +42,7 @@ Jeu::Jeu(std::string map)
 
 	//charge la police
 	_font.loadFromFile("steelfish rg.ttf");
+	_8bitFont.loadFromFile("8bit.ttf");
 
 	_targetfps = 60;
 
@@ -71,10 +72,12 @@ Jeu::Jeu(std::string map)
 			}
 		}
 	}
+	_nbBoulesTotal = _posValides.size();
 	_temps = std::clock();
 
 	//SET DES SONS, TEXTES ET VIDÉOS
 	_laserText = sf::Text("Laser overdredive:", _font, 40);
+	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
 	_laserText.setPosition(sf::Vector2f(650, 150));
 	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
 	_alarmSound.setBuffer(_alarmBuffer);
@@ -90,6 +93,8 @@ Jeu::Jeu(std::string map)
 	_mort.setBuffer(_mortBuffer);
 	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
 	_continue.setBuffer(_continueBuffer);
+	_ggBuffer.loadFromFile("gg.wav");
+	_gg.setBuffer(_ggBuffer);
 }
 
 Jeu::~Jeu()
@@ -245,13 +250,14 @@ void Jeu::drawLaserUi()
 
 void Jeu::draw(bool display)
 {
+
 	_window.clear();
 	_window.draw(_map);
 	drawMangeable();
 	drawLaserUi();
 	_window.draw(_pacman);
 	_window.draw(_fantome);
-
+	_window.draw(_scoreTxt);
 	if (display)
 		_window.display();
 }
@@ -294,8 +300,20 @@ void Jeu::play()
 		//Vérifie si la case contient un élément mangeable
 		if (_mangeable[x][y])
 		{
+			_score += 1;
+			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
+			{
+				_nbBouleMange += 1;
+				if (_nbBouleMange >= _nbBoulesTotal)
+				{
+					_gg.play();
+					Sleep(5500);
+					_playing = false;
+				}
+			}
 			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
 			{
+				_score += 10;
 				std::cout << x * 10 << ", " << y * 10 << " no2" << std::endl;
 				if (!_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10)))
 					system("pause");
@@ -306,6 +324,8 @@ void Jeu::play()
 				_chomp.play();
 			}
 			_mangeable[x][y] = 0;
+			std::string temp = "Score  " + std::to_string(_score);
+			_scoreTxt = sf::Text(temp, _8bitFont, 20);
 		}
 
 		//Fait les mouvements des fantomes
@@ -468,6 +488,9 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			if (fantome.getPos().y == _pacman.getPos().y && fantome.getPos().x < _pacman.getPos().x)
 			{
 				fantome.setIsDead(true);
+				_score += 30;
+				std::string temp = "Score  " + std::to_string(_score);
+				_scoreTxt = sf::Text(temp, _8bitFont, 20);
 				return true;
 			}
 			break;
@@ -475,6 +498,9 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			if (fantome.getPos().y == _pacman.getPos().y && fantome.getPos().x > _pacman.getPos().x)
 			{
 				fantome.setIsDead(true);
+				_score += 30;
+				std::string temp = "Score  " + std::to_string(_score);
+				_scoreTxt = sf::Text(temp, _8bitFont, 20);
 				return true;
 			}
 			break;
@@ -482,6 +508,9 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			if (fantome.getPos().x == _pacman.getPos().x && fantome.getPos().y > _pacman.getPos().y)
 			{
 				fantome.setIsDead(true);
+				_score += 30;
+				std::string temp = "Score  " + std::to_string(_score);
+				_scoreTxt = sf::Text(temp, _8bitFont, 20);
 				return true;
 			}
 			break;
@@ -489,6 +518,9 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			if (fantome.getPos().x == _pacman.getPos().x && fantome.getPos().y < _pacman.getPos().y)
 			{
 				fantome.setIsDead(true);
+				_score += 30;
+				std::string temp = "Score  " + std::to_string(_score);
+				_scoreTxt = sf::Text(temp, _8bitFont, 20);
 				return true;
 			}
 			break;
@@ -504,6 +536,10 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 				isBetween(_pacman.getPos().y - 5 + _pacman.Width, fantome.getPos().y - fantome.Width, fantome.getPos().y + fantome.Width)) && //Coté bas de pacman dans le fantome
 			!fantome.isDead())	//Le fantome mort ne peut pas tuer pac-man
 		{
+			_score -= 100;
+			_score += 30;
+			std::string temp = "Score  " + std::to_string(_score);
+			_scoreTxt = sf::Text(temp, _8bitFont, 20);
 			_mort.play();
 			killPacman();		
 		}

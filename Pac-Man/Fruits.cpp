@@ -304,7 +304,6 @@ bool Fruits::retirerFruitManger(sf::Vector2f &pos)
 void Fruits::ajouterFruitListe(sf::Vector2f &pos, int &valMangeable)
 {
 	int random = rand() % 7 + 1;
-	random = 7;
 	switch (random)
 	{
 	case 1:		//Pomme
