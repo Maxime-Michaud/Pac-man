@@ -81,6 +81,8 @@ class Jeu
 	mutable sf::Sound _gg;					  //Son quand le joueur gagne un tableau
 	sf::SoundBuffer _ggBuffer;
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
+	sf::SoundBuffer _megaDeadBuffer;
+	sf::Sound _megaDead;
 public:
 	Jeu(std::string map);
 	~Jeu();

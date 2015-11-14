@@ -24,13 +24,30 @@ PacMan::~PacMan()
 {
 }
 
+float PacMan::getTempsLaserRestant()const
+{
+	return _nbMilisecondeLaser - _tempsPassePowerUpLaser;
+}
+
 void PacMan::fire()const
 {
+
 	if (!_laser)
 	{
 		_tempsLaser.restart();
 		_laser = true;
 		_laserSound.play();
+	}
+	_tempsPassePowerUpLaser = _tempsLaser.getElapsedTime().asMilliseconds() + _tempsMemoireLaser;
+	std::cout << _tempsLaser.getElapsedTime().asMilliseconds() << std::endl;
+	if (_tempsLaser.getElapsedTime().asMilliseconds() >= _nbMilisecondeLaser - _tempsMemoireLaser)
+	{
+		std::cout << "arrêt du laser par le temps ecouler" << std::endl;
+		_powerUpLaser = false;
+		_nbMilisecondeLaser = 0;
+		_tempsMemoireLaser = 0;
+		_tempsPassePowerUpLaser = 0;
+
 	}
 }
 
@@ -38,10 +55,58 @@ void PacMan::stop()const
 {
 	if (_laser)
 	{
+		//_tempsPassePowerUpLaser += _tempsLaser.getElapsedTime().asMilliseconds();
 		_laser = false;
 		_laserSound.stop();
+		_tempsMemoireLaser += _tempsPassePowerUpLaser;
 		_tempsSansLaser.restart();
 
+	}
+}
+
+bool PacMan::getPowerUps(int powerUp)
+{
+	assert(powerUp > 0 && powerUp < 5);
+	switch (powerUp)
+	{
+	case 1:
+		return _powerUpLaser;
+		break;
+	case 2:
+		return _powerUpTimeTravel;
+		break;
+	case 3:
+		return _powerUpMindControl;
+		break;
+	case 4:
+		return _powerUpMarioStar;
+		break;
+	default:
+		break;
+	}
+	return false;
+}
+
+//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
+void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
+{
+	assert(numDuPowerUp > 0 && numDuPowerUp < 5);
+	switch (numDuPowerUp)
+	{
+	case 1:
+		_powerUpLaser = valeur;
+		break;
+	case 2:
+		_powerUpTimeTravel = valeur;
+		break;
+	case 3:
+		_powerUpMindControl = valeur;
+		break;
+	case 4:
+		_powerUpMarioStar = valeur;
+		break;
+	default:
+		break;
 	}
 }
 
@@ -59,6 +124,29 @@ sf::Time PacMan::getTempsSansLaser()
 bool PacMan::getLaser()
 {
 	return _laser;
+}
+
+//Permet d'ajouter ou de supprimer du temps apparti a un power up
+void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
+{
+	assert(numDuPowerUp > 0 && numDuPowerUp < 5);
+	switch (numDuPowerUp)
+	{
+	case 1:
+		_nbMilisecondeLaser += valeur;
+		break;
+	case 2:
+		//_powerUpTimeTravel = valeur;
+		break;
+	case 3:
+		//_powerUpMindControl = valeur;
+		break;
+	case 4:
+		//_powerUpMarioStar = valeur;
+		break;
+	default:
+		break;
+	}
 }
 
 sf::VertexArray PacMan::buildPacMan() const
@@ -151,8 +239,11 @@ bool PacMan::hasDisappeared() const
 
 void PacMan::input(char c)
 {
-	if (c == 'l')
+	if (c == 'l' && _powerUpLaser)
+	{
 		_keepFiring = true;
+	}
+		
 
 	setDirection(c);
 }
