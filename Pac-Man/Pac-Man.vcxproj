@@ -40,7 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -89,7 +89,6 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <DisableSpecificWarnings>4512;4127;4100</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>I:\SFML-2.3.2\include;I:\sfeMovie-Debug-2.0.0-win32\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
