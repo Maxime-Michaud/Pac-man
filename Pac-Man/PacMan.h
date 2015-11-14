@@ -37,6 +37,18 @@ class PacMan : public Personnage
 	mutable sf::Clock _tempsLaser;						//Sert à calculer le temps depuis la partie du laser
 	mutable sf::Clock _tempsSansLaser;
 	sf::VertexArray buildPacMan() const;
+
+	mutable bool _powerUpLaser = false;				  //Le power up du laser
+	mutable bool _powerUpTimeTravel = false;		  //Le power up time traveller
+	mutable bool _powerUpMindControl = false;		  //Le power up mind control
+	mutable bool _powerUpMarioStar = false;			  //Le power up de l'étoile de mario
+
+	//sf::Clock _clockLaser;
+
+	mutable float _tempsPassePowerUpLaser;
+	mutable float _tempsMemoireLaser = 0;
+	mutable float _nbMilisecondeLaser = 0;
+
 public:
 	PacMan();
 	~PacMan();
@@ -45,8 +57,11 @@ public:
 	void fire()const;
 	void stop()const;			
 
+	void setPowerUps(int numDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
+	void changerTempsPowerUp(int numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
 	sf::Time getTempsLaser();	//Retourne le temps en milisecondes passé a faire le laser
 	sf::Time getTempsSansLaser();	//Retourne le temps en milisecondes passé a faire le laser
+	float getTempsLaserRestant()const; //Retourne le temps restant au laser.
 	bool getLaser();
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
