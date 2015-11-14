@@ -57,6 +57,7 @@ public:
 	void fire()const;
 	void stop()const;			
 
+	bool getPowerUps(int);
 	void setPowerUps(int numDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 	void changerTempsPowerUp(int numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
 	sf::Time getTempsLaser();	//Retourne le temps en milisecondes passé a faire le laser
