@@ -89,7 +89,7 @@ bool Map::valideNouvelleLigne(Ligne & l)
 	return true;
 }
 
-Ligne Map::getLigne(int noLigne)
+Ligne Map::getLigne(unsigned int noLigne)
 {
 	if (noLigne >= _map.size()) throw std::invalid_argument("Le numero de ligne est trop grand");
 	return _map[noLigne];

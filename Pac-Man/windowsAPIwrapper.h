@@ -9,6 +9,6 @@
 
 #pragma once
 namespace winapi {
-	extern const int ScreenWidth;
-	extern const int ScreenHeight;
+	extern int ScreenWidth;
+	extern int ScreenHeight;
 }

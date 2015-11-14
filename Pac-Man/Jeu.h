@@ -105,4 +105,5 @@ public:
 	//Choisi un position random pour le fruit
 	sf::Vector2f choisirPosRandom();
 
+	void loadMap(std::string mapName);
 };

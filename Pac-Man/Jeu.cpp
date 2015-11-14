@@ -12,33 +12,19 @@ Jeu::Jeu(std::string map)
 	srand(time(NULL));
 	using namespace winapi;
 	//Initialisation de la fenêtre
-	_window.create(sf::VideoMode(ScreenWidth, ScreenHeight), "Pac-Man");
+	sf::VideoMode test(ScreenWidth, ScreenHeight);
+	_window.create(test, "Pac-Man");
 	_window.setPosition(_defaultWinPos);
 	_window.setKeyRepeatEnabled(false);
 
-	//Initialisation de la map
-	std::ifstream in;
-	in.open(map);
-	_map.lireMap(in);
+	//Initialisation de la map et des fantomes
+	loadMap(map);
 
-	//Initialisation des personnages
+	//Initialisation de pacman
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
-	srand(std::time(NULL));
-	_ghostStart = _map.getLigne(3).getFin();
-	_fantome.add(new FantomeRouge());
-	_fantome.add(new FantomeRose());
-	_fantome.add(new FantomeOrange());
-	_fantome.add(new FantomeBleu());
-	/*for (int i = 0; i < 100; i++)
-		_fantome.add(new FantomeOrange());*/
 
-	for (auto f : _fantome)
-	{
-		f->setPos(_ghostStart);
-		f->setLigne(_map.quelleLigne(_ghostStart, 0));
-		f->setVertical(_map.getLigne(_map.quelleLigne(_ghostStart, 0)).isVertical());
-	}
+	_ghostStart = _fantome[0]->getPos();
 
 	//charge la police
 	_font.loadFromFile("steelfish rg.ttf");
@@ -274,6 +260,75 @@ sf::Vector2f Jeu::choisirPosRandom()
 		&& abs(_posValides.at(random).y - _pacman.getPos().y) < 30);
 
 	return _posValides.at(random);
+}
+
+void Jeu::loadMap(std::string mapName)
+{
+	std::ifstream in;
+	in.open(mapName);
+
+	std::string couleur;
+	int count = 1;
+	while (tolower(static_cast<char>(in.peek())) == 'f')
+	{
+		in.get();	//Get le f
+
+		//Lis le type de fantome
+		in >> couleur;
+
+		//Lis le nombre a placer, 1 si le nombre est absent 
+		in >> count;
+		if (in.bad())
+		{
+			in.clear();
+			count = 1;
+		}
+
+		//Lis la position du fantome
+		auto maybePos = readNumFromStream<float, false>(in, 2, " (,)", '.');
+		sf::Vector2f pos;
+
+		if (maybePos.size() == 2)
+			pos = sf::Vector2f(maybePos[0], maybePos[1]);
+		else
+			pos = _startpos;
+
+
+		//Fantomes a ajouter
+		Fantome** fantomes = new Fantome*[count];
+
+
+		if (couleur == "rouge")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeRouge;
+		else if (couleur == "orange")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeOrange;
+		else if (couleur == "rose")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeRose;
+		else if (couleur == "bleu")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeBleu;
+
+		for (int i = 0; i < count; i++)
+		{
+			fantomes[i]->setPos(pos);
+			_fantome.add(fantomes[i]);
+		}
+
+		//On ne delete pas les pointeurs car ils sont ajoutés au vecteur de fantomes
+		delete[] fantomes;
+		in.ignore(99999,'\n');
+	}
+
+	_map.lireMap(in);
+
+	for (auto &f : _fantome)
+	{
+		f->setLigne(_map.quelleLigne(f->getPos(), 0));
+		f->setVertical(_map.getLigne(f->getNumLigne()).isVertical());
+	}
 }
 
 void Jeu::play()

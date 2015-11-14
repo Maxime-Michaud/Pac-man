@@ -22,5 +22,5 @@ void main(int argc, char* argv[])
 
 	Jeu jeu(map);
 	jeu.play();
-
+	
 }

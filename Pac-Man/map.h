@@ -13,7 +13,7 @@ public:
 	/// Renvois la ligne demandé
 	/// </summary>
 	/// <param name="v">Une position en x et y à laquelle on veut la ligne</param>
-	Ligne getLigne(int noLigne);
+	Ligne getLigne(unsigned int noLigne);
 	void ajouterLigne(Ligne ligne);
 	void lireMap(std::istream &map);
 	bool valideNouvelleLigne(Ligne &l);
