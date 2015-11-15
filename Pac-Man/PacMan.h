@@ -49,6 +49,11 @@ class PacMan : public Personnage
 	mutable float _tempsMemoireLaser = 0;
 	mutable float _nbMilisecondeLaser = 0;
 
+	//pour l'étoile de mario
+	mutable float _nbMilisecondeEtoile = 0;
+	sf::Clock _clockEtoile;
+	int _compteurFrame = 0;
+	mutable bool _stopRepeating = false;
 public:
 	PacMan();
 	~PacMan();
@@ -57,9 +62,13 @@ public:
 	void fire()const;
 	void stop()const;			
 
+	void startClockEtoile();
 	bool getPowerUps(int);
 	void setPowerUps(int numDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 	void changerTempsPowerUp(int numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
+	float getTempsEtoile();		//Rdetourne le temps restant de l'étoile
+	void setCouleurRandom();	//Set la couleur de pac-man au hasard
+	void PacMan::setNormalStat();//reset les stats à la normal
 	sf::Time getTempsLaser();	//Retourne le temps en milisecondes passé a faire le laser
 	sf::Time getTempsSansLaser();	//Retourne le temps en milisecondes passé a faire le laser
 	float getTempsLaserRestant()const; //Retourne le temps restant au laser.

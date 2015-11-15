@@ -87,6 +87,7 @@ Jeu::Jeu(std::string map)
 	_intro.play();
 	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
 	_chomp.setBuffer(_chompBuffer);
+	_chomp.setVolume(50);
 	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
 	_fruit.setBuffer(_fruitBuffer);
 	_mortBuffer.loadFromFile("mort.wav");				  //Son quand pac-man meurt
@@ -97,6 +98,8 @@ Jeu::Jeu(std::string map)
 	_gg.setBuffer(_ggBuffer);
 	_megaDeadBuffer.loadFromFile("deadSound0.wav");
 	_megaDead.setBuffer(_megaDeadBuffer);
+	_starBuffer.loadFromFile("star.wav");
+	_star.setBuffer(_starBuffer);
 }
 
 Jeu::~Jeu()
@@ -160,6 +163,44 @@ void Jeu::drawMangeable()
 	}
 	_window.draw(boule);
 	_fruits.dessinerFruits(_window);
+}
+
+void Jeu::drawEtoileUi()
+{
+	// crée une forme vide
+	sf::ConvexShape convex;
+
+	// définit le nombre de points (5)
+	convex.setPointCount(10);
+
+	// définit les points
+	convex.setPoint(0, sf::Vector2f(715, 235));
+	convex.setPoint(1, sf::Vector2f(738, 275));
+	convex.setPoint(2, sf::Vector2f(785, 285));
+	convex.setPoint(3, sf::Vector2f(752, 317));
+	convex.setPoint(4, sf::Vector2f(758, 365));
+	convex.setPoint(5, sf::Vector2f(715, 345));
+	convex.setPoint(6, sf::Vector2f(675, 365));
+	convex.setPoint(7, sf::Vector2f(681, 317));
+	convex.setPoint(8, sf::Vector2f(648, 285));
+	convex.setPoint(9, sf::Vector2f(695, 275));
+
+	if (_nbFrame < 1)
+	{
+		_randColor1 = rand() % 100;
+		_randColor2 = rand() % 100;
+		_randColor3 = rand() % 156;
+		_nbFrame = 10;
+	}
+	else
+	{
+		_nbFrame--;
+	}
+
+
+	convex.setFillColor(sf::Color(_randColor1 + 115, _randColor2 + 115, _randColor3 + 100, (_pacman.getTempsEtoile() / 5000) * 255));
+
+	_window.draw(convex);
 }
 
 //Draw le ui du laser
@@ -274,6 +315,14 @@ void Jeu::draw(bool display)
 {
 
 	_window.clear();
+	if (!_pacman.getPowerUps(4))
+	{
+		_star.stop();
+	}
+	else
+	{
+		drawEtoileUi();
+	}
 	_window.draw(_map);
 	drawMangeable();
 	drawLaserUi();
@@ -334,13 +383,21 @@ void Jeu::play()
 				}
 				if (_mangeable[x][y] & mangeable::grosseBoule)
 				{
-					int random = rand() % 4 + 1;
-					random = 1;
+					int random = rand() % 2 + 1;
+					if (random == 2)
+						random = 4;
 					switch (random)
 					{
 					case 1:
 						_pacman.setPowerUps(1, true);
 						_pacman.changerTempsPowerUp(1, 2000);
+						break;
+					case 4:
+						if (_pacman.getPowerUps(4))
+							_pacman.startClockEtoile();
+						_star.play();
+						_pacman.setPowerUps(4, true);
+						_pacman.changerTempsPowerUp(4, 5000);
 						break;
 					default:
 						break;

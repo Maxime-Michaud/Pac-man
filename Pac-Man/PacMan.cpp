@@ -29,6 +29,11 @@ float PacMan::getTempsLaserRestant()const
 	return _nbMilisecondeLaser - _tempsPassePowerUpLaser;
 }
 
+float PacMan::getTempsEtoile()
+{
+	return _nbMilisecondeEtoile - _clockEtoile.getElapsedTime().asMilliseconds();
+}
+
 void PacMan::fire()const
 {
 
@@ -126,6 +131,11 @@ bool PacMan::getLaser()
 	return _laser;
 }
 
+void PacMan::startClockEtoile()
+{
+	_clockEtoile.restart();
+}
+
 //Permet d'ajouter ou de supprimer du temps apparti a un power up
 void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 {
@@ -142,7 +152,8 @@ void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 		//_powerUpMindControl = valeur;
 		break;
 	case 4:
-		//_powerUpMarioStar = valeur;
+		_clockEtoile.restart();
+		_nbMilisecondeEtoile = valeur;
 		break;
 	default:
 		break;
@@ -248,8 +259,44 @@ void PacMan::input(char c)
 	setDirection(c);
 }
 
+void PacMan::setCouleurRandom()
+{
+	if (_compteurFrame >=10)
+	{
+		int rand1 = rand() % 156;
+		int rand2 = rand() % 156;
+		int rand3 = rand() % 156;
+		_color = sf::Color(rand1 + 100, rand2 + 100, rand3 + 100);
+		_compteurFrame = 0;
+	}
+	else
+	{
+		_compteurFrame++;
+	}
+	
+}
+
+void PacMan::setNormalStat()
+{
+	_vitesse = 3;
+	_powerUpMarioStar = false;
+	_nbMilisecondeEtoile = 0;
+	_color = sf::Color::Yellow;
+}
+
 void PacMan::move(char direction, Map &map)
 {
+	if (_powerUpMarioStar && _clockEtoile.getElapsedTime().asMilliseconds() < _nbMilisecondeEtoile)
+	{
+		_stopRepeating = false;
+		_vitesse = 5;
+		setCouleurRandom();
+	}
+	else
+	{
+		if (!_stopRepeating)
+			setNormalStat();
+	}
 	Personnage::move(direction, map);
 }
 

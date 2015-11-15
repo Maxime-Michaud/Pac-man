@@ -60,8 +60,12 @@ class Jeu
 	sf::Text _laserText;					  //Le texte du ui du laser (Laser overdrive)
 	sf::Time _tempsEntreLaserEtStop;		  //La temps passé à faire le laser
 	sf::Time _tempsEntreLaserEtStop2;		  //Le temps passé à ne pas faire de laser
-	sf::Text _scoreTxt;
-	int _score = 0;
+	int _nbFrame = 10;						  //Nombre de frame pour activer un action
+	int _randColor1 = 255;					  //un 1er nombre pour une couleur random
+	int _randColor2 = 255;					  //un 2e nombre pour une couleur random				  
+	int _randColor3 = 255;					  //un 3e nombre pour une couleur random
+	sf::Text _scoreTxt;						  //Le texte du score
+	int _score = 0;							  //Le score
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 
@@ -81,8 +85,10 @@ class Jeu
 	mutable sf::Sound _gg;					  //Son quand le joueur gagne un tableau
 	sf::SoundBuffer _ggBuffer;
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
-	sf::SoundBuffer _megaDeadBuffer;
-	sf::Sound _megaDead;
+	sf::SoundBuffer _megaDeadBuffer;		 
+	sf::Sound _megaDead;					   //Son overkill de mort
+	sf::SoundBuffer _starBuffer;
+	sf::Sound _star;					   //Son overkill de mort
 public:
 	Jeu(std::string map);
 	~Jeu();
@@ -92,6 +98,7 @@ public:
 	void drawMangeable();
 
 	void drawLaserUi();
+	void drawEtoileUi();
 	void play();
 
 	std::string getKeyPress();
