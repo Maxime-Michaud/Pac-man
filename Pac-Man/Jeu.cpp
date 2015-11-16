@@ -76,7 +76,7 @@ Jeu::Jeu(std::string map)
 	_temps = std::clock();
 
 	//SET DES SONS, TEXTES ET VIDÉOS
-	_laserText = sf::Text("Laser overdredive:", _font, 40);
+	_laserText = sf::Text("Laser overdredive:", _font, 45);
 	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
 	_laserText.setPosition(sf::Vector2f(650, 150));
 	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
@@ -100,6 +100,8 @@ Jeu::Jeu(std::string map)
 	_megaDead.setBuffer(_megaDeadBuffer);
 	_starBuffer.loadFromFile("star.wav");
 	_star.setBuffer(_starBuffer);
+	_plopBuffer.loadFromFile("plop.wav");
+	_plop.setBuffer(_plopBuffer);
 }
 
 Jeu::~Jeu()
@@ -207,7 +209,7 @@ void Jeu::drawEtoileUi()
 void Jeu::drawLaserUi()
 {
 	std::string testStr = "Laser overdrive : " + std::to_string(_pacman.getTempsLaserRestant());
-	_laserText = sf::Text(testStr, _font, 20);
+	_laserText = sf::Text(testStr, _font, 45);
 	_laserText.setPosition(sf::Vector2f(650, 150));
 	_window.draw(_laserText);
 	sf::VertexArray laserGauge(sf::Quads);
@@ -325,7 +327,8 @@ void Jeu::draw(bool display)
 	}
 	_window.draw(_map);
 	drawMangeable();
-	drawLaserUi();
+	if (_pacman.getPowerUps(1))
+		drawLaserUi();
 	_window.draw(_pacman);
 	_window.draw(_fantome);
 	_window.draw(_scoreTxt);
@@ -377,9 +380,11 @@ void Jeu::play()
 				_nbBouleMange += 1;
 				if (_nbBouleMange >= _nbBoulesTotal)
 				{
+					_star.stop();
 					_gg.play();
 					Sleep(5500);
 					_playing = false;
+					break;
 				}
 				if (_mangeable[x][y] & mangeable::grosseBoule)
 				{
@@ -408,8 +413,7 @@ void Jeu::play()
 			{
 				_score += 10;
 				std::cout << x * 10 << ", " << y * 10 << " no2" << std::endl;
-				if (!_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10)))
-					system("pause");
+				_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10));
 				_fruit.play();
 			}
 			else if (!_chomp.getStatus())
@@ -420,6 +424,10 @@ void Jeu::play()
 			std::string temp = "Score  " + std::to_string(_score);
 			_scoreTxt = sf::Text(temp, _8bitFont, 20);
 		}
+
+		//Fait arrêter le son de l'alarme
+		if (!_pacman.getPowerUps(1))
+			_alarmSound.stop();
 
 		//Fait les mouvements des fantomes
 		for (auto f : _fantome)
@@ -433,13 +441,12 @@ void Jeu::play()
 
 		//Le temps passé est vérifié
 		int duration = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
-		//À chauque 20 secondes, un fruit au hasard apparait
+		//À chauque 3 secondes, un fruit au hasard apparait
 		if (duration % 3 == 0)
 		{
 			if (!_fermerHorloge)
 			{
 				sf::Vector2f randomV = choisirPosRandom();
-				std::cout << randomV.x << ", " << randomV.y << " no1" << std::endl;
 				_fruits.ajouterFruitListe(randomV, _mangeable[randomV.x / 10][randomV.y / 10]);
 				_fermerHorloge = true;
 			}
@@ -631,12 +638,15 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 		{
 			if (_pacman.getPowerUps(4))		//Si pac a une étoile de mario il tue le fantome à la place
 			{
+				_plop.play();
+				_score += 30;
+				std::string temp = "Score  " + std::to_string(_score);
+				_scoreTxt = sf::Text(temp, _8bitFont, 20);
 				fantome.setIsDead(true);
 			}
 			else
 			{
 				_score -= 100;
-				_score += 30;
 				std::string temp = "Score  " + std::to_string(_score);
 				_scoreTxt = sf::Text(temp, _8bitFont, 20);
 				_mort.play();

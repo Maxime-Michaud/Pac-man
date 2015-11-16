@@ -89,6 +89,8 @@ class Jeu
 	sf::Sound _megaDead;					   //Son overkill de mort
 	sf::SoundBuffer _starBuffer;
 	sf::Sound _star;					   //Son overkill de mort
+	sf::SoundBuffer _plopBuffer;
+	sf::Sound _plop;						  //Son quand l'ennemie est touché par pacMan avec un étoile
 public:
 	Jeu(std::string map);
 	~Jeu();
