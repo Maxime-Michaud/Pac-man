@@ -252,30 +252,44 @@ void Fruits::dessinerFruits(sf::RenderWindow &rw)
 			break;
 		case 'a':		//ANANA
 			//Feuilles de l'anana
-			pos = p._pos;
+			/*pos = p._pos;
 			pos.x -= 4;
 			for (int i = 0; i < 5; i++)
 			{
-				trucADessiner.append(sf::Vertex(sf::Vector2f(pos.x + i, pos.y), sf::Color(0, 255, 0, 255)));
-				trucADessiner.append(sf::Vertex(sf::Vector2f(pos.x + (i * 2), pos.y - 15), sf::Color(0, 255, 0, 255)));
-				trucADessiner.append(sf::Vertex(sf::Vector2f(pos.x + 5 + i, pos.y), sf::Color(0, 255, 0, 255)));
-			}
+				trucADessiner.append(sf::Vertex(sf::Vector2f(pos.x + i, pos.y), sf::Color(0, 125, 0, 255)));
+				trucADessiner.append(sf::Vertex(sf::Vector2f(pos.x + (i * 2), pos.y - 15), sf::Color(0, 125, 0, 255)));
+				trucADessiner.append(sf::Vertex(sf::Vector2f(pos.x + 5, pos.y + i/2), sf::Color(0, 255, 0, 255)));
+			}*/
 
-			for (int i = 0; i <= 8; i++)	//Le corps de l'anana
+			for (int i = 0; i <= 8; i++)	//tranche de lanana
 			{
-				pos.x = 6 * cos(2 * (float)M_PI * (i - 1) / 8) + p._pos.x;
+				pos.x = 8 * cos(2 * (float)M_PI * (i - 1) / 8) + p._pos.x;
 				pos.y = 8 * sin(2 * (float)M_PI * (i - 1) / 8) + p._pos.y;
 				trucADessiner.append(sf::Vertex(pos, sf::Color(255, 255, 0, 255)));
 
-				trucADessiner.append(sf::Vertex(sf::Vector2f(p._pos.x, p._pos.y), sf::Color(189, 189, 0, 255)));
+				trucADessiner.append(sf::Vertex(sf::Vector2f(p._pos.x, p._pos.y), sf::Color(230, 230, 0, 255)));
 
 				//Position du nouveau vertex
-				pos.x = 6 * cos(2 * (float)M_PI * i / 8) + p._pos.x;
+				pos.x = 8 * cos(2 * (float)M_PI * i / 8) + p._pos.x;
 				pos.y = 8 * sin(2 * (float)M_PI * i / 8) + p._pos.y;
 
-				trucADessiner.append(sf::Vertex(pos, sf::Color(169, 45, 0, 255)));
+				trucADessiner.append(sf::Vertex(pos, sf::Color(210, 210, 0, 255)));
 			}
 
+			for (int i = 0; i <= 8; i++)	//Le trou de l'anana
+			{
+				pos.x = 4 * cos(2 * (float)M_PI * (i - 1) / 8) + p._pos.x;
+				pos.y = 4 * sin(2 * (float)M_PI * (i - 1) / 8) + p._pos.y;
+				trucADessiner.append(sf::Vertex(pos, sf::Color(0, 0, 0, 255)));
+
+				trucADessiner.append(sf::Vertex(sf::Vector2f(p._pos.x, p._pos.y), sf::Color(0, 0, 0, 255)));
+
+				//Position du nouveau vertex
+				pos.x = 4 * cos(2 * (float)M_PI * i / 8) + p._pos.x;
+				pos.y = 4 * sin(2 * (float)M_PI * i / 8) + p._pos.y;
+
+				trucADessiner.append(sf::Vertex(pos, sf::Color(0, 0, 0, 255)));
+			}
 			break;
 		default:
 			break;

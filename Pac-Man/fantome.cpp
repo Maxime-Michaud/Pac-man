@@ -3,6 +3,8 @@
 
 Fantome::Fantome()
 {
+	_explosionBuffer.loadFromFile("explosion.wav");
+	_explosion.setBuffer(_explosionBuffer);
 	_numLigne = 3;
 	_vitesse = 3;
 	_vertical = true;
@@ -24,6 +26,23 @@ Fantome::~Fantome()
 void Fantome::setIsDead(bool isDead)
 {
 	_isDead = isDead;
+}
+
+void Fantome::setPowerUp(int nbPowerUp, bool valeur)
+{
+	switch (nbPowerUp)
+	{
+	case 1:
+		_alahuAkbar = valeur;
+		break;
+	default:
+		break;
+	}
+}
+
+void Fantome::resetClockAlahuAkbar()
+{
+	_clockAlahhuAkbar.restart();
 }
 
 std::string Fantome::getNom()

@@ -30,7 +30,8 @@ enum mangeable
 {
 	boule = 1,
 	fruit = 2,
-	grosseBoule = 4
+	grosseBoule = 4,
+	bouleRouge = 8
 };
 class Jeu
 {
@@ -68,6 +69,7 @@ class Jeu
 	int _score = 0;							  //Le score
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
+	int _nbBouleRouge;						  //Le nombre de boule rouge
 
 	//LES SONS ET VIDÉO	
 	sf::SoundBuffer _alarmBuffer;
@@ -86,11 +88,13 @@ class Jeu
 	sf::SoundBuffer _ggBuffer;
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
 	sf::SoundBuffer _megaDeadBuffer;		 
-	sf::Sound _megaDead;					   //Son overkill de mort
+	sf::Sound _megaDead;					  //Son overkill de mort
 	sf::SoundBuffer _starBuffer;
-	sf::Sound _star;					   //Son overkill de mort
+	sf::Sound _star;						  //Son overkill de mort
 	sf::SoundBuffer _plopBuffer;
 	sf::Sound _plop;						  //Son quand l'ennemie est touché par pacMan avec un étoile
+	sf::SoundBuffer _alahuAkbarBuffer;
+	sf::Sound _alahuAkbar;					  //Son quand un fantome touche une boule rouge
 public:
 	Jeu(std::string map);
 	~Jeu();

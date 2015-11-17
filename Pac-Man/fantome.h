@@ -10,6 +10,7 @@
 #pragma once
 #define _USE_MATH_DEFINES
 #include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 #include "TimeTraveller.h"
 #include "Personnage.h"
 #include "map.h"
@@ -50,6 +51,12 @@ protected:
 
 	bool _isDead = false;				//Si le fantome est mort ou pas
 	bool aPritUnMauvaisChemin = false;	//Si le fantome a prit un mauvais chemin
+	bool _alahuAkbar = false;
+	sf::Clock _clockAlahhuAkbar;
+
+	sf::SoundBuffer _explosionBuffer;
+	sf::Sound _explosion;				//Le son d'explosion
+
 
 public:
 	Fantome();
@@ -57,7 +64,8 @@ public:
 
 	const int Width = _width;
 
-
+	void resetClockAlahuAkbar();
+	void setPowerUp(int nbPowerUp, bool valeur);
 	std::string getNom();	//Renvois le nom du fantome(nommer par sa couleur)
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);

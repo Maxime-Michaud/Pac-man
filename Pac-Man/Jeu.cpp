@@ -48,7 +48,8 @@ Jeu::Jeu(std::string map)
 
 	_shake = 10;
 
-	//Initialise les boules jaune à manger sur tout la map
+	//Initialise les boules jaune et rouge à manger sur tout la map
+	_nbBouleRouge = 4;
 	auto temp = _map.getBoolMap();
 	_mangeable.resize(temp.size());
 	for (int i = 0; i < temp.size(); i++)
@@ -74,6 +75,12 @@ Jeu::Jeu(std::string map)
 	}
 	_nbBoulesTotal = _posValides.size();
 	_temps = std::clock();
+
+	for (int i = 0; i < _nbBouleRouge; i++)
+	{
+		sf::Vector2f temp = choisirPosRandom();
+		_mangeable[temp.x / 10][temp.y / 10] = mangeable::bouleRouge;
+	}
 
 	//SET DES SONS, TEXTES ET VIDÉOS
 	_laserText = sf::Text("Laser overdredive:", _font, 45);
@@ -102,6 +109,8 @@ Jeu::Jeu(std::string map)
 	_star.setBuffer(_starBuffer);
 	_plopBuffer.loadFromFile("plop.wav");
 	_plop.setBuffer(_plopBuffer);
+	_alahuAkbarBuffer.loadFromFile("alahuAkbar.wav");
+	_alahuAkbar.setBuffer(_alahuAkbarBuffer);
 }
 
 Jeu::~Jeu()
@@ -141,23 +150,29 @@ void Jeu::drawMangeable()
 						boule.append(sf::Vertex(pos, sf::Color::Yellow));
 					}
 				}
-				if (_mangeable[i][j] & mangeable::grosseBoule)
+				if (_mangeable[i][j] & mangeable::grosseBoule || _mangeable[i][j] & mangeable::bouleRouge)
 				{
+					sf::Color temp;
+					if (_mangeable[i][j] & mangeable::grosseBoule)
+						temp = sf::Color::Yellow;
+					else
+						temp = sf::Color::Red;
+					
 					posBoule = sf::Vector2f(i * 10, j * 10);
 					for (int i = 0; i <= 8; i++)
 					{
 						//Position du premier point du triangle
 						pos.x = 5 * cos(2 * (float)M_PI * (i - 1) / 8) + posBoule.x;
 						pos.y = 5 * sin(2 * (float)M_PI * (i - 1) / 8) + posBoule.y;
-						boule.append(sf::Vertex(pos, sf::Color::Yellow));
+						boule.append(sf::Vertex(pos, temp));
 
 						//Repositionne le centre
-						boule.append(sf::Vertex(posBoule, sf::Color::Yellow));
+						boule.append(sf::Vertex(posBoule, temp));
 
 						//Position du nouveau dernier point
 						pos.x = 5 * cos(2 * (float)M_PI * i / 8) + posBoule.x;
 						pos.y = 5 * sin(2 * (float)M_PI * i / 8) + posBoule.y;
-						boule.append(sf::Vertex(pos, sf::Color::Yellow));
+						boule.append(sf::Vertex(pos, temp));
 					}
 				}
 			}
@@ -437,6 +452,14 @@ void Jeu::play()
 			else
 				f->move(f->getDirection(), _fantome[0]->getPos(), _map);
 			verifieSiMort(*f);
+			if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
+			{
+				_alahuAkbar.play();
+				f->setPowerUp(1, true);
+				f->resetClockAlahuAkbar();
+				_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
+			}
+				
 		}
 
 		//Le temps passé est vérifié
