@@ -93,6 +93,10 @@ void Jeu::init()
 	_laserText = sf::Text("Laser overdredive:", _font, 40);
 	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
 
+	//Reset les tampons des sons
+	_gg.resetBuffer();
+	_continue.resetBuffer();
+
 }
 
 void Jeu::readMaps(std::string maps)
