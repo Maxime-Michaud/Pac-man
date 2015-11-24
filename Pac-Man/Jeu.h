@@ -25,6 +25,8 @@
 #include <sfeMovie\Movie.hpp>
 #include "Fruits.h"
 #include <windows.h>
+#include <list>
+#include <iostream>
 
 enum mangeable
 {
@@ -71,6 +73,9 @@ class Jeu
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge
 
+	std::list<std::string> _maps;			  //Toutes les maps
+	std::list<std::string>::const_iterator _mapsIterator;
+
 	//LES SONS ET VIDÉO	
 	sf::SoundBuffer _alarmBuffer;
 	mutable sf::Sound _alarmSound;			  //Son de l'alarme quand le laser est trop utilisé
@@ -87,6 +92,7 @@ class Jeu
 	mutable sf::Sound _gg;					  //Son quand le joueur gagne un tableau
 	sf::SoundBuffer _ggBuffer;
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
+
 	sf::SoundBuffer _megaDeadBuffer;		 
 	sf::Sound _megaDead;					  //Son overkill de mort
 	sf::SoundBuffer _starBuffer;
@@ -95,9 +101,12 @@ class Jeu
 	sf::Sound _plop;						  //Son quand l'ennemie est touché par pacMan avec un étoile
 	sf::SoundBuffer _alahuAkbarBuffer;
 	sf::Sound _alahuAkbar;					  //Son quand un fantome touche une boule rouge
+
 public:
 	Jeu(std::string map);
 	~Jeu();
+
+	void init();
 
 	void draw(bool display = true);
 
@@ -115,9 +124,16 @@ public:
 
 	void killPacman();
 
+	void clear();
+
+	void readMaps(std::string maps);
+
 	bool verifieSiMort(Fantome &fantome);
 	
+	void youfuckingwonyoumotherfuckingmother();
+
 	//Choisi un position random pour le fruit
 	sf::Vector2f choisirPosRandom();
 
+	void loadMap();
 };

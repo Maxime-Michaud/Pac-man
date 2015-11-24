@@ -28,5 +28,7 @@ int screenHeight()
 
 	return desktop.bottom;
 }
-extern const int winapi::ScreenHeight = screenHeight();
-extern const int winapi::ScreenWidth = screenWidth();
+
+extern int winapi::ScreenHeight = screenHeight();
+extern int winapi::ScreenWidth = screenWidth();
+

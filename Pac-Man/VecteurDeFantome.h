@@ -9,7 +9,7 @@ public:
 	~VecteurDeFantome();
 	void add(Fantome*);
 	void draw(sf::RenderTarget&, sf::RenderStates)const;
-	Fantome*operator[](int pos);
+	Fantome* operator[](int pos);
 	std::vector<Fantome*, std::allocator<Fantome*>>::iterator begin();
 	std::vector<Fantome*, std::allocator<Fantome*>>::iterator end();
 };

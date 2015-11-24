@@ -46,9 +46,11 @@
     <ClCompile Include="FantomeBleu.cpp">
       <Filter>Jeu\Personnage\Fantome</Filter>
     </ClCompile>
-    <ClCompile Include="VecteurDeFantome.cpp" />
     <ClCompile Include="Fruits.cpp">
       <Filter>Jeu</Filter>
+    </ClCompile>
+    <ClCompile Include="VecteurDeFantome.cpp">
+      <Filter>Jeu\Personnage\Fantome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,9 +81,6 @@
     <ClInclude Include="PacMan.h">
       <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClInclude>
-    <ClInclude Include="laser.h">
-      <Filter>Jeu\Personnage</Filter>
-    </ClInclude>
     <ClInclude Include="Personnage.h">
       <Filter>Jeu\Personnage</Filter>
     </ClInclude>
@@ -100,9 +99,14 @@
     <ClInclude Include="FantomeBleu.h">
       <Filter>Jeu\Personnage\Fantome</Filter>
     </ClInclude>
-    <ClInclude Include="VecteurDeFantome.h" />
     <ClInclude Include="Fruits.h">
       <Filter>Jeu</Filter>
+    </ClInclude>
+    <ClInclude Include="laser.h">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClInclude>
+    <ClInclude Include="VecteurDeFantome.h">
+      <Filter>Jeu\Personnage\Fantome</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

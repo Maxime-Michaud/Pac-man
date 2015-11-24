@@ -7,38 +7,52 @@
 *************************************************************************************/
 #include "Jeu.h"
 
-Jeu::Jeu(std::string map)
+Jeu::Jeu(std::string maps)
 {
 	srand(time(NULL));
+
 	using namespace winapi;
+
+	//Lis la lsite des maps
+	readMaps(maps);
+
 	//Initialisation de la fenêtre
-	_window.create(sf::VideoMode(ScreenWidth, ScreenHeight), "Pac-Man");
+	sf::VideoMode test(ScreenWidth, ScreenHeight);
+	_window.create(test, "Pac-Man");
 	_window.setPosition(_defaultWinPos);
 	_window.setKeyRepeatEnabled(false);
 
-	//Initialisation de la map
-	std::ifstream in;
-	in.open(map);
-	_map.lireMap(in);
+	init();
 
-	//Initialisation des personnages
+	_laserText.setPosition(sf::Vector2f(650, 150));
+	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
+	_alarmSound.setBuffer(_alarmBuffer);
+	_introBuffer.loadFromFile("intro.wav");				  //La petite musique d'intro
+	_intro.setBuffer(_introBuffer);
+	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
+	_intro.play();
+	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
+	_chomp.setBuffer(_chompBuffer);
+	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
+	_fruit.setBuffer(_fruitBuffer);
+	_mortBuffer.loadFromFile("mort.wav");				  //Son quand pac-man meurt
+	_mort.setBuffer(_mortBuffer);
+	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
+	_continue.setBuffer(_continueBuffer);
+	_ggBuffer.loadFromFile("gg.wav");
+	_gg.setBuffer(_ggBuffer);
+	_megaDeadBuffer.loadFromFile("deadSound0.wav");
+	_megaDead.setBuffer(_megaDeadBuffer);
+}
+
+void Jeu::init()
+{
+	loadMap();
+	//Initialisation de pacman
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
-	srand(std::time(NULL));
-	_ghostStart = _map.getLigne(3).getFin();
-	_fantome.add(new FantomeRouge());
-	_fantome.add(new FantomeRose());
-	_fantome.add(new FantomeOrange());
-	_fantome.add(new FantomeBleu());
-	/*for (int i = 0; i < 100; i++)
-		_fantome.add(new FantomeOrange());*/
 
-	for (auto f : _fantome)
-	{
-		f->setPos(_ghostStart);
-		f->setLigne(_map.quelleLigne(_ghostStart, 0));
-		f->setVertical(_map.getLigne(_map.quelleLigne(_ghostStart, 0)).isVertical());
-	}
+	_ghostStart = _fantome[0]->getPos();
 
 	//charge la police
 	_font.loadFromFile("steelfish rg.ttf");
@@ -65,9 +79,9 @@ Jeu::Jeu(std::string map)
 			//Si la boule est dans un coin, elle devient une grosse boule
 			if ((i > 0 && i < temp.size() - 1 && j > 0 && j < temp[i].size() - 1) &&
 				((temp[i - 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
-				(temp[i + 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i - 1][j] == false && temp[i][j] == false) ||
-				(temp[i - 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
-				(temp[i + 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i - 1][j] == false && temp[i][j] == false)))
+					(temp[i + 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i - 1][j] == false && temp[i][j] == false) ||
+					(temp[i - 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
+					(temp[i + 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i - 1][j] == false && temp[i][j] == false)))
 			{
 				_mangeable[i][j] = mangeable::grosseBoule;
 			}
@@ -85,6 +99,7 @@ Jeu::Jeu(std::string map)
 	//SET DES SONS, TEXTES ET VIDÉOS
 	_laserText = sf::Text("Laser overdredive:", _font, 45);
 	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
+
 	_laserText.setPosition(sf::Vector2f(650, 150));
 	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
 	_alarmSound.setBuffer(_alarmBuffer);
@@ -111,9 +126,35 @@ Jeu::Jeu(std::string map)
 	_plop.setBuffer(_plopBuffer);
 	_alahuAkbarBuffer.loadFromFile("alahuAkbar.wav");
 	_alahuAkbar.setBuffer(_alahuAkbarBuffer);
+
+	//Reset les tampons des sons
+	_gg.resetBuffer();
+	_continue.resetBuffer();
+
+}
+
+void Jeu::readMaps(std::string maps)
+{
+	std::ifstream mapList;
+	mapList.open(maps);
+
+	while (mapList.peek() != EOF)
+	{
+		std::string map;
+		std::getline(mapList, map);
+
+		_maps.push_back(map);
+	}
+
+	_mapsIterator = _maps.begin();
 }
 
 Jeu::~Jeu()
+{
+	clear();
+}
+
+void Jeu::clear()
 {
 	for (auto f : _fantome)
 		delete f;
@@ -365,6 +406,93 @@ sf::Vector2f Jeu::choisirPosRandom()
 	return _posValides.at(random);
 }
 
+void Jeu::youfuckingwonyoumotherfuckingmother()
+{
+	while (true)
+	{
+		sf::Clock timer;
+		sf::Color HOLYFUCKINGSHIT(rand() % 256, rand() % 256, rand() % 256);
+		_window.clear(HOLYFUCKINGSHIT);
+		_window.display();
+		while (timer.getElapsedTime().asMilliseconds() < 100);
+	}
+}
+
+void Jeu::loadMap()
+{
+	if (_mapsIterator == _maps.end())
+		youfuckingwonyoumotherfuckingmother();
+	
+	std::string mapName = *_mapsIterator;
+	++_mapsIterator;
+	
+	std::ifstream in;
+	in.open(mapName);
+
+	std::string couleur;
+	int count = 1;
+	while (tolower(static_cast<char>(in.peek())) == 'f')
+	{
+		in.get();	//Get le f
+
+		//Lis le type de fantome
+		in >> couleur;
+
+		//Lis le nombre a placer, 1 si le nombre est absent 
+		in >> count;
+		if (in.bad())
+		{
+			in.clear();
+			count = 1;
+		}
+
+		//Lis la position du fantome
+		auto maybePos = readNumFromStream<float, false>(in, 2, " (,)", '.');
+		sf::Vector2f pos;
+
+		if (maybePos.size() == 2)
+			pos = sf::Vector2f(maybePos[0], maybePos[1]);
+		else
+			pos = _startpos;
+
+
+		//Fantomes a ajouter
+		Fantome** fantomes = new Fantome*[count];
+
+
+		if (couleur == "rouge")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeRouge;
+		else if (couleur == "orange")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeOrange;
+		else if (couleur == "rose")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeRose;
+		else if (couleur == "bleu")
+			for (int i = 0; i < count; i++)
+				i[fantomes] = new FantomeBleu;
+
+		for (int i = 0; i < count; i++)
+		{
+			fantomes[i]->setPos(pos);
+			_fantome.add(fantomes[i]);
+		}
+
+		//On ne delete pas les pointeurs car ils sont ajoutés au vecteur de fantomes
+		delete[] fantomes;
+		in.ignore(99999,'\n');
+	}
+
+	_map.lireMap(in);
+
+	for (auto &f : _fantome)
+	{
+		f->setLigne(_map.quelleLigne(f->getPos(), 0));
+		f->setVertical(_map.getLigne(f->getNumLigne()).isVertical());
+	}
+}
+
 void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
@@ -397,9 +525,8 @@ void Jeu::play()
 				{
 					_star.stop();
 					_gg.play();
-					Sleep(5500);
-					_playing = false;
-					break;
+					Sleep(5500);	//Attends que le son de victoire joue
+					init();
 				}
 				if (_mangeable[x][y] & mangeable::grosseBoule)
 				{
