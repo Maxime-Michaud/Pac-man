@@ -7,19 +7,47 @@
 *************************************************************************************/
 #include "Jeu.h"
 
-Jeu::Jeu(std::string map)
+Jeu::Jeu(std::string maps)
 {
 	srand(time(NULL));
+
 	using namespace winapi;
+
+	//Lis la lsite des maps
+	readMaps(maps);
+
 	//Initialisation de la fenêtre
 	sf::VideoMode test(ScreenWidth, ScreenHeight);
 	_window.create(test, "Pac-Man");
 	_window.setPosition(_defaultWinPos);
 	_window.setKeyRepeatEnabled(false);
 
-	//Initialisation de la map et des fantomes
-	loadMap(map);
+	init();
 
+	_laserText.setPosition(sf::Vector2f(650, 150));
+	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
+	_alarmSound.setBuffer(_alarmBuffer);
+	_introBuffer.loadFromFile("intro.wav");				  //La petite musique d'intro
+	_intro.setBuffer(_introBuffer);
+	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
+	_intro.play();
+	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
+	_chomp.setBuffer(_chompBuffer);
+	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
+	_fruit.setBuffer(_fruitBuffer);
+	_mortBuffer.loadFromFile("mort.wav");				  //Son quand pac-man meurt
+	_mort.setBuffer(_mortBuffer);
+	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
+	_continue.setBuffer(_continueBuffer);
+	_ggBuffer.loadFromFile("gg.wav");
+	_gg.setBuffer(_ggBuffer);
+	_megaDeadBuffer.loadFromFile("deadSound0.wav");
+	_megaDead.setBuffer(_megaDeadBuffer);
+}
+
+void Jeu::init()
+{
+	loadMap();
 	//Initialisation de pacman
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
@@ -50,9 +78,9 @@ Jeu::Jeu(std::string map)
 			//Si la boule est dans un coin, elle devient une grosse boule
 			if ((i > 0 && i < temp.size() - 1 && j > 0 && j < temp[i].size() - 1) &&
 				((temp[i - 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
-				(temp[i + 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i - 1][j] == false && temp[i][j] == false) ||
-				(temp[i - 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
-				(temp[i + 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i - 1][j] == false && temp[i][j] == false)))
+					(temp[i + 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i - 1][j] == false && temp[i][j] == false) ||
+					(temp[i - 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
+					(temp[i + 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i - 1][j] == false && temp[i][j] == false)))
 			{
 				_mangeable[i][j] = mangeable::grosseBoule;
 			}
@@ -64,28 +92,31 @@ Jeu::Jeu(std::string map)
 	//SET DES SONS, TEXTES ET VIDÉOS
 	_laserText = sf::Text("Laser overdredive:", _font, 40);
 	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
-	_laserText.setPosition(sf::Vector2f(650, 150));
-	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
-	_alarmSound.setBuffer(_alarmBuffer);
-	_introBuffer.loadFromFile("intro.wav");				  //La petite musique d'intro
-	_intro.setBuffer(_introBuffer);
-	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
-	_intro.play();
-	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
-	_chomp.setBuffer(_chompBuffer);
-	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
-	_fruit.setBuffer(_fruitBuffer);
-	_mortBuffer.loadFromFile("mort.wav");				  //Son quand pac-man meurt
-	_mort.setBuffer(_mortBuffer);
-	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
-	_continue.setBuffer(_continueBuffer);
-	_ggBuffer.loadFromFile("gg.wav");
-	_gg.setBuffer(_ggBuffer);
-	_megaDeadBuffer.loadFromFile("deadSound0.wav");
-	_megaDead.setBuffer(_megaDeadBuffer);
+
+}
+
+void Jeu::readMaps(std::string maps)
+{
+	std::ifstream mapList;
+	mapList.open(maps);
+
+	while (mapList.peek() != EOF)
+	{
+		std::string map;
+		std::getline(mapList, map);
+
+		_maps.push_back(map);
+	}
+
+	_mapsIterator = _maps.begin();
 }
 
 Jeu::~Jeu()
+{
+	clear();
+}
+
+void Jeu::clear()
 {
 	for (auto f : _fantome)
 		delete f;
@@ -284,8 +315,26 @@ sf::Vector2f Jeu::choisirPosRandom()
 	return _posValides.at(random);
 }
 
-void Jeu::loadMap(std::string mapName)
+void Jeu::youfuckingwonyoumotherfuckingmother()
 {
+	while (true)
+	{
+		sf::Clock timer;
+		sf::Color HOLYFUCKINGSHIT(rand() % 256, rand() % 256, rand() % 256);
+		_window.clear(HOLYFUCKINGSHIT);
+		_window.display();
+		while (timer.getElapsedTime().asMilliseconds() < 100);
+	}
+}
+
+void Jeu::loadMap()
+{
+	if (_mapsIterator == _maps.end())
+		youfuckingwonyoumotherfuckingmother();
+	
+	std::string mapName = *_mapsIterator;
+	++_mapsIterator;
+	
 	std::ifstream in;
 	in.open(mapName);
 
@@ -384,8 +433,8 @@ void Jeu::play()
 				if (_nbBouleMange >= _nbBoulesTotal)
 				{
 					_gg.play();
-					Sleep(5500);
-					_playing = false;
+					Sleep(5500);	//Attends que le son de victoire joue
+					init();
 				}
 				if (_mangeable[x][y] & mangeable::grosseBoule)
 				{
@@ -431,7 +480,7 @@ void Jeu::play()
 
 		//Le temps passé est vérifié
 		int duration = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
-		//À chauque 20 secondes, un fruit au hasard apparait
+		//À chauque 3 secondes, un fruit au hasard apparait
 		if (duration % 3 == 0)
 		{
 			if (!_fermerHorloge)

@@ -16,7 +16,7 @@ void main(int argc, char* argv[])
 {
 	std::string map;
 	if (argc < 2)
-		map = "map2.txt";
+		map = "maps.txt";
 	else
 		map = argv[1];
 

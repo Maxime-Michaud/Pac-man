@@ -10,7 +10,7 @@ Fantome::Fantome()
 
 	//variables pour le dessin
 	_headOffset = sf::Vector2f(0, -_width / 1.2);
-	_feetOffset = sf::Vector2f(0, -_width / 2);
+	_feetOffset = sf::Vector2f(0, -_width / 1.7);
 	_step = 0;
 	_feetWidth = (float)_width / 3;
 	_eyeSize = double(_width) / 3.5;
