@@ -154,6 +154,98 @@ bool FantomeRose::esseyerLigne(char direction, int &ligneParcoursTheorique, std:
 		return false;
 }
 
+void FantomeRose::bougerCommeRouge(sf::Vector2f& posPacMan, Map &map)
+{
+	char directionArrivee = _direction;			//La direction de départ
+	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
+	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
+	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
+
+	int distanceX = static_cast<int>(_pos.x - posPacMan.x);		//La distance de l'axe des X entre le fantome et pac man
+	//Si la distance X est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
+	if (distanceX >= 0)
+		gaucheDroite = 'a';
+	//Sinon il est à gauche de pac man et doit aller vers la droite
+	else
+	{
+		distanceX = static_cast<int>(posPacMan.x - _pos.x);
+		gaucheDroite = 'd';
+	}
+
+	int distanceY = static_cast<int>(_pos.y - posPacMan.y);		//La distance de l'axe des Y entre le fantome et pac man
+	//Si la distance Y est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
+	if (distanceY >= 0)
+		basHaut = 'w';
+	else	//Sinon c'est le contraire
+	{
+		distanceY = static_cast<int>(posPacMan.y - _pos.y);
+		basHaut = 's';
+	}
+
+	//Si la distance a parcourir en X est supérieur, va tenter de prendre un chemin dans cette direction
+	if (distanceX >= distanceY)
+		_direction = gaucheDroite;
+	else		//Sinon prendra une direction en Y pour sa rapprocher
+		_direction = basHaut;
+
+	if (aPritUnMauvaisChemin && _direction == gaucheDroite)
+	{
+		_direction = basHaut;
+		aPritUnMauvaisChemin = false;
+	}
+	else if (aPritUnMauvaisChemin && _direction == basHaut)
+	{
+		_direction = gaucheDroite;
+		aPritUnMauvaisChemin = false;
+	}
+	//Vérifie si il peut simplement prendre la 1er direction qui lui est donné, si oui, il sort de la fonction
+	switch (_direction)
+	{
+	case 'a':
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x - 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x - 1, _pos.y))))
+		{
+			Personnage::changerDeLigne(_direction, map);
+			return;
+		}
+		break;
+	case 'd':
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x + 1, _pos.y)), _numLigne)).isOn((sf::Vector2f(_pos.x + 1, _pos.y))))
+		{
+			Personnage::changerDeLigne(_direction, map);
+			return;
+		}
+		break;
+	case 's':		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
+	{
+						Personnage::changerDeLigne(_direction, map);
+						return;
+	}
+					break;
+	case 'w':
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
+		{
+			Personnage::changerDeLigne(_direction, map);
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (distanceX >= distanceY)
+		_direction = basHaut;
+	else
+		_direction = gaucheDroite;
+	//Sinon il tente de prendre une autre ligne logique dans l'autre axe
+	Personnage::changerDeLigne(_direction, map);
+	//Si rien n'a fonctionné, il retourne sur ses pas
+	if (_numLigne == tempNoLigne)
+	{
+		aPritUnMauvaisChemin = true;
+		_direction = Fantome::inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
+	}
+}
+
 void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &posPacMan)
 {
 	std::deque<Direction> bonChemin;					//Contient les directions pour le bon chemin vers pacman
@@ -167,8 +259,17 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 	pointsVisites.push_back(posTheorique);	//Pousse l'intersection du début et sa direction
 	bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique, 0));
 	int nombreEssais = 0;
+	int compteurCheminCalculés = 0;
 	while (bonChemin.size() >= 1)
 	{
+		compteurCheminCalculés++;
+		if (tousBonsChemins.empty() &&compteurCheminCalculés > 35)
+		{
+			_clockFantomeRose.restart();
+			_bougerCommeRouge = true;
+			bougerCommeRouge(posPacMan, map);
+			break;
+		}
 		//Calcul la distance avant le déplacement théorique pour pouvoir comparer avec après
 		distanceXYAvant = abs((posTheorique.x - posPacMan.x)) + abs(posTheorique.y - posPacMan.y);
 		//Si le déplacement rencontre les normes d'un bon déplacement (ne s'éloigne pas plus de 2 fois, est sur une ligne valide et cette direction n'a pas été tenter encore)
@@ -222,25 +323,38 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 	}
 
 	//Détemrine le chemin le plus court si on voulait plus d'un chemin
-	int plusPetitVecteur = 1000;
-	int index = 0;
-	if (!tousBonsChemins.empty())
+	if (!_bougerCommeRouge)
 	{
-		for (std::vector<std::deque<Direction>>::iterator i = tousBonsChemins.begin(); i != tousBonsChemins.end(); i++)
+		int plusPetitVecteur = 1000;
+		int index = 0;
+		if (!tousBonsChemins.empty())
 		{
-			if ((*i).size() < plusPetitVecteur)
+			for (std::vector<std::deque<Direction>>::iterator i = tousBonsChemins.begin(); i != tousBonsChemins.end(); i++)
 			{
-				plusPetitVecteur = static_cast<int>((*i).size());
-				index = static_cast<int>(i - tousBonsChemins.begin());
+				if ((*i).size() < plusPetitVecteur)
+				{
+					plusPetitVecteur = static_cast<int>((*i).size());
+					index = static_cast<int>(i - tousBonsChemins.begin());
+				}
 			}
+			_chemin = tousBonsChemins[index];
 		}
-		_chemin = tousBonsChemins[index];
 	}
+	
 }
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void FantomeRose::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 {
-	tentativeAmbuscade(map.quelleLigne(posPacMan, -10), map, posPacMan);
+	if (_bougerCommeRouge && _clockFantomeRose.getElapsedTime() < sf::milliseconds(1500))
+	{
+		bougerCommeRouge(posPacMan, map);
+	}
+	else
+	{
+		_bougerCommeRouge = false;
+		tentativeAmbuscade(map.quelleLigne(posPacMan, -10), map, posPacMan);
+	}
+	
 }
 
 void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)

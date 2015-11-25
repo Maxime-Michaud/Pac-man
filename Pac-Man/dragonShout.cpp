@@ -26,7 +26,7 @@ void dragonShout::draw(sf::RenderTarget & rt, sf::RenderStates rs) const
 		trucADessiner.append(sf::Vertex(pos, sf::Color(255, 255, 255, 30 - (ratio * 30))));
 
 		//Repositionne le centre
-		trucADessiner.append(sf::Vertex(sf::Vector2f(_pos.x, _pos.y), sf::Color(255, 255, 255, 30 - (ratio * 30))));
+		trucADessiner.append(sf::Vertex(sf::Vector2f(_pos.x, _pos.y), sf::Color(255, 255, 255, 0)));
 
 		//Position du nouveau vertex
 		pos.x = (_clockDragonShout.getElapsedTime().asMilliseconds()) * cos(2 * (float)M_PI * i / 30) + _pos.x;
@@ -42,7 +42,7 @@ void dragonShout::draw(sf::RenderTarget & rt, sf::RenderStates rs) const
 		trucADessiner.append(sf::Vertex(pos, sf::Color(255, 255, 255, 255 - ratio * 255)));
 
 		//Repositionne le centre
-		trucADessiner.append(sf::Vertex(sf::Vector2f(_pos.x, _pos.y), sf::Color(255, 255, 255, 255 - ratio * 255)));
+		trucADessiner.append(sf::Vertex(sf::Vector2f(_pos.x, _pos.y), sf::Color(255, 255, 255, 0)));
 
 		//Position du nouveau vertex
 		pos.x = (_clockDragonShout.getElapsedTime().asMilliseconds() / 3) * cos(2 * (float)M_PI * i / 30) + _pos.x;
@@ -58,7 +58,7 @@ void dragonShout::draw(sf::RenderTarget & rt, sf::RenderStates rs) const
 		trucADessiner.append(sf::Vertex(pos, sf::Color(255, 255, 255, 20 - ratio * 20)));
 
 		//Repositionne le centre
-		trucADessiner.append(sf::Vertex(sf::Vector2f(_pos.x, _pos.y), sf::Color(255, 255, 255, 20 - ratio * 20)));
+		trucADessiner.append(sf::Vertex(sf::Vector2f(_pos.x, _pos.y), sf::Color(255, 255, 255, 0)));
 
 		//Position du nouveau vertex
 		pos.x = (_clockDragonShout.getElapsedTime().asMilliseconds() * 2) * cos(2 * (float)M_PI * i / 30) + _pos.x;

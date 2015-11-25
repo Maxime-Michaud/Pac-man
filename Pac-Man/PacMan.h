@@ -84,8 +84,11 @@ public:
 	float getTempsLaserRestant()const; //Retourne le temps restant au laser.
 	bool getLaser();
 	void incrementeurDragonShout(int increment);
+	int getNbDragonShout();
+	void resetClockDragon();
 	bool getDragonShoutActivated();
 	float getTempsDragonShout();	//Retourne le temps écoulé depuis l'activation du dragonShout
+	void setSonDragonShout(bool valeur);
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
 	void deathAnimation(sf::RenderTarget & target) const;

@@ -49,6 +49,9 @@ class Jeu
 
 	sf::Font _font;
 	sf::Font _8bitFont;
+	sf::Font _dragonFont;
+	sf::Text _dragonShoutText;
+	sf::Text _dragonShoutLearned;
 
 	int _targetfps;
 	float _shake;
@@ -101,6 +104,8 @@ class Jeu
 	sf::Sound _plop;						  //Son quand l'ennemie est touché par pacMan avec un étoile
 	sf::SoundBuffer _alahuAkbarBuffer;
 	sf::Sound _alahuAkbar;					  //Son quand un fantome touche une boule rouge
+	sf::SoundBuffer _dragonLearnBuffer;
+	sf::Sound _dragonLearned;				  //Son quand pac-man apprend un dragon shout
 public:
 	Jeu(std::string map);
 	~Jeu();
@@ -110,6 +115,7 @@ public:
 	void drawMangeable();
 
 	void drawLaserUi();
+	void drawDragonShoutUi();
 	void drawEtoileUi();
 	void play();
 

@@ -262,11 +262,12 @@ void Fantome::fantomeDead(Map &map, sf::Vector2f window)
 		_numLigne = map.quelleLigne(_pos, _numLigne);
 		_vertical = true;
 		_isDead = false;
+		_toucherParDragonshout = false;
 	}
 }
 
 //Le placement du fantome quand il est hors de la grille
-void Fantome::fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f window)
+void Fantome::fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f &window)
 {
 	if (_pushBack && _pos != pos)
 	{
@@ -293,6 +294,7 @@ void Fantome::fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f win
 			else
 				_vertical = false;
 			_pushBack = true;
+			_isDead = false;
 			_toucherParDragonshout = false;
 		}
 

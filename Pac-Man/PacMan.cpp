@@ -64,14 +64,32 @@ void PacMan::incrementeurDragonShout(int increment)
 	_nbDragonShout += increment;
 }
 
+int PacMan::getNbDragonShout()
+{
+	return _nbDragonShout;
+}
+
 bool PacMan::getDragonShoutActivated()
 {
 	return _dragonShoutActivated;
 }
 
+void PacMan::resetClockDragon()
+{
+	_clockDragonShout.restart();
+}
+
 float PacMan::getTempsDragonShout()
 {
 	return _clockDragonShout.getElapsedTime().asMilliseconds();
+}
+
+void PacMan::setSonDragonShout(bool valeur)
+{
+	if (!valeur)
+		_dragonShoutSound.stop();
+	else
+		_dragonShoutSound.play();
 }
 
 void PacMan::stop()const

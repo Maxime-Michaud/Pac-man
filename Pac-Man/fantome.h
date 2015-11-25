@@ -75,7 +75,7 @@ public:
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
 	void fantomeDead(Map & map, sf::Vector2f window);						 //L'animation et la placement du fantome quand il est mort
-	void fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f window);				//Quand le fantome est affecté par le dragonshout
+	void fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f &window);				//Quand le fantome est affecté par le dragonshout
 	bool getToucherParDragonshout();
 	bool isDead() const;	//Obtiens si le fantome est mort ou vivant
 	void setDragonShoutEffect(sf::Vector2f pos);

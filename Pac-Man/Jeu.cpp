@@ -54,6 +54,9 @@ Jeu::Jeu(std::string map)
 	//charge la police
 	_font.loadFromFile("steelfish rg.ttf");
 	_8bitFont.loadFromFile("8bit.ttf");
+	_dragonFont.loadFromFile("dragon.otf");
+
+	_dragonShoutLearned = sf::Text("Fus Roh Dah", _dragonFont, 40);
 
 	_targetfps = 60;
 
@@ -122,6 +125,8 @@ Jeu::Jeu(std::string map)
 	_plop.setBuffer(_plopBuffer);
 	_alahuAkbarBuffer.loadFromFile("alahuAkbar.wav");
 	_alahuAkbar.setBuffer(_alahuAkbarBuffer);
+	_dragonLearnBuffer.loadFromFile("dragonLearned.wav");
+	_dragonLearned.setBuffer(_dragonLearnBuffer);
 }
 
 Jeu::~Jeu()
@@ -229,6 +234,24 @@ void Jeu::drawEtoileUi()
 	convex.setFillColor(sf::Color(_randColor1 + 115, _randColor2 + 115, _randColor3 + 100, (_pacman.getTempsEtoile() / 5000) * 255));
 
 	_window.draw(convex);
+}
+
+//Dessiner le UI du dragonShout
+void Jeu::drawDragonShoutUi()
+{
+
+	if (_pacman.getTempsDragonShout() < 2000)
+	{
+		float ratio = _pacman.getTempsDragonShout() / 2000;
+		_dragonShoutLearned.setPosition(sf::Vector2f(200, 10));
+		_dragonShoutLearned.setColor(sf::Color(200, 200, 200, 255 - (ratio * 255)));
+		_window.draw(_dragonShoutLearned);
+	}
+	std::string temp = "Dragon shout avaible: " + std::to_string(_pacman.getNbDragonShout());
+	_dragonShoutText = sf::Text(temp, _font, 30);
+	_dragonShoutText.setPosition(sf::Vector2f(610, 310));
+	_window.draw(_dragonShoutText);
+
 }
 
 //Draw le ui du laser
@@ -355,6 +378,8 @@ void Jeu::draw(bool display)
 	drawMangeable();
 	if (_pacman.getPowerUps(1))
 		drawLaserUi();
+	if (_pacman.getPowerUps(5))
+		drawDragonShoutUi();
 	_window.draw(_pacman);
 	_window.draw(_fantome);
 	_window.draw(_scoreTxt);
@@ -407,6 +432,7 @@ void Jeu::play()
 				if (_nbBouleMange >= _nbBoulesTotal)
 				{
 					_star.stop();
+					_pacman.setSonDragonShout(false);
 					_gg.play();
 					Sleep(5500);
 					_playing = false;
@@ -414,7 +440,7 @@ void Jeu::play()
 				}
 				if (_mangeable[x][y] & mangeable::grosseBoule)
 				{
-					int random = 5/*rand() % 3 + 1*/;
+					int random = rand() % 3 + 1;
 					if (random == 2)
 						random = 4;
 					else if (random == 3)
@@ -434,8 +460,10 @@ void Jeu::play()
 						break;
 					case 5:
 						//jouer son dragonshou learned
+						_dragonLearned.play();
 						_pacman.setPowerUps(5, true);
 						_dragonShoutEffect = true;
+						_pacman.resetClockDragon();
 						_pacman.incrementeurDragonShout(1);
 						break;
 					default:
@@ -486,14 +514,24 @@ void Jeu::play()
 			//TODO faire l'animation de l'explosion
 			//if (f->getExplosionStatus())
 				//_explosionTexture.update();
-			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() < 500)
+			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() < 300)
 			{
 				//Si le fantome est en range du dragonShout
 				if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
 				{
 					sf::Vector2f posRecul;
-					posRecul.x = -100;
-					posRecul.y = -100;
+					float x = (_pacman.getPos().x - f->getPos().x);
+					float y = (_pacman.getPos().y - f->getPos().y);
+					float ratioX = x / 250;
+					float ratioY = y / 250;
+					float reculX = 150 / ratioX;
+					float reculY = 150 / ratioY;
+					if (reculX > 350)
+						reculX = 350;
+					if (reculY > 350)
+						reculY = 350;
+					posRecul.x = f->getPos().x - reculX;
+					posRecul.y = f->getPos().y - reculY;
 					f->setDragonShoutEffect(posRecul);
 				}
 				
