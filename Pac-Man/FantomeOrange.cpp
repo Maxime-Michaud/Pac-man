@@ -160,7 +160,12 @@ void FantomeOrange::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		fantomeDead(map, sf::Vector2f(600, 600));
 		return;
 	}
-	//Personnage::move(direction, map);
+
+	if (_toucherParDragonshout)
+	{
+		fantomeDragonShouter(_posRecul, map, sf::Vector2f(600, 600));
+		return;
+	}
 
 	Ligne temp = map.getLigne(_numLigne);
 	sf::Vector2f vtemp(_pos);

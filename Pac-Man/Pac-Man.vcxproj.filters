@@ -50,6 +50,9 @@
     <ClCompile Include="Fruits.cpp">
       <Filter>Jeu</Filter>
     </ClCompile>
+    <ClCompile Include="dragonShout.cpp">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FantomeOrange.h">
@@ -79,9 +82,6 @@
     <ClInclude Include="PacMan.h">
       <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClInclude>
-    <ClInclude Include="laser.h">
-      <Filter>Jeu\Personnage</Filter>
-    </ClInclude>
     <ClInclude Include="Personnage.h">
       <Filter>Jeu\Personnage</Filter>
     </ClInclude>
@@ -103,6 +103,12 @@
     <ClInclude Include="VecteurDeFantome.h" />
     <ClInclude Include="Fruits.h">
       <Filter>Jeu</Filter>
+    </ClInclude>
+    <ClInclude Include="dragonShout.h">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClInclude>
+    <ClInclude Include="laser.h">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,7 @@ TODO descriptionner mieux que ça												*
 #include <cmath>
 #include "Personnage.h"
 #include "laser.h"
+#include "dragonShout.h"
 #include <SFML\Audio.hpp>
 
 class PacMan : public Personnage
@@ -34,6 +35,8 @@ class PacMan : public Personnage
 	mutable bool _keepFiring = false;
 	sf::SoundBuffer _laserSB;
 	mutable sf::Sound _laserSound;
+	sf::SoundBuffer _dragonShoutBuffer;
+	mutable sf::Sound _dragonShoutSound;
 	mutable sf::Clock _tempsLaser;						//Sert à calculer le temps depuis la partie du laser
 	mutable sf::Clock _tempsSansLaser;
 	sf::VertexArray buildPacMan() const;
@@ -42,6 +45,7 @@ class PacMan : public Personnage
 	mutable bool _powerUpTimeTravel = false;		  //Le power up time traveller
 	mutable bool _powerUpMindControl = false;		  //Le power up mind control
 	mutable bool _powerUpMarioStar = false;			  //Le power up de l'étoile de mario
+	mutable bool _powerUpDragonShout = false;		  //Le power up du dragonshout FUS ROH DAH
 
 	//sf::Clock _clockLaser;
 
@@ -54,6 +58,12 @@ class PacMan : public Personnage
 	sf::Clock _clockEtoile;
 	int _compteurFrame = 0;
 	mutable bool _stopRepeating = false;
+
+	//Pour le power up dragonshout
+	dragonShout _dragonShout;
+	int _nbDragonShout = 0;							//Le nombre de dragon shou disponible
+	sf::Clock _clockDragonShout;						//Un délais de 1500 ms entre chaque dragon shout
+	bool _dragonShoutActivated = false;
 public:
 	PacMan();
 	~PacMan();
@@ -73,6 +83,9 @@ public:
 	sf::Time getTempsSansLaser();	//Retourne le temps en milisecondes passé a faire le laser
 	float getTempsLaserRestant()const; //Retourne le temps restant au laser.
 	bool getLaser();
+	void incrementeurDragonShout(int increment);
+	bool getDragonShoutActivated();
+	float getTempsDragonShout();	//Retourne le temps écoulé depuis l'activation du dragonShout
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
 	void deathAnimation(sf::RenderTarget & target) const;

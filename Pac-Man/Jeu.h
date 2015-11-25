@@ -71,6 +71,12 @@ class Jeu
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge
 
+	bool _dragonShoutEffect = true;				  //Pour faire la shock wave qu'une seule fois dans le dragonShout
+
+	sf::Texture _explosionTextureComplet;
+	sf::RectangleShape _explosionTexture[6][8];
+	sf::IntRect _explosionTextureRect[6][8];
+
 	//LES SONS ET VIDÉO	
 	sf::SoundBuffer _alarmBuffer;
 	mutable sf::Sound _alarmSound;			  //Son de l'alarme quand le laser est trop utilisé

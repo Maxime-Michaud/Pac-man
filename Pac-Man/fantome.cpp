@@ -28,6 +28,11 @@ void Fantome::setIsDead(bool isDead)
 	_isDead = isDead;
 }
 
+bool Fantome::getExplosionStatus()
+{
+	return _explosion.getStatus();
+}
+
 void Fantome::setPowerUp(int nbPowerUp, bool valeur)
 {
 	switch (nbPowerUp)
@@ -260,9 +265,58 @@ void Fantome::fantomeDead(Map &map, sf::Vector2f window)
 	}
 }
 
+//Le placement du fantome quand il est hors de la grille
+void Fantome::fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f window)
+{
+	if (_pushBack && _pos != pos)
+	{
+		(_pos.x > pos.x) ? _pos.x -= 10 : (_pos.x < pos.x) ? _pos.x += 10 : NULL;
+		(_pos.y > pos.y) ? _pos.y -= 10 : (_pos.y < pos.y) ? _pos.y += 10 : NULL;
+		if (abs(_pos.x - pos.x) < 15 && abs(_pos.y - pos.y) < 15)
+		{
+			_pushBack = false;
+		}
+	}
+	else if (_pos != sf::Vector2f(window.x / 2, window.y / 2))
+	{
+		_direction = 'a';
+		(_pos.x > window.x / 2) ? _pos.x -= 1 : (_pos.x < window.x / 2) ? _pos.x += 1 : NULL;
+		(_pos.y > window.y / 2) ? _pos.y -= 1 : (_pos.y < window.y / 2) ? _pos.y += 1 : NULL;
+		_numLigne = -1;
+		_numLigne = map.quelleLigne(_pos, _numLigne);
+		if (_numLigne != -1)
+		{
+			if (map.getLigne(_numLigne).isVertical())
+			{
+				_vertical = true;
+			}
+			else
+				_vertical = false;
+			_pushBack = true;
+			_toucherParDragonshout = false;
+		}
+
+	}
+	else
+	{
+		_numLigne = map.quelleLigne(_pos, _numLigne);
+		_vertical = true;
+		_isDead = false;
+	}
+}
+bool Fantome::getToucherParDragonshout()
+{
+	return _toucherParDragonshout;
+}
 bool Fantome::isDead() const
 {
 	return _isDead;
+}
+
+void Fantome::setDragonShoutEffect(sf::Vector2f pos)
+{
+	_posRecul = pos;
+	_toucherParDragonshout = true;
 }
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan

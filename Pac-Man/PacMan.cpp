@@ -18,6 +18,9 @@ PacMan::PacMan()
 	_pos = sf::Vector2f(300, 300);
 	_laserSB.loadFromFile("BWAAAAH.wav");
 	_laserSound.setBuffer(_laserSB);
+	_dragonShoutBuffer.loadFromFile("fusrohdah.wav");
+	_dragonShoutSound.setBuffer(_dragonShoutBuffer);
+	_dragonShout.resetClockDragonShout();
 }
 
 PacMan::~PacMan()
@@ -56,6 +59,21 @@ void PacMan::fire()const
 	}
 }
 
+void PacMan::incrementeurDragonShout(int increment)
+{
+	_nbDragonShout += increment;
+}
+
+bool PacMan::getDragonShoutActivated()
+{
+	return _dragonShoutActivated;
+}
+
+float PacMan::getTempsDragonShout()
+{
+	return _clockDragonShout.getElapsedTime().asMilliseconds();
+}
+
 void PacMan::stop()const
 {
 	if (_laser)
@@ -71,7 +89,7 @@ void PacMan::stop()const
 
 bool PacMan::getPowerUps(int powerUp)
 {
-	assert(powerUp > 0 && powerUp < 5);
+	assert(powerUp > 0 && powerUp < 6);
 	switch (powerUp)
 	{
 	case 1:
@@ -86,6 +104,9 @@ bool PacMan::getPowerUps(int powerUp)
 	case 4:
 		return _powerUpMarioStar;
 		break;
+	case 5:
+		return _powerUpDragonShout;
+		break;
 	default:
 		break;
 	}
@@ -95,7 +116,7 @@ bool PacMan::getPowerUps(int powerUp)
 //Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
 {
-	assert(numDuPowerUp > 0 && numDuPowerUp < 5);
+	assert(numDuPowerUp > 0 && numDuPowerUp < 6);
 	switch (numDuPowerUp)
 	{
 	case 1:
@@ -109,6 +130,9 @@ void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
 		break;
 	case 4:
 		_powerUpMarioStar = valeur;
+		break;
+	case 5:
+		_powerUpDragonShout = valeur;
 		break;
 	default:
 		break;
@@ -227,6 +251,10 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		laser.draw(target, states);
 	}
 
+	if (_dragonShoutActivated)
+	{
+		_dragonShout.draw(target, states);
+	}
 	target.draw(vertices);
 }
 
@@ -254,7 +282,17 @@ void PacMan::input(char c)
 	{
 		_keepFiring = true;
 	}
+	else if (c == 'f' && _nbDragonShout > 0 && _clockDragonShout.getElapsedTime() > sf::milliseconds(1500))
+	{
+		_clockDragonShout.restart();
+		_dragonShoutActivated = true;
+		_dragonShoutSound.play();
+		_dragonShout.resetClockDragonShout();
+		_dragonShout.setPos(_pos);
+		_nbDragonShout--;
 		
+
+	}
 
 	setDirection(c);
 }
@@ -286,6 +324,15 @@ void PacMan::setNormalStat()
 
 void PacMan::move(char direction, Map &map)
 {
+	if (_dragonShoutActivated)
+	{
+		if (_clockDragonShout.getElapsedTime() > sf::milliseconds(4000))
+		{
+			_dragonShoutActivated = false;
+			if (_nbDragonShout < 1)
+				_powerUpDragonShout = false;
+		}
+	}
 	if (_powerUpMarioStar && _clockEtoile.getElapsedTime().asMilliseconds() < _nbMilisecondeEtoile)
 	{
 		_stopRepeating = false;

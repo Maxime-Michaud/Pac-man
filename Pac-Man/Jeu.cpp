@@ -32,6 +32,17 @@ Jeu::Jeu(std::string map)
 	_fantome.add(new FantomeBleu());
 	/*for (int i = 0; i < 100; i++)
 		_fantome.add(new FantomeOrange());*/
+	_explosionTextureComplet.loadFromFile("explosion.png");
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			_explosionTextureRect[i][j] = sf::IntRect(i * 256, j * 256, 256, 256);
+			_explosionTexture[i][j].setTexture(&_explosionTextureComplet);
+			_explosionTexture[i][j].setTextureRect(_explosionTextureRect[i][j]);
+		}
+	}
+	
 
 	for (auto f : _fantome)
 	{
@@ -390,7 +401,7 @@ void Jeu::play()
 		if (_mangeable[x][y])
 		{
 			_score += 1;
-			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
+			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule || _mangeable[x][y] & mangeable::bouleRouge)
 			{
 				_nbBouleMange += 1;
 				if (_nbBouleMange >= _nbBoulesTotal)
@@ -403,9 +414,11 @@ void Jeu::play()
 				}
 				if (_mangeable[x][y] & mangeable::grosseBoule)
 				{
-					int random = rand() % 2 + 1;
+					int random = 5/*rand() % 3 + 1*/;
 					if (random == 2)
 						random = 4;
+					else if (random == 3)
+						random = 5;
 					switch (random)
 					{
 					case 1:
@@ -418,6 +431,12 @@ void Jeu::play()
 						_star.play();
 						_pacman.setPowerUps(4, true);
 						_pacman.changerTempsPowerUp(4, 5000);
+						break;
+					case 5:
+						//jouer son dragonshou learned
+						_pacman.setPowerUps(5, true);
+						_dragonShoutEffect = true;
+						_pacman.incrementeurDragonShout(1);
 						break;
 					default:
 						break;
@@ -452,15 +471,40 @@ void Jeu::play()
 			else
 				f->move(f->getDirection(), _fantome[0]->getPos(), _map);
 			verifieSiMort(*f);
-			if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
+			if (!f->getToucherParDragonshout())
 			{
-				_alahuAkbar.play();
-				f->setPowerUp(1, true);
-				f->resetClockAlahuAkbar();
-				_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
+				if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
+				{
+					_alahuAkbar.play();
+					_nbBouleMange++;
+					f->setPowerUp(1, true);
+					f->resetClockAlahuAkbar();
+					_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
+				}
+			}
+			
+			//TODO faire l'animation de l'explosion
+			//if (f->getExplosionStatus())
+				//_explosionTexture.update();
+			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() < 500)
+			{
+				//Si le fantome est en range du dragonShout
+				if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
+				{
+					sf::Vector2f posRecul;
+					posRecul.x = -100;
+					posRecul.y = -100;
+					f->setDragonShoutEffect(posRecul);
+				}
+				
 			}
 				
 		}
+		_dragonShoutEffect = false;
+		//Pour vérifier l'effect du dragon shout une seule fois
+		/*if (!_dragonShoutEffect && _pacman.getTempsDragonShout() > 5000)
+			_dragonShoutEffect = true;*/
+			
 
 		//Le temps passé est vérifié
 		int duration = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
