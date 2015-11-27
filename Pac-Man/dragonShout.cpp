@@ -1,7 +1,5 @@
 #include "dragonShout.h"
 
-
-
 dragonShout::dragonShout()
 {
 }

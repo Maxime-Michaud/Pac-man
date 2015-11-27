@@ -83,7 +83,18 @@ Jeu::Jeu(std::string map)
 				(temp[i - 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
 				(temp[i + 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i - 1][j] == false && temp[i][j] == false)))
 			{
-				_mangeable[i][j] = mangeable::grosseBoule;
+				bool tropPres = false;		//Pour savoir si une autre boule est trop pres
+				for (int k = 0; k < _mangeable.size(); k++)		//Vérifie tout le vecteur à la recherche de grosse boules près (12 = 120 pixel pres)
+				{
+					for (int l = 0; l < _mangeable[k].size(); l++)
+					{
+						if (_mangeable[k][l] & mangeable::grosseBoule && abs(k-i) + abs(l-j) < 12)
+							tropPres = true;
+					}
+				}
+				if (!tropPres)		//Si aucune grosse boule n'est dans un rayon de 120 pixel, la grosse boule est placé
+					_mangeable[i][j] = mangeable::grosseBoule;
+				tropPres = false;
 			}
 		}
 	}
