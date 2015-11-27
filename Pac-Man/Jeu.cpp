@@ -64,6 +64,7 @@ Jeu::Jeu(std::string map)
 
 	//Initialise les boules jaune et rouge à manger sur tout la map
 	_nbBouleRouge = 4;
+
 	auto temp = _map.getBoolMap();
 	_mangeable.resize(temp.size());
 	for (int i = 0; i < temp.size(); i++)
@@ -98,7 +99,7 @@ Jeu::Jeu(std::string map)
 			}
 		}
 	}
-	_nbBoulesTotal = _posValides.size();
+	_nbBoulesTotal = _posValides.size() - _nbBouleRouge;
 	_temps = std::clock();
 
 	for (int i = 0; i < _nbBouleRouge; i++)
@@ -126,7 +127,7 @@ Jeu::Jeu(std::string map)
 	_mort.setBuffer(_mortBuffer);
 	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
 	_continue.setBuffer(_continueBuffer);
-	_ggBuffer.loadFromFile("gg.wav");
+	_ggBuffer.loadFromFile("gg.wav");					  //Son quand le joueur fini une map
 	_gg.setBuffer(_ggBuffer);
 	_megaDeadBuffer.loadFromFile("deadSound0.wav");
 	_megaDead.setBuffer(_megaDeadBuffer);
@@ -404,12 +405,45 @@ sf::Vector2f Jeu::choisirPosRandom()
 	do		//Tant que la position choisi au hasard est a 30 pixel en x et y de pacman et ne contient pas de fruit ou de grosses boules
 	{
 		random = rand() % _posValides.size();
-	} while (_mangeable[_posValides.at(random).x / 10][_posValides.at(random).y / 10] &! mangeable::fruit &&
-		_mangeable[_posValides.at(random).x / 10][_posValides.at(random).y / 10] & !mangeable::grosseBoule && 
+	} while (!(_mangeable[_posValides.at(random).x / 10][_posValides.at(random).y / 10] & mangeable::fruit) &&
+		!(_mangeable[_posValides.at(random).x / 10][_posValides.at(random).y / 10] & mangeable::grosseBoule) && 
 		abs(_posValides.at(random).x - _pacman.getPos().x) < 30
 		&& abs(_posValides.at(random).y - _pacman.getPos().y) < 30);
-
+	std::cout << "La pos random choisit est: " << _posValides.at(random).x << "," << _posValides.at(random).y << std::endl;
 	return _posValides.at(random);
+}
+
+void Jeu::donnerUnPowerUpPacman()
+{
+	int random = 5 /*rand() % 3 + 1*/;
+	if (random == 2)
+		random = 4;
+	else if (random == 3)
+		random = 5;
+	switch (random)
+	{
+	case 1:
+		_pacman.setPowerUps(1, true);
+		_pacman.changerTempsPowerUp(1, 2000);
+		break;
+	case 4:
+		if (_pacman.getPowerUps(4))
+			_pacman.startClockEtoile();
+		_star.play();
+		_pacman.setPowerUps(4, true);
+		_pacman.changerTempsPowerUp(4, 5000);
+		break;
+	case 5:
+		//jouer son dragonshou learned
+		_dragonLearned.play();
+		_pacman.setPowerUps(5, true);
+		_dragonShoutEffect = true;
+		_pacman.resetClockDragon();
+		_pacman.incrementeurDragonShout(1);
+		break;
+	default:
+		break;
+	}
 }
 
 void Jeu::play()
@@ -423,12 +457,17 @@ void Jeu::play()
 
 		//Vérifie l'entrée de l'utilisateur
 		auto keys = getKeyPress();
-
 		for (char c : keys)
+		{
 			_pacman.input(c);
-
+			/*if (c == 'm')
+			{
+				std::cout << "Pos pac-man: " << _pacman.getPos().x << "," << _pacman.getPos().y << std::endl;
+				_fruits.imprimmerPosFruit();
+				std::cout << std::endl << x << "," << y << std::endl;
+			}*/	
+		}
 		shakeScreen();
-
 		_pacman.move(_pacman.getDirection(), _map);
 
 		int x = round(_pacman.getPos().x / 10);
@@ -437,65 +476,40 @@ void Jeu::play()
 		if (_mangeable[x][y])
 		{
 			_score += 1;
-			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule || _mangeable[x][y] & mangeable::bouleRouge)
-			{
-				_nbBouleMange += 1;
-				if (_nbBouleMange >= _nbBoulesTotal)
-				{
-					_star.stop();
-					_pacman.setSonDragonShout(false);
-					_gg.play();
-					Sleep(5500);
-					_playing = false;
-					break;
-				}
-				if (_mangeable[x][y] & mangeable::grosseBoule)
-				{
-					int random = rand() % 3 + 1;
-					if (random == 2)
-						random = 4;
-					else if (random == 3)
-						random = 5;
-					switch (random)
-					{
-					case 1:
-						_pacman.setPowerUps(1, true);
-						_pacman.changerTempsPowerUp(1, 2000);
-						break;
-					case 4:
-						if (_pacman.getPowerUps(4))
-							_pacman.startClockEtoile();
-						_star.play();
-						_pacman.setPowerUps(4, true);
-						_pacman.changerTempsPowerUp(4, 5000);
-						break;
-					case 5:
-						//jouer son dragonshou learned
-						_dragonLearned.play();
-						_pacman.setPowerUps(5, true);
-						_dragonShoutEffect = true;
-						_pacman.resetClockDragon();
-						_pacman.incrementeurDragonShout(1);
-						break;
-					default:
-						break;
-					}
-				}
-			}
 			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
 			{
-				_score += 10;
-				std::cout << x * 10 << ", " << y * 10 << " no2" << std::endl;
+				_score += 20;
+				std::cout << "pacman mange un fruit" << std::endl;
 				_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10));
+				_nbFruitMange++;
+				if (_nbFruitMange % 3 == 0)
+					donnerUnPowerUpPacman();
 				_fruit.play();
 			}
 			else if (!_chomp.getStatus())
 			{
 				_chomp.play();
 			}
+
+			if (_mangeable[x][y] & mangeable::grosseBoule)
+			{
+				donnerUnPowerUpPacman();
+			}
+			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
+				_nbBouleMange++;
+
+			if (_nbBouleMange >= _nbBoulesTotal)
+			{
+				_star.stop();
+				_pacman.setSonDragonShout(false);
+				_gg.play();
+				Sleep(5500);
+				_playing = false;
+				break;
+			}
 			_mangeable[x][y] = 0;
 			std::string temp = "Score  " + std::to_string(_score);
-			_scoreTxt = sf::Text(temp, _8bitFont, 20);
+			_scoreTxt = sf::Text(temp, _8bitFont, 20);		
 		}
 
 		//Fait arrêter le son de l'alarme
@@ -515,7 +529,6 @@ void Jeu::play()
 				if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
 				{
 					_alahuAkbar.play();
-					_nbBouleMange++;
 					f->setPowerUp(1, true);
 					f->resetClockAlahuAkbar();
 					_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
@@ -563,7 +576,9 @@ void Jeu::play()
 			if (!_fermerHorloge)
 			{
 				sf::Vector2f randomV = choisirPosRandom();
-				_fruits.ajouterFruitListe(randomV, _mangeable[randomV.x / 10][randomV.y / 10]);
+				//ici les fruits
+				_fruits.ajouterFruitListe(randomV);
+				_mangeable[randomV.x / 10][randomV.y / 10] = mangeable::fruit | _mangeable[randomV.x / 10][randomV.y / 10];
 				_fermerHorloge = true;
 			}
 		}

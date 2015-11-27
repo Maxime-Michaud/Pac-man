@@ -262,6 +262,7 @@ void Fantome::fantomeDead(Map &map, sf::Vector2f window)
 		_numLigne = map.quelleLigne(_pos, _numLigne);
 		_vertical = true;
 		_isDead = false;
+		_pushBack = true;
 		_toucherParDragonshout = false;
 	}
 }

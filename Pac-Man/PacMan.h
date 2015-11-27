@@ -64,6 +64,7 @@ class PacMan : public Personnage
 	int _nbDragonShout = 0;							//Le nombre de dragon shou disponible
 	sf::Clock _clockDragonShout;						//Un délais de 1500 ms entre chaque dragon shout
 	bool _dragonShoutActivated = false;
+	bool _dragonShoutAnimation = false;
 public:
 	PacMan();
 	~PacMan();
@@ -89,6 +90,7 @@ public:
 	bool getDragonShoutActivated();
 	float getTempsDragonShout();	//Retourne le temps écoulé depuis l'activation du dragonShout
 	void setSonDragonShout(bool valeur);
+	bool getDragonAnimation();		//Retourne la valeur qui pemret de jouer l'animation
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
 	void deathAnimation(sf::RenderTarget & target) const;

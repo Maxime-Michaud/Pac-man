@@ -269,7 +269,7 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		laser.draw(target, states);
 	}
 
-	if (_dragonShoutActivated)
+	if (_dragonShoutAnimation)
 	{
 		_dragonShout.draw(target, states);
 	}
@@ -300,10 +300,11 @@ void PacMan::input(char c)
 	{
 		_keepFiring = true;
 	}
-	else if (c == 'f' && _nbDragonShout > 0 && _clockDragonShout.getElapsedTime() > sf::milliseconds(1500))
+	else if (c == 'f' && _nbDragonShout > 0 && _clockDragonShout.getElapsedTime() > sf::milliseconds(500))
 	{
 		_clockDragonShout.restart();
 		_dragonShoutActivated = true;
+		_dragonShoutAnimation = true;
 		_dragonShoutSound.play();
 		_dragonShout.resetClockDragonShout();
 		_dragonShout.setPos(_pos);
@@ -313,6 +314,11 @@ void PacMan::input(char c)
 	}
 
 	setDirection(c);
+}
+
+bool PacMan::getDragonAnimation()
+{
+	return _dragonShoutAnimation;
 }
 
 void PacMan::setCouleurRandom()
@@ -344,13 +350,15 @@ void PacMan::move(char direction, Map &map)
 {
 	if (_dragonShoutActivated)
 	{
-		if (_clockDragonShout.getElapsedTime() > sf::milliseconds(4000))
+		if (_clockDragonShout.getElapsedTime() > sf::milliseconds(500))
 		{
 			_dragonShoutActivated = false;
 			if (_nbDragonShout < 1)
 				_powerUpDragonShout = false;
 		}
 	}
+	if (_dragonShoutAnimation && _clockDragonShout.getElapsedTime() > sf::milliseconds(4000))
+		_dragonShoutAnimation = false;
 	if (_powerUpMarioStar && _clockEtoile.getElapsedTime().asMilliseconds() < _nbMilisecondeEtoile)
 	{
 		_stopRepeating = false;

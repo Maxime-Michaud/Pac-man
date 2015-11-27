@@ -76,9 +76,6 @@
     <ClInclude Include="saisieSecurisee.h">
       <Filter>divers</Filter>
     </ClInclude>
-    <ClInclude Include="windowsAPIwrapper.h">
-      <Filter>divers</Filter>
-    </ClInclude>
     <ClInclude Include="PacMan.h">
       <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClInclude>
@@ -109,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="laser.h">
       <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClInclude>
+    <ClInclude Include="windowsAPIwrapper.h">
+      <Filter>Jeu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

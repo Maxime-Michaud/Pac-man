@@ -73,6 +73,7 @@ class Jeu
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge
+	int _nbFruitMange = 0;						  //Le nombre de fruit mangé, a chaque 3, donne un power up
 
 	bool _dragonShoutEffect = true;				  //Pour faire la shock wave qu'une seule fois dans le dragonShout
 
@@ -111,7 +112,7 @@ public:
 	~Jeu();
 
 	void draw(bool display = true);
-
+	void donnerUnPowerUpPacman();
 	void drawMangeable();
 
 	void drawLaserUi();
