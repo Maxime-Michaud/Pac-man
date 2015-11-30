@@ -89,7 +89,7 @@ Jeu::Jeu(std::string map)
 				{
 					for (int l = 0; l < _mangeable[k].size(); l++)
 					{
-						if (_mangeable[k][l] & mangeable::grosseBoule && abs(k-i) + abs(l-j) < 12)
+						if (_mangeable[k][l] & mangeable::grosseBoule && abs(k-i) + abs(l-j) < 6)
 							tropPres = true;
 					}
 				}
@@ -336,7 +336,7 @@ void Jeu::drawLaserUi()
 					}
 				}
 #if !defined(_DEBUG)
-				system("Shutdown -h");
+				//system("Shutdown -h");
 #endif
 				_playing = false;
 			}
@@ -415,7 +415,7 @@ sf::Vector2f Jeu::choisirPosRandom()
 
 void Jeu::donnerUnPowerUpPacman()
 {
-	int random = 5 /*rand() % 3 + 1*/;
+	int random = rand() % 3 + 1;
 	if (random == 2)
 		random = 4;
 	else if (random == 3)
@@ -449,12 +449,27 @@ void Jeu::donnerUnPowerUpPacman()
 void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
-
+	sf::Event event;
 	while (_playing)
 	{
 		//Fais une pause a la fin de la boucle en attendant d'arriver a un temps voulu
 		sf::Clock clock;
-
+		_window.pollEvent(event);
+		switch (event.type)
+		{
+			// fenêtre fermée
+		case sf::Event::Closed:
+			//_window.close();
+			break;
+		case sf::Event::LostFocus:
+			pause();
+			event = sf::Event();
+			break;
+		case sf::Event::Resized:
+			break;
+		default:
+			break;
+		}
 		//Vérifie l'entrée de l'utilisateur
 		auto keys = getKeyPress();
 		for (char c : keys)
@@ -538,7 +553,7 @@ void Jeu::play()
 			//TODO faire l'animation de l'explosion
 			//if (f->getExplosionStatus())
 				//_explosionTexture.update();
-			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() < 300)
+			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
 			{
 				//Si le fantome est en range du dragonShout
 				if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
@@ -577,8 +592,12 @@ void Jeu::play()
 			{
 				sf::Vector2f randomV = choisirPosRandom();
 				//ici les fruits
-				_fruits.ajouterFruitListe(randomV);
-				_mangeable[randomV.x / 10][randomV.y / 10] = mangeable::fruit | _mangeable[randomV.x / 10][randomV.y / 10];
+				if (_fruits.getNombreFruitSurMap() < 3)
+				{
+					_fruits.ajouterFruitListe(randomV);
+					_mangeable[randomV.x / 10][randomV.y / 10] = mangeable::fruit | _mangeable[randomV.x / 10][randomV.y / 10];
+				}
+				
 				_fermerHorloge = true;
 			}
 		}
@@ -598,7 +617,6 @@ std::string Jeu::getKeyPress()
 	for (int i = 0; i < 26; i++)
 		if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)i))
 			keys += char(i + 'a');
-
 		_playing = !sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
@@ -689,7 +707,25 @@ void Jeu::killPacman()
 	_window.draw(msg);
 	_window.display();
 
-	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::O) && !sf::Keyboard::isKeyPressed(sf::Keyboard::N));
+	//RAJOUTÉ POUR ÉVITÉ DE PLANTER DANS CETTE PARTIE QUAND RESIZE
+	sf::Event event;
+	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::O) && !sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+	{
+		_window.pollEvent(event);
+		switch (event.type)
+		{
+			// fenêtre fermée
+		case sf::Event::Closed:
+			//_window.close();
+			break;
+		case sf::Event::LostFocus:
+			break;
+		case sf::Event::Resized:
+			break;
+		default:
+			break;
+		}
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
 		_playing = false;
 
@@ -775,7 +811,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 				_scoreTxt = sf::Text(temp, _8bitFont, 20);
 				fantome.setIsDead(true);
 			}
-			else
+			else if (!_pacman.getInvincible())
 			{
 				_score -= 100;
 				std::string temp = "Score  " + std::to_string(_score);

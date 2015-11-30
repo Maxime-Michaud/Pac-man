@@ -25,6 +25,7 @@ class PacMan : public Personnage
 	mutable float _deathCount;
 	float _deathIncrement;
 
+	mutable bool _invincible = false;		//Si pac-man est invincible ou non
 	sf::Color _color;	//Couleur de pac-man
 
 	//Constantes du cercle
@@ -59,6 +60,8 @@ class PacMan : public Personnage
 	int _compteurFrame = 0;
 	mutable bool _stopRepeating = false;
 
+	sf::Clock _appuyerBouton;
+
 	//Pour le power up dragonshout
 	dragonShout _dragonShout;
 	int _nbDragonShout = 0;							//Le nombre de dragon shou disponible
@@ -73,6 +76,8 @@ public:
 	void fire()const;
 	void stop()const;			
 
+	bool getInvincible();
+	void setInvincible(bool valeur);
 	void startClockEtoile();
 	bool getPowerUps(int);
 	void setPowerUps(int numDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario

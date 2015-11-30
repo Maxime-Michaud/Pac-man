@@ -326,37 +326,35 @@ bool Fruits::retirerFruitManger(sf::Vector2f &pos)
 //ajoute un fruit a la liste et à la map si il y a moins de 3 fruits
 void Fruits::ajouterFruitListe(sf::Vector2f &pos)
 {
-	int random = rand() % 7 + 1;
-	switch (random)
-	{
-	case 1:		//Pomme
-		_fruitsListe.push_back(positionFruit(pos, 'p'));
-		break;
-	case 2:		//Orange
-		_fruitsListe.push_back(positionFruit(pos, 'o'));
-		break;
-	case 3:		//Cerise
-		_fruitsListe.push_back(positionFruit(pos, 'c'));
-		break;
-	case 4:		//Banane
-		_fruitsListe.push_back(positionFruit(pos, 'b'));
-		break;
-	case 5:		//Fraise
-		_fruitsListe.push_back(positionFruit(pos, 'f'));
-		break;
-	case 6:		//Mure
-		_fruitsListe.push_back(positionFruit(pos, 'm'));
-		break;
-	case 7:		//Anana
-		_fruitsListe.push_back(positionFruit(pos, 'a'));
-		break;
-	default:
-		break;
-	}
-
 	if (_fruitsSurMap.size() < 3)
 	{
-		_fruitsSurMap.push_back(_fruitsListe.back());
-		_fruitsListe.pop_back();
+		int random = rand() % 7 + 1;
+		switch (random)
+		{
+		case 1:		//Pomme
+			_fruitsSurMap.push_back(positionFruit(pos, 'p'));
+			break;
+		case 2:		//Orange
+			_fruitsSurMap.push_back(positionFruit(pos, 'o'));
+			break;
+		case 3:		//Cerise
+			_fruitsSurMap.push_back(positionFruit(pos, 'c'));
+			break;
+		case 4:		//Banane
+			_fruitsSurMap.push_back(positionFruit(pos, 'b'));
+			break;
+		case 5:		//Fraise
+			_fruitsSurMap.push_back(positionFruit(pos, 'f'));
+			break;
+		case 6:		//Mure
+			_fruitsSurMap.push_back(positionFruit(pos, 'm'));
+			break;
+		case 7:		//Anana
+			_fruitsSurMap.push_back(positionFruit(pos, 'a'));
+			break;
+		default:
+			break;
+		}
 	}
+	
 }
