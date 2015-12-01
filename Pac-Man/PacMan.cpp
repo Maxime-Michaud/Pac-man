@@ -26,6 +26,7 @@ PacMan::PacMan()
 	_powerUpNames.insert({ "time", 2 });
 	_powerUpNames.insert({ "gun", 3 });
 	_powerUpNames.insert({ "etoile", 4 });
+	_powerUpNames.insert({ "shout", 5 });
 }
 
 PacMan::~PacMan()
@@ -51,17 +52,21 @@ void PacMan::fire()const
 		_laser = true;
 		_laserSound.play();
 	}
-	_tempsPassePowerUpLaser = _tempsLaser.getElapsedTime().asMilliseconds() + _tempsMemoireLaser;
-	std::cout << _tempsLaser.getElapsedTime().asMilliseconds() << std::endl;
-	if (_tempsLaser.getElapsedTime().asMilliseconds() >= _nbMilisecondeLaser - _tempsMemoireLaser)
+	if (_nbMilisecondeLaser >= 0)
 	{
-		std::cout << "arrêt du laser par le temps ecouler" << std::endl;
-		_powerUpLaser = false;
-		_nbMilisecondeLaser = 0;
-		_tempsMemoireLaser = 0;
-		_tempsPassePowerUpLaser = 0;
+		_tempsPassePowerUpLaser = _tempsLaser.getElapsedTime().asMilliseconds() + _tempsMemoireLaser;
+		std::cout << _tempsLaser.getElapsedTime().asMilliseconds() << std::endl;
+		if (_tempsLaser.getElapsedTime().asMilliseconds() >= _nbMilisecondeLaser - _tempsMemoireLaser)
+		{
+			std::cout << "arrêt du laser par le temps ecouler" << std::endl;
+			_powerUpLaser = false;
+			_nbMilisecondeLaser = 0;
+			_tempsMemoireLaser = 0;
+			_tempsPassePowerUpLaser = 0;
 
+		}
 	}
+	
 }
 
 void PacMan::incrementeurDragonShout(int increment)
@@ -209,7 +214,7 @@ void PacMan::startClockEtoile()
 //Permet d'ajouter ou de supprimer du temps apparti a un power up
 void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 {
-	assert(numDuPowerUp > 0 && numDuPowerUp < 5);
+	assert(numDuPowerUp > 0 && numDuPowerUp < 6);
 	switch (numDuPowerUp)
 	{
 	case 1:
@@ -225,9 +230,17 @@ void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 		_clockEtoile.restart();
 		_nbMilisecondeEtoile = valeur;
 		break;
+	case 5:
+		incrementeurDragonShout(static_cast<int>(valeur));
+		break;
 	default:
 		break;
 	}
+}
+
+void PacMan::changerTempsPowerUp(std::string nomDuPowerUp, float valeur)
+{
+	changerTempsPowerUp(_powerUpNames[nomDuPowerUp], valeur);
 }
 
 sf::VertexArray PacMan::buildPacMan() const

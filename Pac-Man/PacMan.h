@@ -86,6 +86,7 @@ public:
 	void setPowerUps(int numDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 	void setPowerUps(std::string nomDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 	void changerTempsPowerUp(int numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
+	void changerTempsPowerUp(std::string numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
 	float getTempsEtoile();		//Rdetourne le temps restant de l'étoile
 	void setCouleurRandom();	//Set la couleur de pac-man au hasard
 	void PacMan::setNormalStat();//reset les stats à la normal

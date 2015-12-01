@@ -55,6 +55,7 @@ class Jeu
 	sf::Text _dragonShoutText;
 	sf::Text _dragonShoutLearned;
 
+	sf::Event event;
 	int _targetfps;
 	float _shake;
 	bool _playing = true;
@@ -78,7 +79,8 @@ class Jeu
 	int _nbFruitMange = 0;						  //Le nombre de fruit mangé, a chaque 3, donne un power up
 
 	bool _dragonShoutEffect = true;				  //Pour faire la shock wave qu'une seule fois dans le dragonShout
-
+	sf::View _view;
+	sf::Vector2f _viewVector;
 	sf::Texture _explosionTextureComplet;
 	sf::RectangleShape _explosionTexture[6][8];
 	sf::IntRect _explosionTextureRect[6][8];
@@ -129,6 +131,7 @@ public:
 	void drawEtoileUi();
 	void play();
 
+	void captureEvent();
 	std::string getKeyPress();
 
 	void pause(std::string msg = "Appuyez sur n'importe quel bouton pour continuer!");
