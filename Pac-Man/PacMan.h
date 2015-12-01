@@ -16,6 +16,7 @@ TODO descriptionner mieux que ça												*
 #include "Personnage.h"
 #include "laser.h"
 #include "dragonShout.h"
+#include <map>
 #include <SFML\Audio.hpp>
 
 class PacMan : public Personnage
@@ -41,6 +42,8 @@ class PacMan : public Personnage
 	mutable sf::Clock _tempsLaser;						//Sert à calculer le temps depuis la partie du laser
 	mutable sf::Clock _tempsSansLaser;
 	sf::VertexArray buildPacMan() const;
+
+	std::map<std::string, int>_powerUpNames;
 
 	mutable bool _powerUpLaser = false;				  //Le power up du laser
 	mutable bool _powerUpTimeTravel = false;		  //Le power up time traveller
@@ -81,6 +84,7 @@ public:
 	void startClockEtoile();
 	bool getPowerUps(int);
 	void setPowerUps(int numDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
+	void setPowerUps(std::string nomDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 	void changerTempsPowerUp(int numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
 	float getTempsEtoile();		//Rdetourne le temps restant de l'étoile
 	void setCouleurRandom();	//Set la couleur de pac-man au hasard

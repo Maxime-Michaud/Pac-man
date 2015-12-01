@@ -464,6 +464,11 @@ void Jeu::loadMap()
 		system("pause");
 		return;
 	}
+
+	for (auto f : _fantome)
+		delete f;
+
+	_fantome.clear();
 	
 	std::string mapName = *_mapsIterator;
 	++_mapsIterator;
@@ -514,6 +519,28 @@ void Jeu::loadMap()
 		else if (couleur == "bleu")
 			for (int i = 0; i < count; i++)
 				i[fantomes] = new FantomeBleu;
+
+		//Ajoute les power up
+		if (in.peek() != '\n')
+		{
+			//Skip
+			while (!isalpha(in.peek()) && in.peek() != EOF && in.peek() != '\n')
+			{
+				in.get();
+			}
+
+
+			if (in.peek() != EOF && in.peek() != '\n')	//On a un mot
+			{
+				std::string powerUp;
+				in >> powerUp;
+				for (int i = 0; i < count; i++)
+				{
+					fantomes[i]->setPowerUp(powerUp, true);
+				}
+				
+			}
+		}
 
 		for (int i = 0; i < count; i++)
 		{
@@ -572,6 +599,14 @@ void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
 	sf::Event event;
+
+	for (auto &f : _fantome)
+	{
+		f->resetClockAlahuAkbar();
+
+		if (f->getAlahuAckbar())
+			_alahuAkbar.play();
+	}
 	while (_playing)
 	{
 		//Fais une pause a la fin de la boucle en attendant d'arriver a un temps voulu

@@ -12,5 +12,7 @@ public:
 	Fantome* operator[](int pos);
 	std::vector<Fantome*, std::allocator<Fantome*>>::iterator begin();
 	std::vector<Fantome*, std::allocator<Fantome*>>::iterator end();
+
+	void clear();
 };
 

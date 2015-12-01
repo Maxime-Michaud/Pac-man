@@ -21,6 +21,11 @@ PacMan::PacMan()
 	_dragonShoutBuffer.loadFromFile("fusrohdah.wav");
 	_dragonShoutSound.setBuffer(_dragonShoutBuffer);
 	_dragonShout.resetClockDragonShout();
+
+	_powerUpNames.insert({ "laser", 1 });
+	_powerUpNames.insert({ "time", 2 });
+	_powerUpNames.insert({ "gun", 3 });
+	_powerUpNames.insert({ "etoile", 4 });
 }
 
 PacMan::~PacMan()
@@ -165,6 +170,19 @@ void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
 	default:
 		break;
 	}
+}
+
+void PacMan::setPowerUps(std::string nomPowerUp, bool valeur)
+{
+	if (_powerUpNames.end() == _powerUpNames.find(nomPowerUp))
+	{
+	#if defined(_DEBUG)
+		std::cout << "Le nom du power up est introuvable. Vous avez écrit: " << nomPowerUp;
+	#endif
+		return;
+	}
+
+	setPowerUps(_powerUpNames[nomPowerUp], valeur);
 }
 
 sf::Time PacMan::getTempsLaser()

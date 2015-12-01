@@ -15,6 +15,7 @@
 #include "Personnage.h"
 #include "map.h"
 #include <deque>
+#include <map>
 
 class Fantome : public Personnage
 {
@@ -62,6 +63,8 @@ protected:
 	bool _toucherParDragonshout = false;	//Si il est affecté ou non pas un dragon shout
 	bool _pushBack = true;					//Si le fantome est push back ou revient dans le jeu
 
+	std::map<std::string, int> _powerUpNames;	//Associe des noms au valeur des power-up
+
 public:
 	Fantome();
 	~Fantome();
@@ -71,6 +74,16 @@ public:
 	bool getExplosionStatus();
 	void resetClockAlahuAkbar();
 	void setPowerUp(int nbPowerUp, bool valeur);
+
+	/// <summary>
+	/// Ajoute un power up par son nom.
+	/// </summary>
+	/// <param name="nomPowerUp">Valeurs possible: bouleRouge</param>
+	/// <param name="valeur">Durée du power up</param>
+	void setPowerUp(std::string nomPowerUp, bool valeur);
+
+	bool getAlahuAckbar() const;
+
 	std::string getNom();	//Renvois le nom du fantome(nommer par sa couleur)
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
