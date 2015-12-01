@@ -620,37 +620,26 @@ void Jeu::play()
 		if (_mangeable[x][y])
 		{
 			_score += 1;
-			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
+			if (_mangeable[x][y] & mangeable::grosseBoule)
 			{
-				_nbBouleMange += 1;
-				if (_nbBouleMange >= _nbBoulesTotal)
+				int random = rand() % 2 + 1;
+				if (random == 2)
+					random = 4;
+				switch (random)
 				{
-					_star.stop();
-					_gg.play();
-					Sleep(5500);	//Attends que le son de victoire joue
-					init();
-				}
-				if (_mangeable[x][y] & mangeable::grosseBoule)
-				{
-					int random = rand() % 2 + 1;
-					if (random == 2)
-						random = 4;
-					switch (random)
-					{
-					case 1:
-						_pacman.setPowerUps(1, true);
-						_pacman.changerTempsPowerUp(1, 2000);
-						break;
-					case 4:
-						if (_pacman.getPowerUps(4))
-							_pacman.startClockEtoile();
-						_star.play();
-						_pacman.setPowerUps(4, true);
-						_pacman.changerTempsPowerUp(4, 5000);
-						break;
-					default:
-						break;
-					}
+				case 1:
+					_pacman.setPowerUps(1, true);
+					_pacman.changerTempsPowerUp(1, 2000);
+					break;
+				case 4:
+					if (_pacman.getPowerUps(4))
+						_pacman.startClockEtoile();
+					_star.play();
+					_pacman.setPowerUps(4, true);
+					_pacman.changerTempsPowerUp(4, 5000);
+					break;
+				default:
+					break;
 				}
 			}
 			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
