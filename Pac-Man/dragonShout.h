@@ -11,6 +11,7 @@ public:
 	dragonShout();
 	~dragonShout();
 	void draw(sf::RenderTarget &rt, sf::RenderStates rs)const;
+	sf::Time getClockDragonShout();
 	void resetClockDragonShout();
 	void setPos(sf::Vector2f pos);
 };

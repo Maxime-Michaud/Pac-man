@@ -78,6 +78,10 @@ void dragonShout::setPos(sf::Vector2f pos)
 	_pos = pos;
 }
 
+sf::Time dragonShout::getClockDragonShout()
+{
+	return _clockDragonShout.getElapsedTime();
+}
 //faire un soleil:
 //sf::Vector2f pos;
 //sf::VertexArray trucADessiner(sf::Triangles);

@@ -713,6 +713,20 @@ void Jeu::play()
 		else
 			_fermerHorloge = false;
 
+		if (_pacman.getDragonShoutActivated() && _pacman.getTempsDragonShout() < 2000 /*&& _pacman.getNbDragonShout() >= 2*/)
+		{
+			_view.setSize(sf::Vector2f(_viewVector.x += _pacman.getTempsDragonShout() / 15, _viewVector.y += _pacman.getTempsDragonShout() / 15));
+			_window.setView(_view);
+		}
+		else if (_pacman.getDragonAnimation() && _pacman.getTempsDragonShout() > 2500 /*&& _pacman.getNbDragonShout() >= 2*/)
+		{
+			_view.setSize(sf::Vector2f(_viewVector.x -= _pacman.getTempsDragonShout() / 145, _viewVector.y -= _pacman.getTempsDragonShout() / 145));
+			if (_viewVector.x < winapi::ScreenWidth)
+				_viewVector.x = winapi::ScreenWidth;
+			if (_viewVector.y < winapi::ScreenHeight)
+				_viewVector.y = winapi::ScreenHeight;
+			_window.setView(_view);
+		}
 		draw();
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
 	}
