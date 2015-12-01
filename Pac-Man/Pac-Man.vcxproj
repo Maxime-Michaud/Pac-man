@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dragonShout.cpp" />
     <ClCompile Include="fantome.cpp" />
     <ClCompile Include="FantomeBleu.cpp" />
     <ClCompile Include="FantomeOrange.cpp" />
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="algo.h" />
     <ClInclude Include="autosfml.h" />
+    <ClInclude Include="dragonShout.h" />
     <ClInclude Include="fantome.h" />
     <ClInclude Include="FantomeBleu.h" />
     <ClInclude Include="FantomeOrange.h" />

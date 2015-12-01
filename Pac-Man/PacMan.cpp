@@ -18,6 +18,9 @@ PacMan::PacMan()
 	_pos = sf::Vector2f(300, 300);
 	_laserSB.loadFromFile("BWAAAAH.wav");
 	_laserSound.setBuffer(_laserSB);
+	_dragonShoutBuffer.loadFromFile("fusrohdah.wav");
+	_dragonShoutSound.setBuffer(_dragonShoutBuffer);
+	_dragonShout.resetClockDragonShout();
 }
 
 PacMan::~PacMan()
@@ -56,6 +59,39 @@ void PacMan::fire()const
 	}
 }
 
+void PacMan::incrementeurDragonShout(int increment)
+{
+	_nbDragonShout += increment;
+}
+
+int PacMan::getNbDragonShout()
+{
+	return _nbDragonShout;
+}
+
+bool PacMan::getDragonShoutActivated()
+{
+	return _dragonShoutActivated;
+}
+
+void PacMan::resetClockDragon()
+{
+	_clockDragonShout.restart();
+}
+
+float PacMan::getTempsDragonShout()
+{
+	return _clockDragonShout.getElapsedTime().asMilliseconds();
+}
+
+void PacMan::setSonDragonShout(bool valeur)
+{
+	if (!valeur)
+		_dragonShoutSound.stop();
+	else
+		_dragonShoutSound.play();
+}
+
 void PacMan::stop()const
 {
 	if (_laser)
@@ -69,9 +105,19 @@ void PacMan::stop()const
 	}
 }
 
+bool PacMan::getInvincible()
+{
+	return _invincible;
+}
+
+void PacMan::setInvincible(bool valeur)
+{
+	_invincible = valeur;
+}
+
 bool PacMan::getPowerUps(int powerUp)
 {
-	assert(powerUp > 0 && powerUp < 5);
+	assert(powerUp > 0 && powerUp < 6);
 	switch (powerUp)
 	{
 	case 1:
@@ -86,6 +132,9 @@ bool PacMan::getPowerUps(int powerUp)
 	case 4:
 		return _powerUpMarioStar;
 		break;
+	case 5:
+		return _powerUpDragonShout;
+		break;
 	default:
 		break;
 	}
@@ -95,7 +144,7 @@ bool PacMan::getPowerUps(int powerUp)
 //Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
 {
-	assert(numDuPowerUp > 0 && numDuPowerUp < 5);
+	assert(numDuPowerUp > 0 && numDuPowerUp < 6);
 	switch (numDuPowerUp)
 	{
 	case 1:
@@ -109,6 +158,9 @@ void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
 		break;
 	case 4:
 		_powerUpMarioStar = valeur;
+		break;
+	case 5:
+		_powerUpDragonShout = valeur;
 		break;
 	default:
 		break;
@@ -227,6 +279,10 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		laser.draw(target, states);
 	}
 
+	if (_dragonShoutAnimation)
+	{
+		_dragonShout.draw(target, states);
+	}
 	target.draw(vertices);
 }
 
@@ -250,13 +306,62 @@ bool PacMan::hasDisappeared() const
 
 void PacMan::input(char c)
 {
-	if (c == 'l' && _powerUpLaser)
+	switch (c)
 	{
-		_keepFiring = true;
+		case 'l':
+			if (_powerUpLaser)
+				_keepFiring = true;
+			break;
+		case 'f':
+			if (_nbDragonShout > 0 && _clockDragonShout.getElapsedTime() > sf::milliseconds(500))
+			{
+				_clockDragonShout.restart();
+				_dragonShoutActivated = true;
+				_dragonShoutAnimation = false;
+				_dragonShoutSound.play();
+				_dragonShout.resetClockDragonShout();
+				_nbDragonShout--;
+			}
+			break;
+		case 'z':
+			_keepFiring = true;
+			break;
+		case 'x':
+			if (_appuyerBouton.getElapsedTime() > sf::milliseconds(200))
+			{
+				_appuyerBouton.restart();
+				_clockEtoile.restart();
+				_nbMilisecondeEtoile += 4000;
+				_powerUpMarioStar = true;
+			}
+			break;
+		case 'c':
+			if (_appuyerBouton.getElapsedTime() > sf::milliseconds(200))
+			{
+				_appuyerBouton.restart();
+				_clockDragonShout.restart();
+				_dragonShoutActivated = true;
+				_dragonShoutAnimation = false;
+				_dragonShoutSound.play();
+				_dragonShout.resetClockDragonShout();
+			}
+			break;
+		case 'v':
+			if (_appuyerBouton.getElapsedTime() > sf::milliseconds(200))
+			{
+				_appuyerBouton.restart();
+				_invincible = !_invincible;
+			}
+			break;
+	default:
+		break;
 	}
-		
-
 	setDirection(c);
+}
+
+bool PacMan::getDragonAnimation()
+{
+	return _dragonShoutAnimation;
 }
 
 void PacMan::setCouleurRandom()
@@ -286,6 +391,21 @@ void PacMan::setNormalStat()
 
 void PacMan::move(char direction, Map &map)
 {
+	if (_dragonShoutActivated)
+	{
+		if (_clockDragonShout.getElapsedTime() > sf::milliseconds(700))
+		{
+			
+			_dragonShoutAnimation = true;
+			_dragonShout.setPos(_pos);
+			if (_nbDragonShout < 1)
+				_powerUpDragonShout = false;
+			if (_clockDragonShout.getElapsedTime() > sf::milliseconds(1000))
+				_dragonShoutActivated = false;
+		}
+	}
+	if (_dragonShoutAnimation && _clockDragonShout.getElapsedTime() > sf::milliseconds(4000))
+		_dragonShoutAnimation = false;
 	if (_powerUpMarioStar && _clockEtoile.getElapsedTime().asMilliseconds() < _nbMilisecondeEtoile)
 	{
 		_stopRepeating = false;

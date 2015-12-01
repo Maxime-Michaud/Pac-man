@@ -4,6 +4,8 @@ class FantomeRose : public Fantome
 {
 	const int _recalculeLeCheminTousLesXFois = 1;
 	int _nombreDintersectionsPassee = 0;
+	sf::Clock _clockFantomeRose;
+	bool _bougerCommeRouge = false;				//Bouge comme le rouge quand le chemin est trop demandant
 public:
 
 	struct Direction
@@ -29,6 +31,7 @@ public:
 	~FantomeRose();
 	bool moveTheorique(char directionTheorique, int ligneTheorique, sf::Vector2f& posTheorique, Map &map);
 	virtual void move(char direction, sf::Vector2f& posPacMan, Map &map);	 //Fait bouger le fantome
+	void bougerCommeRouge(sf::Vector2f& posPacMan, Map &map);				 //Bouge comme le rouge quand trop de chemin est tenté
 	virtual void deciderLigne(sf::Vector2f& posPacMan, Map &map);			 //Prend une décision de la direction à un intersection
 	void tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &posPacMan);
 	bool esseyerLigne(char direction, int &ligneParcoursTheorique, std::vector<sf::Vector2f> &pointsVisites, sf::Vector2f &posTheorique, Map &map, char directionArrivee);

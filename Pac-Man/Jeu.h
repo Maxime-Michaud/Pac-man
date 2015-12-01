@@ -51,6 +51,9 @@ class Jeu
 
 	sf::Font _font;
 	sf::Font _8bitFont;
+	sf::Font _dragonFont;
+	sf::Text _dragonShoutText;
+	sf::Text _dragonShoutLearned;
 
 	int _targetfps;
 	float _shake;
@@ -72,6 +75,13 @@ class Jeu
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge
+	int _nbFruitMange = 0;						  //Le nombre de fruit mangé, a chaque 3, donne un power up
+
+	bool _dragonShoutEffect = true;				  //Pour faire la shock wave qu'une seule fois dans le dragonShout
+
+	sf::Texture _explosionTextureComplet;
+	sf::RectangleShape _explosionTexture[6][8];
+	sf::IntRect _explosionTextureRect[6][8];
 
 	std::list<std::string> _maps;			  //Toutes les maps
 	std::list<std::string>::const_iterator _mapsIterator;
@@ -101,6 +111,8 @@ class Jeu
 	sf::Sound _plop;						  //Son quand l'ennemie est touché par pacMan avec un étoile
 	sf::SoundBuffer _alahuAkbarBuffer;
 	sf::Sound _alahuAkbar;					  //Son quand un fantome touche une boule rouge
+	sf::SoundBuffer _dragonLearnBuffer;
+	sf::Sound _dragonLearned;				  //Son quand pac-man apprend un dragon shout
 
 public:
 	Jeu(std::string map);
@@ -109,10 +121,11 @@ public:
 	void init();
 
 	void draw(bool display = true);
-
+	void donnerUnPowerUpPacman();
 	void drawMangeable();
 
 	void drawLaserUi();
+	void drawDragonShoutUi();
 	void drawEtoileUi();
 	void play();
 
@@ -130,8 +143,6 @@ public:
 
 	bool verifieSiMort(Fantome &fantome);
 	
-	void youfuckingwonyoumotherfuckingmother();
-
 	//Choisi un position random pour le fruit
 	sf::Vector2f choisirPosRandom();
 

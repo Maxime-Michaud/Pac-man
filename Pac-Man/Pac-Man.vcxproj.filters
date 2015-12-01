@@ -51,6 +51,9 @@
     </ClCompile>
     <ClCompile Include="VecteurDeFantome.cpp">
       <Filter>Jeu\Personnage\Fantome</Filter>
+	</ClCompile>
+    <ClCompile Include="dragonShout.cpp">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,9 +76,6 @@
       <Filter>divers</Filter>
     </ClInclude>
     <ClInclude Include="saisieSecurisee.h">
-      <Filter>divers</Filter>
-    </ClInclude>
-    <ClInclude Include="windowsAPIwrapper.h">
       <Filter>divers</Filter>
     </ClInclude>
     <ClInclude Include="PacMan.h">
@@ -102,11 +102,16 @@
     <ClInclude Include="Fruits.h">
       <Filter>Jeu</Filter>
     </ClInclude>
+    <ClInclude Include="VecteurDeFantome.h">
+      <Filter>Jeu\Personnage\Fantome</Filter>
+    <ClInclude Include="dragonShout.h">
+      <Filter>Jeu\Personnage\Pac Man</Filter>
+    </ClInclude>
     <ClInclude Include="laser.h">
       <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClInclude>
-    <ClInclude Include="VecteurDeFantome.h">
-      <Filter>Jeu\Personnage\Fantome</Filter>
+    <ClInclude Include="windowsAPIwrapper.h">
+      <Filter>Jeu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

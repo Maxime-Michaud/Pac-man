@@ -35,7 +35,8 @@ public:
 	int getNombreFruitSurMap();							//Retourne le nombre de fruit présent sur la map
 	bool retirerFruitManger(sf::Vector2f&);				//Retire un fruit mangé
 	void dessinerFruits(sf::RenderWindow &rw);			//Dessine un fruit
+	void imprimmerPosFruit();
 	//Ajoute un fruit aux liste
-	void ajouterFruitListe(sf::Vector2f &pos, int &valMangeable);			
+	void ajouterFruitListe(sf::Vector2f &pos);			
 };
 
