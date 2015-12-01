@@ -468,15 +468,62 @@ void Jeu::loadMap()
 		system("pause");
 		return;
 	}
+
+	for (auto f : _fantome)
+		delete f;
+
+	_fantome.clear();
 	
 	std::string mapName = *_mapsIterator;
 	++_mapsIterator;
 	
 	std::ifstream in;
 	in.open(mapName);
+	sf::Vector2f pos;
 
 	std::string couleur;
 	int count = 1;
+
+	if (tolower(static_cast<char>(in.peek())) == 'p')
+	{
+		//Skip le p
+		in.get();
+
+		//Lis la position de pacman
+		auto maybePos = readNumFromStream<float, false>(in, 2, " (,)", '.');
+
+		if (maybePos.size() == 2)
+			pos = sf::Vector2f(maybePos[0], maybePos[1]);
+		else
+			pos = _startpos;
+
+		_pacman.setPos(pos);
+
+		//Ajoute les power-up
+		while (in.peek() != '\n')
+		{
+			//Skip
+			while (!isalpha(in.peek()) && in.peek() != EOF && in.peek() != '\n')
+			{
+				in.get();
+			}
+
+
+			if (in.peek() != EOF && in.peek() != '\n')	//On a un mot
+			{
+				std::string powerUp;
+				int temps;
+				in >> powerUp;
+				in >> temps;
+				_pacman.setPowerUps(powerUp, true);
+				_pacman.changerTempsPowerUp(powerUp, temps);
+
+			}
+		}
+	}
+
+	while (in.peek() != 'f') in.get();
+
 	while (tolower(static_cast<char>(in.peek())) == 'f')
 	{
 		in.get();	//Get le f
@@ -494,7 +541,6 @@ void Jeu::loadMap()
 
 		//Lis la position du fantome
 		auto maybePos = readNumFromStream<float, false>(in, 2, " (,)", '.');
-		sf::Vector2f pos;
 
 		if (maybePos.size() == 2)
 			pos = sf::Vector2f(maybePos[0], maybePos[1]);
@@ -519,6 +565,28 @@ void Jeu::loadMap()
 			for (int i = 0; i < count; i++)
 				i[fantomes] = new FantomeBleu;
 
+		//Ajoute les power up
+		if (in.peek() != '\n')
+		{
+			//Skip
+			while (!isalpha(in.peek()) && in.peek() != EOF && in.peek() != '\n')
+			{
+				in.get();
+			}
+
+
+			if (in.peek() != EOF && in.peek() != '\n')	//On a un mot
+			{
+				std::string powerUp;
+				in >> powerUp;
+				for (int i = 0; i < count; i++)
+				{
+					fantomes[i]->setPowerUp(powerUp, true);
+				}
+				
+			}
+		}
+
 		for (int i = 0; i < count; i++)
 		{
 			fantomes[i]->setPos(pos);
@@ -537,6 +605,9 @@ void Jeu::loadMap()
 		f->setLigne(_map.quelleLigne(f->getPos(), 0));
 		f->setVertical(_map.getLigne(f->getNumLigne()).isVertical());
 	}
+
+	_pacman.setLigne(_map.quelleLigne(_pacman.getPos(), 0));
+	_pacman.setVertical(_map.getLigne(_pacman.getNumLigne()).isVertical());
 }
 
 void Jeu::donnerUnPowerUpPacman()
@@ -575,6 +646,17 @@ void Jeu::donnerUnPowerUpPacman()
 void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
+
+	sf::Event event;
+
+	for (auto &f : _fantome)
+	{
+		f->resetClockAlahuAkbar();
+
+		if (f->getAlahuAckbar())
+			_alahuAkbar.play();
+	}
+
 	while (_playing)
 	{
 		//Fais une pause a la fin de la boucle en attendant d'arriver a un temps voulu

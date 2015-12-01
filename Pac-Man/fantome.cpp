@@ -17,6 +17,8 @@ Fantome::Fantome()
 	_feetWidth = (float)_width / 3;
 	_eyeSize = double(_width) / 3.5;
 	_pupilSize = _eyeSize / 2;
+
+	_powerUpNames.insert(std::pair<std::string, int>("bouleRouge", 1));
 }
 
 Fantome::~Fantome()
@@ -48,6 +50,24 @@ void Fantome::setPowerUp(int nbPowerUp, bool valeur)
 void Fantome::resetClockAlahuAkbar()
 {
 	_clockAlahhuAkbar.restart();
+}
+
+void Fantome::setPowerUp(std::string nomPowerUp, bool valeur)
+{
+	if (_powerUpNames.end() == _powerUpNames.find(nomPowerUp))
+	{
+	#if defined(_DEBUG)
+		std::cout << "Le nom du power up est introuvable. Vous avez écrit: " << nomPowerUp;
+	#endif
+		return;
+	}
+
+	setPowerUp(_powerUpNames[nomPowerUp], valeur);
+}
+
+bool Fantome::getAlahuAckbar() const
+{
+	return _alahuAkbar;
 }
 
 std::string Fantome::getNom()

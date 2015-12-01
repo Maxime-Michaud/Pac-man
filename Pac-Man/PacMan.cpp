@@ -21,6 +21,12 @@ PacMan::PacMan()
 	_dragonShoutBuffer.loadFromFile("fusrohdah.wav");
 	_dragonShoutSound.setBuffer(_dragonShoutBuffer);
 	_dragonShout.resetClockDragonShout();
+
+	_powerUpNames.insert({ "laser", 1 });
+	_powerUpNames.insert({ "time", 2 });
+	_powerUpNames.insert({ "gun", 3 });
+	_powerUpNames.insert({ "etoile", 4 });
+	_powerUpNames.insert({ "shout", 5 });
 }
 
 PacMan::~PacMan()
@@ -171,6 +177,19 @@ void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
 	}
 }
 
+void PacMan::setPowerUps(std::string nomPowerUp, bool valeur)
+{
+	if (_powerUpNames.end() == _powerUpNames.find(nomPowerUp))
+	{
+	#if defined(_DEBUG)
+		std::cout << "Le nom du power up est introuvable. Vous avez écrit: " << nomPowerUp;
+	#endif
+		return;
+	}
+
+	setPowerUps(_powerUpNames[nomPowerUp], valeur);
+}
+
 sf::Time PacMan::getTempsLaser()
 {
 	return _tempsLaser.getElapsedTime();
@@ -195,7 +214,7 @@ void PacMan::startClockEtoile()
 //Permet d'ajouter ou de supprimer du temps apparti a un power up
 void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 {
-	assert(numDuPowerUp > 0 && numDuPowerUp < 5);
+	assert(numDuPowerUp > 0 && numDuPowerUp < 6);
 	switch (numDuPowerUp)
 	{
 	case 1:
@@ -211,9 +230,17 @@ void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 		_clockEtoile.restart();
 		_nbMilisecondeEtoile = valeur;
 		break;
+	case 5:
+		incrementeurDragonShout(static_cast<int>(valeur));
+		break;
 	default:
 		break;
 	}
+}
+
+void PacMan::changerTempsPowerUp(std::string nomDuPowerUp, float valeur)
+{
+	changerTempsPowerUp(_powerUpNames[nomDuPowerUp], valeur);
 }
 
 sf::VertexArray PacMan::buildPacMan() const

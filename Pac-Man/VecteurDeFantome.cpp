@@ -45,3 +45,8 @@ std::vector<Fantome*, std::allocator<Fantome*>>::iterator VecteurDeFantome::end(
 {
 	return _fantomes.end();
 }
+
+void VecteurDeFantome::clear()
+{
+	_fantomes.clear();
+}
