@@ -27,10 +27,7 @@ Jeu::Jeu(std::string maps)
 	_laserText.setPosition(sf::Vector2f(650, 150));
 	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
 	_alarmSound.setBuffer(_alarmBuffer);
-	_introBuffer.loadFromFile("intro.wav");				  //La petite musique d'intro
-	_intro.setBuffer(_introBuffer);
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
-	_intro.play();
 	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
 	_chomp.setBuffer(_chompBuffer);
 	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
@@ -53,10 +50,6 @@ void Jeu::init()
 	_pacman.setPos(_startpos);
 	srand(std::time(NULL));
 	_ghostStart = _map.getLigne(3).getFin();
-	_fantome.add(new FantomeRouge());
-	_fantome.add(new FantomeRose());
-	_fantome.add(new FantomeOrange());
-	_fantome.add(new FantomeBleu());
 	/*for (int i = 0; i < 100; i++)
 		_fantome.add(new FantomeOrange());*/
 	_explosionTextureComplet.loadFromFile("explosion.png");
