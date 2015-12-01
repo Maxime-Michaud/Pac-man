@@ -469,6 +469,7 @@ void Jeu::loadMap()
 		_playing = false;
 		std::cout << "Tu gagnes? je sais c'Est plate comme message de fin";
 		system("pause");
+		return;
 	}
 	
 	std::string mapName = *_mapsIterator;
