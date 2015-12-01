@@ -45,6 +45,10 @@ Jeu::Jeu(std::string maps)
 void Jeu::init()
 {
 	loadMap();
+	_viewVector = sf::Vector2f(_window.getSize().x, _window.getSize().y);
+	_view.setSize(_viewVector);
+	_view.setCenter(sf::Vector2f(_window.getSize().x / 2, _window.getSize().y / 2));
+	_window.setView(_view);
 	//Initialisation de pacman
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
@@ -571,27 +575,10 @@ void Jeu::donnerUnPowerUpPacman()
 void Jeu::play()
 {
 	pause("Appuyez sur espace pour commencer!");
-	sf::Event event;
 	while (_playing)
 	{
 		//Fais une pause a la fin de la boucle en attendant d'arriver a un temps voulu
 		sf::Clock clock;
-		_window.pollEvent(event);
-		switch (event.type)
-		{
-			// fenêtre fermée
-		case sf::Event::Closed:
-			//_window.close();
-			break;
-		case sf::Event::LostFocus:
-			pause();
-			event = sf::Event();
-			break;
-		case sf::Event::Resized:
-			break;
-		default:
-			break;
-		}
 		//Vérifie l'entrée de l'utilisateur
 		auto keys = getKeyPress();
 		for (char c : keys)
@@ -613,28 +600,6 @@ void Jeu::play()
 		if (_mangeable[x][y])
 		{
 			_score += 1;
-			if (_mangeable[x][y] & mangeable::grosseBoule)
-			{
-				int random = rand() % 2 + 1;
-				if (random == 2)
-					random = 4;
-				switch (random)
-				{
-				case 1:
-					_pacman.setPowerUps(1, true);
-					_pacman.changerTempsPowerUp(1, 2000);
-					break;
-				case 4:
-					if (_pacman.getPowerUps(4))
-						_pacman.startClockEtoile();
-					_star.play();
-					_pacman.setPowerUps(4, true);
-					_pacman.changerTempsPowerUp(4, 5000);
-					break;
-				default:
-					break;
-				}
-			}
 			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
 			{
 				_score += 20;
@@ -753,15 +718,41 @@ void Jeu::play()
 	}
 }
 
+void Jeu::captureEvent()
+{
+	if (_window.pollEvent(event))
+		switch (event.type)
+		{
+			// fenêtre fermée
+			case sf::Event::Closed:
+				_window.close();
+				_playing = false;
+				break;
+			case sf::Event::LostFocus:
+				pause();
+				event = sf::Event();
+				break;
+			case sf::Event::Resized:
+				break;
+			case sf::Event::MouseWheelMoved:
+				_view.setSize(sf::Vector2f(_viewVector.x += event.mouseWheel.delta *10, _viewVector.y += event.mouseWheel.delta *10));
+				_window.setView(_view);
+				draw();
+				break;
+			default:
+				break;
+		}
+}
 std::string Jeu::getKeyPress()
 {
 	std::string keys;
-
+	captureEvent();
 	//Les touches numérotées de 0 a 25 représentent l'alphabet
 	for (int i = 0; i < 26; i++)
 		if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key)i))
 			keys += char(i + 'a');
-		_playing = !sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		_playing = false;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		pause();
@@ -773,16 +764,11 @@ void Jeu::pause(std::string msg)
 {
 	//Dessine le jeu
 	draw(false);
-
 	//Dessine un background pour le message
 	sf::RectangleShape rect;
 	rect.setFillColor(sf::Color(0, 0, 0, 100));	//noir semi-transparent
 	rect.setSize(sf::Vector2f(float(_window.getSize().x), 75));
 	_window.draw(rect);
-
-	sf::Event event;
-
-	_window.pollEvent(event);
 
 	//Dessine le message
 	sf::Text pauseMsg(msg, _font, 60);
@@ -793,8 +779,14 @@ void Jeu::pause(std::string msg)
 	bool loop = true;
 	while (loop)
 	{
-		_window.pollEvent(event);
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+	 	captureEvent();
+		if (event.key.code == sf::Keyboard::Escape && event.type == sf::Event::KeyPressed)
+		{
+			_window.close();
+			_playing = false;
+			loop = false;
+		}
+		if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::Escape))
 		{
 			//Attend qu'on relache avant de dépauser
 			while (loop)
@@ -851,26 +843,12 @@ void Jeu::killPacman()
 	_window.draw(msg);
 	_window.display();
 
-	//RAJOUTÉ POUR ÉVITÉ DE PLANTER DANS CETTE PARTIE QUAND RESIZE
-	sf::Event event;
-	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::O) && !sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::O) && !sf::Keyboard::isKeyPressed(sf::Keyboard::N) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
-		_window.pollEvent(event);
-		switch (event.type)
-		{
-			// fenêtre fermée
-		case sf::Event::Closed:
-			//_window.close();
-			break;
-		case sf::Event::LostFocus:
-			break;
-		case sf::Event::Resized:
-			break;
-		default:
-			break;
-		}
+		//pour capturer le resize et le close
+		captureEvent();
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::N) || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		_playing = false;
 
 	else

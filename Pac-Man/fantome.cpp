@@ -260,7 +260,13 @@ void Fantome::fantomeDead(Map &map, sf::Vector2f window)
 	else
 	{
 		_numLigne = map.quelleLigne(_pos, _numLigne);
-		_vertical = true;
+		if (map.getLigne(_numLigne).isVertical())
+		{
+			_vertical = true;
+		}
+		else
+			_vertical = false;
+
 		_isDead = false;
 		_pushBack = true;
 		_toucherParDragonshout = false;

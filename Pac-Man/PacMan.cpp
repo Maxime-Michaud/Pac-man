@@ -46,17 +46,21 @@ void PacMan::fire()const
 		_laser = true;
 		_laserSound.play();
 	}
-	_tempsPassePowerUpLaser = _tempsLaser.getElapsedTime().asMilliseconds() + _tempsMemoireLaser;
-	std::cout << _tempsLaser.getElapsedTime().asMilliseconds() << std::endl;
-	if (_tempsLaser.getElapsedTime().asMilliseconds() >= _nbMilisecondeLaser - _tempsMemoireLaser)
+	if (_nbMilisecondeLaser >= 0)
 	{
-		std::cout << "arrêt du laser par le temps ecouler" << std::endl;
-		_powerUpLaser = false;
-		_nbMilisecondeLaser = 0;
-		_tempsMemoireLaser = 0;
-		_tempsPassePowerUpLaser = 0;
+		_tempsPassePowerUpLaser = _tempsLaser.getElapsedTime().asMilliseconds() + _tempsMemoireLaser;
+		std::cout << _tempsLaser.getElapsedTime().asMilliseconds() << std::endl;
+		if (_tempsLaser.getElapsedTime().asMilliseconds() >= _nbMilisecondeLaser - _tempsMemoireLaser)
+		{
+			std::cout << "arrêt du laser par le temps ecouler" << std::endl;
+			_powerUpLaser = false;
+			_nbMilisecondeLaser = 0;
+			_tempsMemoireLaser = 0;
+			_tempsPassePowerUpLaser = 0;
 
+		}
 	}
+	
 }
 
 void PacMan::incrementeurDragonShout(int increment)
