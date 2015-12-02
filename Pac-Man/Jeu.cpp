@@ -83,6 +83,9 @@ void Jeu::init()
 	//Initialise les boules jaune et rouge à manger sur tout la map
 	_nbBouleRouge = 4;
 
+	_nbBouleMange = 0;
+	_score = 0;
+
 	auto temp = _map.getBoolMap();
 	_mangeable.resize(temp.size());
 	for (int i = 0; i < temp.size(); i++)
@@ -461,7 +464,8 @@ sf::Vector2f Jeu::choisirPosRandom()
 
 void Jeu::loadMap()
 {
-	if (_mapsIterator == _maps.end())
+	_nextMap = !(_mapsIterator == _maps.end());
+	if (!_nextMap)
 	{
 		_playing = false;
 		std::cout << "Tu gagnes? je sais c'Est plate comme message de fin";
@@ -483,6 +487,8 @@ void Jeu::loadMap()
 
 	std::string couleur;
 	int count = 1;
+
+	_pacman.resetPowerUps();
 
 	if (tolower(static_cast<char>(in.peek())) == 'p')
 	{
@@ -645,6 +651,7 @@ void Jeu::donnerUnPowerUpPacman()
 
 void Jeu::play()
 {
+	_nextMap = false;
 	pause("Appuyez sur espace pour commencer!");
 
 	sf::Event event;
@@ -666,12 +673,11 @@ void Jeu::play()
 		for (char c : keys)
 		{
 			_pacman.input(c);
-			/*if (c == 'm')
+			//Autowin
+			if (c == 'm')
 			{
-				std::cout << "Pos pac-man: " << _pacman.getPos().x << "," << _pacman.getPos().y << std::endl;
-				_fruits.imprimmerPosFruit();
-				std::cout << std::endl << x << "," << y << std::endl;
-			}*/	
+				_nbBouleMange = _nbBoulesTotal;
+			}	
 		}
 		shakeScreen();
 		_pacman.move(_pacman.getDirection(), _map);
@@ -710,7 +716,7 @@ void Jeu::play()
 				_pacman.setSonDragonShout(false);
 				_gg.play();
 				Sleep(5500);
-				_playing = false;
+				init();
 				break;
 			}
 			_mangeable[x][y] = 0;
@@ -776,7 +782,7 @@ void Jeu::play()
 
 		//Le temps passé est vérifié
 		int duration = (std::clock() - _temps) / (double)CLOCKS_PER_SEC;
-		//À chauque 3 secondes, un fruit au hasard apparait
+		//À chaque 3 secondes, un fruit au hasard apparait
 		if (duration % 3 == 0)
 		{
 			if (!_fermerHorloge)
@@ -811,6 +817,11 @@ void Jeu::play()
 		}
 		draw();
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
+	}
+
+	if (_nextMap)
+	{
+		play();
 	}
 }
 

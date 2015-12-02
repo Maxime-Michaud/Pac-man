@@ -116,6 +116,8 @@ class Jeu
 	sf::SoundBuffer _dragonLearnBuffer;
 	sf::Sound _dragonLearned;				  //Son quand pac-man apprend un dragon shout
 
+	bool _nextMap;
+
 public:
 	Jeu(std::string map);
 	~Jeu();

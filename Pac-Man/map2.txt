@@ -1,7 +1,7 @@
-p (100, 100) laser -2147483648 shout 2
-f rouge 1 (600, 600)
-f bleu 1 (600, 600)
-f orange 1 (600, 600)
+p (100, 100)
+f rouge 1 (600, 600) bouleRouge
+f bleu 1 (600, 600) bouleRouge
+f orange 1 (600, 600) bouleRouge
 f rose 1 (600, 600) bouleRouge
 50,50 100,50
 50,50 50,100

@@ -457,3 +457,21 @@ void PacMan::respawn(sf::Vector2f pos)
 	_step = 0;
 	_deathCount = 0;
 }
+
+void PacMan::resetPowerUps()
+{
+	_powerUpDragonShout = false;
+	_dragonShout.resetClockDragonShout();
+	_dragonShoutSound.resetBuffer();
+	_nbDragonShout = 0;
+
+	_powerUpLaser = false;
+	_laser = false;
+	_tempsLaser = sf::Clock();
+	_nbMilisecondeLaser = 0;
+	_tempsMemoireLaser = 0;
+	_tempsSansLaser = sf::Clock();
+
+	_powerUpMarioStar = false;
+	_nbMilisecondeEtoile = 0;
+}

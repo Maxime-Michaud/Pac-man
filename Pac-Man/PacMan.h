@@ -113,4 +113,6 @@ public:
 	void respawn(sf::Vector2f pos);
 
 	const int Width = _radius;
+
+	void resetPowerUps();
 };
