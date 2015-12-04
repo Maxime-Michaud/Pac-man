@@ -802,11 +802,11 @@ void Jeu::play()
 						if (reculX < 0)
 							reculX = -1000;
 						else
-							reculX = -1000;
+							reculX = 1000;
 						if (reculY < 0)
 							reculY = -1000;
 						else
-							reculY = -1000;
+							reculY = 1000;
 					}
 					posRecul.x = f->getPos().x - reculX;
 					posRecul.y = f->getPos().y - reculY;
