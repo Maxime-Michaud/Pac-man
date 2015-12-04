@@ -76,12 +76,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>I:\SFML-2.3.2\include;I:\sfeMovie-Debug-2.0.0-win32\sfeMovie-Debug-2.0.0-win32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;C:\sfeMovie-Debug-2.0.0-win32\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\SFML-2.3.2\lib;I:\sfeMovie-Debug-2.0.0-win32\sfeMovie-Debug-2.0.0-win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SFML-2.3.2\lib;C:\sfeMovie-Debug-2.0.0-win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -8,6 +8,29 @@ Map::Map()
 {
 	_mapColor = sf::Color();
 	_mapSize = sf::Vector2i(70, 70);
+
+	/*TODO a effacer apres, un test*/
+	_stringTexteFlash = "ta mere";
+	_posTexteFlash.x = 250;
+	_posTexteFlash.y = 400;
+	_fontFlash.loadFromFile("steelfish rg.ttf");
+	_frequenceFlash = 2000;
+	_dureeFlash = 100;
+	_texteFlash = sf::Text(_stringTexteFlash, _fontFlash, 40);
+	_texteFlash.setPosition(_posTexteFlash);
+}
+
+void Map::initFlash(std::string texte, int frequence, int duree, int posX, int posY, int grosseur)
+{
+	_stringTexteFlash = texte;
+	_posTexteFlash.x = posX;
+	_posTexteFlash.y = posY;
+	_fontFlash.loadFromFile("steelfish rg.ttf");
+	_frequenceFlash = frequence;
+	_dureeFlash = duree;
+	_grosseurFlash = grosseur;
+	_texteFlash = sf::Text(_stringTexteFlash, _fontFlash, _grosseurFlash);
+	_texteFlash.setPosition(_posTexteFlash);
 }
 
 void Map::ajouterLigne(Ligne ligne)
@@ -115,6 +138,11 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		_hasChanged = false;
 	}
 	target.draw(_mapOutline, states);
+
+	if (_clockFlash.getElapsedTime().asMilliseconds() < _dureeFlash)
+		target.draw(_texteFlash);
+	else if (_clockFlash.getElapsedTime().asMilliseconds() > _frequenceFlash)
+		_clockFlash.restart();
 }
 
 sf::VertexArray Map::getOutline() const
