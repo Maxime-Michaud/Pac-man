@@ -20,6 +20,8 @@ PacMan::PacMan()
 	_laserSound.setBuffer(_laserSB);
 	_dragonShoutBuffer.loadFromFile("fusrohdah.wav");
 	_dragonShoutSound.setBuffer(_dragonShoutBuffer);
+	_megaDragonShoutSoundBuffer.loadFromFile("megafusrohdah.wav");
+	_megaDragonShoutSound.setBuffer(_megaDragonShoutSoundBuffer);
 	_dragonShout.resetClockDragonShout();
 
 	_powerUpNames.insert({ "laser", 1 });
@@ -349,7 +351,10 @@ void PacMan::input(char c)
 				_clockDragonShout.restart();
 				_dragonShoutActivated = true;
 				_dragonShoutAnimation = false;
-				_dragonShoutSound.play();
+				if (_nbDragonShout >= 3)
+					_megaDragonShoutSound.play();
+				else
+					_dragonShoutSound.play();
 				_dragonShout.resetClockDragonShout();
 				_nbDragonShout--;
 			}
@@ -369,11 +374,13 @@ void PacMan::input(char c)
 		case 'c':
 			if (_appuyerBouton.getElapsedTime() > sf::milliseconds(200))
 			{
-				_appuyerBouton.restart();
 				_clockDragonShout.restart();
 				_dragonShoutActivated = true;
 				_dragonShoutAnimation = false;
-				_dragonShoutSound.play();
+				if (_nbDragonShout >= 2)
+					_megaDragonShoutSound.play();
+				else
+					_dragonShoutSound.play();
 				_dragonShout.resetClockDragonShout();
 			}
 			break;

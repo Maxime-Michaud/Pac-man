@@ -39,6 +39,8 @@ class PacMan : public Personnage
 	mutable sf::Sound _laserSound;
 	sf::SoundBuffer _dragonShoutBuffer;
 	mutable sf::Sound _dragonShoutSound;
+	sf::SoundBuffer _megaDragonShoutSoundBuffer;
+	mutable sf::Sound _megaDragonShoutSound;
 	mutable sf::Clock _tempsLaser;						//Sert à calculer le temps depuis la partie du laser
 	mutable sf::Clock _tempsSansLaser;
 	sf::VertexArray buildPacMan() const;
