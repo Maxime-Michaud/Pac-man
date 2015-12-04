@@ -237,3 +237,8 @@ void Personnage::move(char direction, Map &map)
 }
 
 Personnage::~Personnage() {}
+
+void Personnage::stopSounds()
+{
+	_sons.stopAll();
+}

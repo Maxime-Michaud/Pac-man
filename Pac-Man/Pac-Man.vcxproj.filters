@@ -55,6 +55,9 @@
     <ClCompile Include="dragonShout.cpp">
       <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClCompile>
+    <ClCompile Include="Sons.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FantomeOrange.h">
@@ -114,6 +117,9 @@
     <ClInclude Include="dragonShout.h">
       <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClInclude>
+    <ClInclude Include="Sons.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="divers">
@@ -151,6 +157,9 @@
     <ClCompile Include="testingMain.cpp" />
     <ClCompile Include="VecteurDeFantome.cpp" />
     <ClCompile Include="windowsAPIwrapper.cpp" />
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{de729667-2409-4951-a0c0-0f4264ddad8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algo.h" />

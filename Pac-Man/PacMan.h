@@ -18,6 +18,7 @@ TODO descriptionner mieux que ça												*
 #include "dragonShout.h"
 #include <map>
 #include <SFML\Audio.hpp>
+#include "Sons.h"
 
 class PacMan : public Personnage
 {
@@ -35,12 +36,6 @@ class PacMan : public Personnage
 	sf::Vector2f _centre;
 	mutable bool _laser = false;		//True si pacman fait un laser
 	mutable bool _keepFiring = false;
-	sf::SoundBuffer _laserSB;
-	mutable sf::Sound _laserSound;
-	sf::SoundBuffer _dragonShoutBuffer;
-	mutable sf::Sound _dragonShoutSound;
-	sf::SoundBuffer _megaDragonShoutSoundBuffer;
-	mutable sf::Sound _megaDragonShoutSound;
 	mutable sf::Clock _tempsLaser;						//Sert à calculer le temps depuis la partie du laser
 	mutable sf::Clock _tempsSansLaser;
 	sf::VertexArray buildPacMan() const;
@@ -83,15 +78,18 @@ public:
 
 	bool getInvincible();
 	void setInvincible(bool valeur);
+
 	void startClockEtoile();
+
 	bool getPowerUps(int);
 	void setPowerUps(int numDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
 	void setPowerUps(std::string nomDuPowerUp, bool valeur);	//Set les power ups, 1= laser, 2=TimeTravel, 3=MindControl, 4=ÉtoileMario
+	 
 	void changerTempsPowerUp(int numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
 	void changerTempsPowerUp(std::string numDuPowerUp, float valeur);		//Permet d'ajouter ou de supprimer du temps apparti a un power up
 	float getTempsEtoile();		//Rdetourne le temps restant de l'étoile
 	void setCouleurRandom();	//Set la couleur de pac-man au hasard
-	void PacMan::setNormalStat();//reset les stats à la normal
+	void setNormalStat();//reset les stats à la normal
 	sf::Time getTempsLaser();	//Retourne le temps en milisecondes passé a faire le laser
 	sf::Time getTempsSansLaser();	//Retourne le temps en milisecondes passé a faire le laser
 	float getTempsLaserRestant()const; //Retourne le temps restant au laser.
@@ -101,7 +99,7 @@ public:
 	void resetClockDragon();
 	bool getDragonShoutActivated();
 	float getTempsDragonShout();	//Retourne le temps écoulé depuis l'activation du dragonShout
-	void setSonDragonShout(bool valeur);
+
 	bool getDragonAnimation();		//Retourne la valeur qui pemret de jouer l'animation
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -117,4 +115,6 @@ public:
 	const int Width = _radius;
 
 	void resetPowerUps();
+
+	virtual void loadSounds();
 };

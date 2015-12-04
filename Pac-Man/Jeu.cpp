@@ -9,9 +9,10 @@
 
 Jeu::Jeu(std::string maps)
 {
-	srand(time(NULL));
-
 	using namespace winapi;
+
+	srand(time(NULL));
+	loadSounds();
 
 	//Lis la lsite des maps
 	readMaps(maps);
@@ -24,22 +25,11 @@ Jeu::Jeu(std::string maps)
 
 	init();
 
+	loadSounds();
+
 	_laserText.setPosition(sf::Vector2f(650, 150));
-	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
-	_alarmSound.setBuffer(_alarmBuffer);
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
-	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
-	_chomp.setBuffer(_chompBuffer);
-	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
-	_fruit.setBuffer(_fruitBuffer);
-	_mortBuffer.loadFromFile("mort.wav");				  //Son quand pac-man meurt
-	_mort.setBuffer(_mortBuffer);
-	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
-	_continue.setBuffer(_continueBuffer);
-	_ggBuffer.loadFromFile("gg.wav");
-	_gg.setBuffer(_ggBuffer);
-	_megaDeadBuffer.loadFromFile("deadSound0.wav");
-	_megaDead.setBuffer(_megaDeadBuffer);
+
 }
 
 void Jeu::init()
@@ -135,37 +125,11 @@ void Jeu::init()
 	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
 
 	_laserText.setPosition(sf::Vector2f(650, 150));
-	_alarmBuffer.loadFromFile("alarm.wav");				  //L'alarme quand le laser est trop utilisé
-	_alarmSound.setBuffer(_alarmBuffer);
-	_introBuffer.loadFromFile("intro.wav");				  //La petite musique d'intro
-	_intro.setBuffer(_introBuffer);
-	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
-	_intro.play();
-	_chompBuffer.loadFromFile("chomp.wav");				  //Son quand pac-man mange une boule
-	_chomp.setBuffer(_chompBuffer);
-	_chomp.setVolume(50);
-	_fruitBuffer.loadFromFile("fruit.wav");				  //Son quand pac-man mange une boule
-	_fruit.setBuffer(_fruitBuffer);
-	_mortBuffer.loadFromFile("mort.wav");				  //Son quand pac-man meurt
-	_mort.setBuffer(_mortBuffer);
-	_continueBuffer.loadFromFile("continue.wav");		  //Son quand le joueur continue de jouer
-	_continue.setBuffer(_continueBuffer);
-	_ggBuffer.loadFromFile("gg.wav");					  //Son quand le joueur fini une map
-	_gg.setBuffer(_ggBuffer);
-	_megaDeadBuffer.loadFromFile("deadSound0.wav");
-	_megaDead.setBuffer(_megaDeadBuffer);
-	_starBuffer.loadFromFile("star.wav");
-	_star.setBuffer(_starBuffer);
-	_plopBuffer.loadFromFile("plop.wav");
-	_plop.setBuffer(_plopBuffer);
-	_alahuAkbarBuffer.loadFromFile("alahuAkbar.wav");
-	_alahuAkbar.setBuffer(_alahuAkbarBuffer);
-	_dragonLearnBuffer.loadFromFile("dragonLearned.wav");
-	_dragonLearned.setBuffer(_dragonLearnBuffer);
-	//Reset les tampons des sons
-	_gg.resetBuffer();
-	_continue.resetBuffer();
 
+
+	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
+
+	_sons.play("intro");
 }
 
 void Jeu::readMaps(std::string maps)
@@ -352,28 +316,28 @@ void Jeu::drawLaserUi()
 		}
 		else		//Sinon le laser est en over load et dessine la barre rouge seulement et joue le son d'alerte
 		{
+			_sons.play("alarme");
+
 			int test = (std::clock() - _temps) / (double)CLOCKS_PER_SEC * 1000;
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, 0), sf::Color(255, 0, 0, test % 200))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, 0), sf::Color(255, 0, 0, test % 200))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
-			if (!_alarmSound.getStatus())
-			{
-				_alarmSound.play();
-			}
+
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
 			if (tempsMs > sf::milliseconds(5000))	//Si le laser atteint le point de non retour de 8 secondes, tout explose
 			{
+				_sons.stopAll();
+				_sons.play("nuke");
+
 				_window.setFramerateLimit(60);
 				_explosionNucleaire.fit(sf::FloatRect(0, 0, _window.getSize().x, _window.getSize().y));
 				_explosionNucleaire.play();
 				_explosionNucleaire.update();
 				_window.setPosition(sf::Vector2i(0, 0));
-				_alarmSound.stop();
-				_megaDead.play();
 				while (_explosionNucleaire.getStatus())		//Joue le vidéo de l'explosion nucléaire et ferme le jeu
 				{
 					_window.clear();
@@ -398,7 +362,7 @@ void Jeu::drawLaserUi()
 		double ratio = tempsMs / sf::milliseconds(2000);
 		if (tempsMs > sf::milliseconds(0) && tempsMs < sf::milliseconds(2000))	//Si il est entre 0 et 4 seconde, dessine la barre qui monte ou descend
 		{
-			_alarmSound.stop();
+			_sons.stop("alarme");
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
 			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
@@ -430,7 +394,7 @@ void Jeu::draw(bool display)
 	_window.clear();
 	if (!_pacman.getPowerUps(4))
 	{
-		_star.stop();
+		_sons.stop("etoile");
 	}
 	else
 	{
@@ -662,15 +626,15 @@ void Jeu::donnerUnPowerUpPacman()
 		_pacman.changerTempsPowerUp(1, 2000);
 		break;
 	case 4:
+		_sons.play("etoile");
 		if (_pacman.getPowerUps(4))
 			_pacman.startClockEtoile();
-		_star.play();
+
 		_pacman.setPowerUps(4, true);
 		_pacman.changerTempsPowerUp(4, 5000);
 		break;
 	case 5:
 		//jouer son dragonshou learned
-		_dragonLearned.play();
 		_pacman.setPowerUps(5, true);
 		_dragonShoutEffect = true;
 		_pacman.resetClockDragon();
@@ -687,14 +651,6 @@ void Jeu::play()
 	pause("Appuyez sur espace pour commencer!");
 
 	sf::Event event;
-
-	for (auto &f : _fantome)
-	{
-		f->resetClockAlahuAkbar();
-
-		if (f->getAlahuAckbar())
-			_alahuAkbar.play();
-	}
 
 	while (_playing)
 	{
@@ -723,21 +679,24 @@ void Jeu::play()
 		//Vérifie si la case contient un élément mangeable
 		if (_mangeable[x][y])
 		{
+			_sons.play("chomp");
+
 			_score += 1;
 			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
 			{
+				_sons.play("fruit");
+				_sons.stop("chomp");	//Arretele son des boules
+
 				_score += 20;
 				std::cout << "pacman mange un fruit" << std::endl;
 				_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10));
 				_nbFruitMange++;
 				if (_nbFruitMange % 3 == 0)
 					donnerUnPowerUpPacman();
-				_fruit.play();
+				
 			}
-			else if (!_chomp.getStatus())
-			{
-				_chomp.play();
-			}
+			
+
 
 			if (_mangeable[x][y] & mangeable::grosseBoule)
 			{
@@ -748,9 +707,9 @@ void Jeu::play()
 
 			if (_nbBouleMange >= _nbBoulesTotal)
 			{
-				_star.stop();
-				_pacman.setSonDragonShout(false);
-				_gg.play();
+				_sons.stopAll();
+				_pacman.stopSounds();
+				_sons.play("gagne");
 				Sleep(5500);
 				init();
 				break;
@@ -759,10 +718,6 @@ void Jeu::play()
 			std::string temp = "Score  " + std::to_string(_score);
 			_scoreTxt = sf::Text(temp, _8bitFont, 20);		
 		}
-
-		//Fait arrêter le son de l'alarme
-		if (!_pacman.getPowerUps(1))
-			_alarmSound.stop();
 
 		//Fait les mouvements des fantomes
 		for (auto f : _fantome)
@@ -776,7 +731,6 @@ void Jeu::play()
 			{
 				if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
 				{
-					_alahuAkbar.play();
 					f->setPowerUp(1, true);
 					f->resetClockAlahuAkbar();
 					_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
@@ -963,6 +917,9 @@ void Jeu::pause(std::string msg)
 			}
 		}
 	}
+
+	for (auto &f : _fantome)
+		f->resetClockAlahuAkbar();
 }
 
 void Jeu::shakeScreen()
@@ -1019,7 +976,8 @@ void Jeu::killPacman()
 
 	else
 	{
-		_continue.play();
+		_sons.play("continue");
+
 		_pacman.respawn(_startpos);
 		_pacman.setLigne(_map.quelleLigne(_startpos, 0));
 		_pacman.setVertical(_map.getLigne(_map.quelleLigne(_startpos, 0)).isVertical());
@@ -1093,7 +1051,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 		{
 			if (_pacman.getPowerUps(4))		//Si pac a une étoile de mario il tue le fantome à la place
 			{
-				_plop.play();
+				_sons.play("plop");
 				_score += 30;
 				std::string temp = "Score  " + std::to_string(_score);
 				_scoreTxt = sf::Text(temp, _8bitFont, 20);
@@ -1101,10 +1059,11 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			}
 			else if (!_pacman.getInvincible())
 			{
-				_score -= 100;
+				_sons.play("mort");
+
+				_score -= (_score / 2 > 100 ? _score / 2:100);
 				std::string temp = "Score  " + std::to_string(_score);
 				_scoreTxt = sf::Text(temp, _8bitFont, 20);
-				_mort.play();
 				killPacman();
 			}
 			
@@ -1113,4 +1072,18 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 
 	}
 	return false;
+}
+
+//Charge tous les sons à partir de leurs fichier
+void Jeu::loadSounds()
+{
+	_sons.add("intro", "intro.wav");
+	_sons.add("alarme", "alarm.wav");
+	_sons.add("chomp", "chomp.wav");
+	_sons.add("fruit", "fruit.wav");
+	_sons.add("mort", "mort.wav");
+	_sons.add("continue", "continue.wav");
+	_sons.add("gagne", "gg.wav");
+	_sons.add("nuke", "deadSound0.wav");
+	_sons.add("plop", "plop.wav");
 }

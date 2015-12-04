@@ -3,8 +3,7 @@
 
 Fantome::Fantome()
 {
-	_explosionBuffer.loadFromFile("explosion.wav");
-	_explosion.setBuffer(_explosionBuffer);
+	loadSounds();
 	_numLigne = 3;
 	_vitesse = 3;
 	_vertical = true;
@@ -32,7 +31,7 @@ void Fantome::setIsDead(bool isDead)
 
 bool Fantome::getExplosionStatus()
 {
-	return _explosion.getStatus();
+	return _sons.isPlaying("explosion");
 }
 
 void Fantome::setPowerUp(int nbPowerUp, bool valeur)
@@ -40,6 +39,7 @@ void Fantome::setPowerUp(int nbPowerUp, bool valeur)
 	switch (nbPowerUp)
 	{
 	case 1:
+		_sons.play("allah");
 		_alahuAkbar = valeur;
 		break;
 	default:
@@ -50,6 +50,7 @@ void Fantome::setPowerUp(int nbPowerUp, bool valeur)
 void Fantome::resetClockAlahuAkbar()
 {
 	_clockAlahhuAkbar.restart();
+	_sons.play("allah");
 }
 
 void Fantome::setPowerUp(std::string nomPowerUp, bool valeur)
@@ -464,5 +465,31 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	if (_numLigne == tempNoLigne)
 	{
 		_direction = inverserDirection(directionArrivee);	//Si rien n'a fonctionné, revient sur ses pas
+	}
+}
+
+
+void Fantome::loadSounds()
+{
+	_sons.add("allah", "alahuAkbar.wav");
+	_sons.add("explosion", "explosion.wav");
+}
+
+void Fantome::move(char direction, sf::Vector2f& posPacMan, Map &map)
+{
+	if (_alahuAkbar)
+	{
+		_vitesse = 5;
+		if (_clockAlahhuAkbar.getElapsedTime() > sf::milliseconds(3000))
+		{
+			//explosion();
+			_sons.play("explosion");
+			_isDead = true;
+			_alahuAkbar = false;
+		}
+	}
+	else
+	{
+		_vitesse = 3;
 	}
 }

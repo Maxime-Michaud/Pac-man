@@ -151,6 +151,7 @@
     <ClCompile Include="PacMan.cpp" />
     <ClCompile Include="Personnage.cpp" />
     <ClCompile Include="SaisieSecurisee.cpp" />
+    <ClCompile Include="Sons.cpp" />
     <ClCompile Include="testingMain.cpp" />
     <ClCompile Include="VecteurDeFantome.cpp" />
     <ClCompile Include="windowsAPIwrapper.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="PacMan.h" />
     <ClInclude Include="Personnage.h" />
     <ClInclude Include="saisieSecurisee.h" />
+    <ClInclude Include="Sons.h" />
     <ClInclude Include="TimeTraveller.h" />
     <ClInclude Include="VecteurDeFantome.h" />
     <ClInclude Include="windowsAPIwrapper.h" />

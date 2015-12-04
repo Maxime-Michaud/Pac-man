@@ -14,6 +14,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "map.h"
+#include "Sons.h"
 #include "TimeTraveller.h"
 
 class Personnage : public sf::Drawable, public TimeTraveller <sf::Vector2f>
@@ -25,6 +26,8 @@ protected:
 	bool _vertical;	//Si le personnage est sur une ligne vertical ou non
 	char _direction;
 	char _directionProchaine; //La direction dans laquelle le personnage veut se diriger
+
+	mutable Sons _sons;
 public:
 	/// <summary>
 	/// Set toute les variables a 0
@@ -78,4 +81,7 @@ public:
 	void setVertical(bool v);
 	void setDirectionProchaine(char d);
 	char getDirectionProchaine();
+
+	virtual void loadSounds() = 0;
+	void stopSounds();
 };
