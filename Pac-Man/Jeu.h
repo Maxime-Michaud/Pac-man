@@ -85,8 +85,8 @@ class Jeu
 	sf::RectangleShape _explosionTexture[6][8];
 	sf::IntRect _explosionTextureRect[6][8];
 
-	std::list<std::string> _maps;			  //Toutes les maps
-	std::list<std::string>::const_iterator _mapsIterator;
+	std::list<std::pair<std::string, int>> _maps;			  //Toutes les maps
+	std::list<std::pair<std::string, int>>::const_iterator _mapsIterator;
 
 	//LES SONS ET VIDÉO	
 	sf::SoundBuffer _alarmBuffer;

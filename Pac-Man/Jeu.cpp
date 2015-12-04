@@ -175,9 +175,10 @@ void Jeu::readMaps(std::string maps)
 	while (mapList.peek() != EOF)
 	{
 		std::string map;
-		std::getline(mapList, map);
+		int minScore;
+		mapList >> map >> minScore;
 
-		_maps.push_back(map);
+		_maps.push_back(std::pair<std::string, int>(map, minScore));
 	}
 
 	_mapsIterator = _maps.begin();
@@ -478,7 +479,7 @@ void Jeu::loadMap()
 
 	_fantome.clear();
 	
-	std::string mapName = *_mapsIterator;
+	std::string mapName = _mapsIterator->first;
 	++_mapsIterator;
 	
 	std::ifstream in;
