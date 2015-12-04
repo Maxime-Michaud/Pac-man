@@ -54,10 +54,11 @@ protected:
 	bool aPritUnMauvaisChemin = false;	//Si le fantome a prit un mauvais chemin
 	bool _alahuAkbar = false;
 	sf::Clock _clockAlahhuAkbar;
-
+	sf::Vector2f _posExplosion;
 	sf::SoundBuffer _explosionBuffer;
-	sf::Sound _explosion;				//Le son d'explosion
-
+	sf::Sound _explosion;				    //Le son d'explosion
+	int _explosionAnimation = 0;            //Les frames d'animation de l'explosion
+	bool _flagExplosion = false;			//Pour setter la position de l'explosuion qu'une seule fois
 	//Variables pour l'effet du dragonshout
 	sf::Vector2f _posRecul;					//La pos a laquelle il a été projeté
 	bool _toucherParDragonshout = false;	//Si il est affecté ou non pas un dragon shout
@@ -84,12 +85,18 @@ public:
 
 	bool getAlahuAckbar() const;
 
+	sf::Vector2f getPosExplosion();             //Get la position de l'explosion du fantome (alahu akbar)
+	void setPosExplosion(sf::Vector2f);                     //Set la position de l'explosion du fantom (alahu akbar)
+	void incrementerAnimationExplosion();       //Incrément l'animation pour l'explosion
+	int getExplosionAnimation();
 	std::string getNom();	//Renvois le nom du fantome(nommer par sa couleur)
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
 	void fantomeDead(Map & map, sf::Vector2f window);						 //L'animation et la placement du fantome quand il est mort
 	void fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f &window);				//Quand le fantome est affecté par le dragonshout
 	bool getToucherParDragonshout();
+	bool getFlagExplosion();
+	void setFlagExplosion(bool valeur);
 	bool isDead() const;	//Obtiens si le fantome est mort ou vivant
 	void setDragonShoutEffect(sf::Vector2f pos);
 	sf::VertexArray getVertexArray()const;

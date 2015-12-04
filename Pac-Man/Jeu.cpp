@@ -62,6 +62,7 @@ void Jeu::init()
 		for (int j = 0; j < 8; j++)
 		{
 			_explosionTextureRect[i][j] = sf::IntRect(i * 256, j * 256, 256, 256);
+			_explosionTexture[i][j].setSize(sf::Vector2f(256, 256));
 			_explosionTexture[i][j].setTexture(&_explosionTextureComplet);
 			_explosionTexture[i][j].setTextureRect(_explosionTextureRect[i][j]);
 		}
@@ -444,6 +445,37 @@ void Jeu::draw(bool display)
 	_window.draw(_pacman);
 	_window.draw(_fantome);
 	_window.draw(_scoreTxt);
+	//TODO faire l'animation de l'explosion
+	for (auto f : _fantome)
+	{
+		if (f->getExplosionStatus())
+		{
+			if (!f->getFlagExplosion())
+			{
+				for (int i = 0; i < 6; i++)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						_explosionTexture[i][j].setPosition(f->getPos());
+						_explosionTexture[i][j].setOrigin(128, 128);
+					}
+				}
+				
+				f->setFlagExplosion(true);
+			}
+			_window.draw(_explosionTexture[(f->getExplosionAnimation()/8)][f->getExplosionAnimation() % 8]);
+			_vitesseExplosion++;
+			if (_vitesseExplosion >= 8)
+			{
+				f->incrementerAnimationExplosion();
+				_vitesseExplosion = 0;
+			}
+				
+		}
+		else
+			f->setFlagExplosion(false);
+	}
+	
 	if (display)
 		_window.display();
 }
@@ -524,7 +556,6 @@ void Jeu::loadMap()
 				in >> temps;
 				_pacman.setPowerUps(powerUp, true);
 				_pacman.changerTempsPowerUp(powerUp, temps);
-
 			}
 		}
 	}
@@ -673,6 +704,10 @@ void Jeu::play()
 		auto keys = getKeyPress();
 		for (char c : keys)
 		{
+			if (c == 'f' && _dragonShoutDesactive)
+			{
+				c = '\0';
+			}
 			_pacman.input(c);
 			//Autowin
 			if (c == 'm')
@@ -747,26 +782,39 @@ void Jeu::play()
 					_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
 				}
 			}
-			
-			//TODO faire l'animation de l'explosion
-			//if (f->getExplosionStatus())
-				//_explosionTexture.update();
+
 			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
 			{
 				//Si le fantome est en range du dragonShout
 				if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
 				{
+
 					sf::Vector2f posRecul;
 					float x = (_pacman.getPos().x - f->getPos().x);
 					float y = (_pacman.getPos().y - f->getPos().y);
 					float ratioX = x / 250;
 					float ratioY = y / 250;
-					float reculX = 150 / ratioX;
-					float reculY = 150 / ratioY;
+					int reculX = 150 / ratioX;
+					int reculY = 150 / ratioY;
 					if (reculX > 350)
 						reculX = 350;
 					if (reculY > 350)
 						reculY = 350;
+					if (reculX < -350)
+						reculX = -350;
+					if (reculY < -350)
+						reculY = -350;
+					if (_pacman.getNbDragonShout() >= 2)
+					{
+						if (reculX < 0)
+							reculX = -1000;
+						else
+							reculX = 1000;
+						if (reculY < 0)
+							reculY = -1000;
+						else
+							reculY = 1000;
+					}
 					posRecul.x = f->getPos().x - reculX;
 					posRecul.y = f->getPos().y - reculY;
 					f->setDragonShoutEffect(posRecul);
@@ -802,12 +850,13 @@ void Jeu::play()
 		else
 			_fermerHorloge = false;
 
-		if (_pacman.getDragonShoutActivated() && _pacman.getTempsDragonShout() < 2000 /*&& _pacman.getNbDragonShout() >= 2*/)
+		if (_pacman.getDragonShoutActivated() && _pacman.getTempsDragonShout() < 2000 && _pacman.getNbDragonShout() >= 2)
 		{
+			_dragonShoutDesactive = true;
 			_view.setSize(sf::Vector2f(_viewVector.x += _pacman.getTempsDragonShout() / 15, _viewVector.y += _pacman.getTempsDragonShout() / 15));
 			_window.setView(_view);
 		}
-		else if (_pacman.getDragonAnimation() && _pacman.getTempsDragonShout() > 2500 /*&& _pacman.getNbDragonShout() >= 2*/)
+		else if (_pacman.getDragonAnimation() && _pacman.getTempsDragonShout() > 2500 && _pacman.getNbDragonShout() >= 2)
 		{
 			_view.setSize(sf::Vector2f(_viewVector.x -= _pacman.getTempsDragonShout() / 145, _viewVector.y -= _pacman.getTempsDragonShout() / 145));
 			if (_viewVector.x < winapi::ScreenWidth)
@@ -815,7 +864,16 @@ void Jeu::play()
 			if (_viewVector.y < winapi::ScreenHeight)
 				_viewVector.y = winapi::ScreenHeight;
 			_window.setView(_view);
+			if (!_megaDragonShout && _pacman.getTempsDragonShout() > 3900)
+			{
+				_megaDragonShout = true;
+				_pacman.incrementeurDragonShout(-2);
+				_dragonShoutDesactive = false;
+			}
+
 		}
+		else
+			_megaDragonShout = false;
 		draw();
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
 	}
@@ -909,7 +967,7 @@ void Jeu::pause(std::string msg)
 
 void Jeu::shakeScreen()
 {
-	if (_pacman.getLaser())
+	if (_pacman.getLaser() || (_pacman.getDragonAnimation() && _pacman.getTempsDragonShout() > 800 && _pacman.getNbDragonShout() >= 2))
 	{
 		if (_shake < 1) _shake = 1;
 		_shake+= 0.4;

@@ -333,19 +333,56 @@ void Fantome::fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f &wi
 		_isDead = false;
 	}
 }
+
 bool Fantome::getToucherParDragonshout()
 {
 	return _toucherParDragonshout;
 }
+
+bool Fantome::getFlagExplosion()
+{
+	return _flagExplosion;
+}
+void Fantome::setFlagExplosion(bool valeur)
+{
+	_flagExplosion = valeur;
+}
+
 bool Fantome::isDead() const
 {
 	return _isDead;
+}
+
+//Get la position de l'explosion du fantome (alahu akbar)
+sf::Vector2f Fantome::getPosExplosion()
+{
+	return _posExplosion;
+}
+
+//Set la position de l'explosion du fantom (alahu akbar)
+void Fantome::setPosExplosion(sf::Vector2f pos)
+{
+	_posExplosion = pos;
 }
 
 void Fantome::setDragonShoutEffect(sf::Vector2f pos)
 {
 	_posRecul = pos;
 	_toucherParDragonshout = true;
+}
+
+void Fantome::incrementerAnimationExplosion()
+{
+	_explosionAnimation++;
+	if (_explosionAnimation > 47)
+	{
+		_explosionAnimation = 0;
+	}
+}
+
+int Fantome::getExplosionAnimation()
+{
+	return _explosionAnimation;
 }
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
