@@ -1,3 +1,4 @@
+map4.txt 0
 map3.txt 0
 map0.txt 0
 map1.txt 0

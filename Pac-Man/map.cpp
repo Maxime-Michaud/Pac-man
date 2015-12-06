@@ -20,8 +20,9 @@ Map::Map()
 	_texteFlash.setPosition(_posTexteFlash);
 }
 
-void Map::initFlash(std::string texte, int frequence, int duree, int posX, int posY, int grosseur)
+void Map::initFlash(bool actif, std::string texte, int frequence, int duree, int posX, int posY, int grosseur)
 {
+	_flashActif = actif;
 	_stringTexteFlash = texte;
 	_posTexteFlash.x = posX;
 	_posTexteFlash.y = posY;
@@ -139,10 +140,14 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	}
 	target.draw(_mapOutline, states);
 
-	if (_clockFlash.getElapsedTime().asMilliseconds() < _dureeFlash)
-		target.draw(_texteFlash);
-	else if (_clockFlash.getElapsedTime().asMilliseconds() > _frequenceFlash)
-		_clockFlash.restart();
+	if (_flashActif)
+	{
+		if (_clockFlash.getElapsedTime().asMilliseconds() < _dureeFlash)
+			target.draw(_texteFlash);
+		else if (_clockFlash.getElapsedTime().asMilliseconds() > _frequenceFlash)
+			_clockFlash.restart();
+	}
+	
 }
 
 sf::VertexArray Map::getOutline() const
