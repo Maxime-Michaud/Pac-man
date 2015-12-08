@@ -38,5 +38,6 @@ public:
 	void imprimmerPosFruit();
 	//Ajoute un fruit aux liste
 	void ajouterFruitListe(sf::Vector2f &pos);			
+	void vider();
 };
 

@@ -67,6 +67,9 @@ void Map::ajouterLigne(Ligne ligne)
 
 void Map::lireMap(std::istream & map)
 {
+	if (!_map.empty())
+		_map.clear();
+
 	auto linePos = readNumFromStream<float, false>(map, 0, "(, )\n", '.');
 
 	if (linePos.size() % 4)
@@ -78,6 +81,9 @@ void Map::lireMap(std::istream & map)
 	}
 
 	_bools = getBoolMap();
+
+	_mapOutline = getOutline();
+
 }
 
 bool Map::valideNouvelleLigne(Ligne & l)
@@ -266,6 +272,7 @@ std::vector<std::vector<bool>> Map::getBoolMap() const
 		{
 			//Valeur par défaut, qui représente un mur.
 			boolMap[i][j] = true;
+
 			//Position à laquelle on est rendu
 			sf::Vector2f pos(i * _width, j*_width);
 

@@ -35,18 +35,20 @@ Jeu::Jeu(std::string maps)
 void Jeu::init()
 {
 	loadMap();
+
 	_viewVector = sf::Vector2f(_window.getSize().x, _window.getSize().y);
 	_view.setSize(_viewVector);
 	_view.setCenter(sf::Vector2f(_window.getSize().x / 2, _window.getSize().y / 2));
 	_window.setView(_view);
+
 	//Initialisation de pacman
 	_startpos = _map.getLigne(0).getDebut();
 	_pacman.setPos(_startpos);
 	srand(std::time(NULL));
 	_ghostStart = _map.getLigne(3).getFin();
-	/*for (int i = 0; i < 100; i++)
-		_fantome.add(new FantomeOrange());*/
+
 	_explosionTextureComplet.loadFromFile("explosion.png");
+
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -78,7 +80,10 @@ void Jeu::init()
 	_score = 0;
 
 	auto temp = _map.getBoolMap();
+	_mangeable.clear();
+	_posValides.clear();
 	_mangeable.resize(temp.size());
+
 	for (int i = 0; i < temp.size(); i++)
 	{
 		_mangeable[i].resize(temp[i].size());
@@ -660,16 +665,17 @@ void Jeu::play()
 		auto keys = getKeyPress();
 		for (char c : keys)
 		{
+			//Autowin
+			if (c == 'm')
+			{
+				_nbBouleMange = _nbBoulesTotal;
+			}
+
 			if (c == 'f' && _dragonShoutDesactive)
 			{
 				c = '\0';
 			}
 			_pacman.input(c);
-			//Autowin
-			if (c == 'm')
-			{
-				_nbBouleMange = _nbBoulesTotal;
-			}	
 		}
 		shakeScreen();
 		_pacman.move(_pacman.getDirection(), _map);
@@ -695,8 +701,6 @@ void Jeu::play()
 					donnerUnPowerUpPacman();
 				
 			}
-			
-
 
 			if (_mangeable[x][y] & mangeable::grosseBoule)
 			{
@@ -711,6 +715,7 @@ void Jeu::play()
 				_pacman.stopSounds();
 				_sons.play("gagne");
 				Sleep(5500);
+				_fruits.vider();
 				init();
 				break;
 			}
