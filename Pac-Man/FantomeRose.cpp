@@ -262,14 +262,14 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 	int compteurCheminCalculés = 0;
 	while (bonChemin.size() >= 1)
 	{
-		compteurCheminCalculés++;
-		if (tousBonsChemins.empty() &&compteurCheminCalculés > 35)
+		/*compteurCheminCalculés++;
+		if (tousBonsChemins.empty() &&compteurCheminCalculés > 70)
 		{
 			_clockFantomeRose.restart();
 			_bougerCommeRouge = true;
 			bougerCommeRouge(posPacMan, map);
 			break;
-		}
+		}*/
 		//Calcul la distance avant le déplacement théorique pour pouvoir comparer avec après
 		distanceXYAvant = abs((posTheorique.x - posPacMan.x)) + abs(posTheorique.y - posPacMan.y);
 		//Si le déplacement rencontre les normes d'un bon déplacement (ne s'éloigne pas plus de 2 fois, est sur une ligne valide et cette direction n'a pas été tenter encore)
@@ -288,7 +288,9 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 			//Si le fantome se trouve sur la même ligne que pac-man, enregistre ce chemin
 			if (ligneParcoursTheorique == LignePacMan)
 			{
-				tousBonsChemins.push_back(bonChemin);
+				//tousBonsChemins.push_back(bonChemin);
+				_chemin = bonChemin;
+				break;
 			}
 		}
 		//Sinon si les essais sont moins que 4, tourne vers la droite
@@ -323,7 +325,7 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 	}
 
 	//Détemrine le chemin le plus court si on voulait plus d'un chemin
-	if (!_bougerCommeRouge)
+	/*if (!_bougerCommeRouge)
 	{
 		int plusPetitVecteur = 1000;
 		int index = 0;
@@ -339,13 +341,13 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 			}
 			_chemin = tousBonsChemins[index];
 		}
-	}
+	}*/
 	
 }
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
 void FantomeRose::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 {
-	if (_bougerCommeRouge && _clockFantomeRose.getElapsedTime() < sf::milliseconds(1500))
+	if (_bougerCommeRouge && _clockFantomeRose.getElapsedTime() < sf::milliseconds(500))
 	{
 		bougerCommeRouge(posPacMan, map);
 	}

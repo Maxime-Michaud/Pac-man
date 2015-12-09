@@ -9,7 +9,7 @@ Fantome::Fantome()
 	_vitesse = 3;
 	_vertical = true;
 	_direction = 's';
-	_deathPoint = sf::Vector2f(300, 300);
+	_deathPoint = sf::Vector2f(600, 600);
 
 	//variables pour le dessin
 	_headOffset = sf::Vector2f(0, -_width / 1.2);

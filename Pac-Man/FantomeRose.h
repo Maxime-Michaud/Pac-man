@@ -2,7 +2,7 @@
 #include "fantome.h"
 class FantomeRose : public Fantome
 {
-	const int _recalculeLeCheminTousLesXFois = 1;
+	const int _recalculeLeCheminTousLesXFois = 2;
 	int _nombreDintersectionsPassee = 0;
 	sf::Clock _clockFantomeRose;
 	bool _bougerCommeRouge = false;				//Bouge comme le rouge quand le chemin est trop demandant

@@ -5,34 +5,35 @@ FantomeBleu::FantomeBleu()
 	_color = sf::Color(0, 255, 255, 255);
 	_vitesse = 2;
 	_nom = "bleu";
+	_pointsPrecedents.push_back(sf::Vector2f(1, 1));
 }
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
-void FantomeBleu::deciderLigne(sf::Vector2f& posFantomeRouge, Map &map)
+void FantomeBleu::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 {
 	char directionArrivee = _direction;			//La direction de départ
-	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
+	int tempNoLigne = _numLigne;				//Le numéro de la ligne du fantome au départ
 	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
 	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
 
-	auto distanceX = _pos.x - posFantomeRouge.x;		//La distance de l'axe des X entre le fantome et pac man
+	int distanceX = static_cast<int>(_pos.x - posPacMan.x);		//La distance de l'axe des X entre le fantome et pac man
 	//Si la distance X est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceX >= 0)
 		gaucheDroite = 'a';
 	//Sinon il est à gauche de pac man et doit aller vers la droite
 	else
 	{
-		distanceX = posFantomeRouge.x - _pos.x;
+		distanceX = static_cast<int>(posPacMan.x - _pos.x);
 		gaucheDroite = 'd';
 	}
 
-	auto distanceY = _pos.y - posFantomeRouge.y;		//La distance de l'axe des Y entre le fantome et pac man
+	int distanceY = static_cast<int>(_pos.y - posPacMan.y);		//La distance de l'axe des Y entre le fantome et pac man
 	//Si la distance Y est plus grande que 0, le fantome est à droite et doit donc se dirifer vers la gauche
 	if (distanceY >= 0)
 		basHaut = 'w';
 	else	//Sinon c'est le contraire
 	{
-		distanceY = posFantomeRouge.y - _pos.y;
+		distanceY = static_cast<int>(posPacMan.y - _pos.y);
 		basHaut = 's';
 	}
 
@@ -42,14 +43,35 @@ void FantomeBleu::deciderLigne(sf::Vector2f& posFantomeRouge, Map &map)
 	else		//Sinon prendra une direction en Y pour sa rapprocher
 		_direction = basHaut;
 
-	if (aPritUnMauvaisChemin && _direction == gaucheDroite)
+	if (_pointsPrecedents[0] == _pos && _direction == gaucheDroite)
 	{
-		_direction = basHaut;
+		if (aPritUnMauvaisChemin)
+		{
+			if (basHaut == 'w')
+				_direction = 's';
+			else
+				_direction = 'w';
+		}
+		else
+		{
+			_direction = basHaut;
+		}
 		aPritUnMauvaisChemin = false;
 	}
-	else if (aPritUnMauvaisChemin && _direction == basHaut)
+	else if (_pointsPrecedents[0] == _pos && _direction == basHaut)
 	{
-		_direction = gaucheDroite;
+		if (aPritUnMauvaisChemin)
+		{
+			if (gaucheDroite == 'a')
+				_direction = 'd';
+			else
+				_direction = 'a';
+		}
+		else
+		{
+			_direction = gaucheDroite;
+		}
+
 		aPritUnMauvaisChemin = false;
 	}
 	//Vérifie si il peut simplement prendre la 1er direction qui lui est donné, si oui, il sort de la fonction
@@ -69,12 +91,13 @@ void FantomeBleu::deciderLigne(sf::Vector2f& posFantomeRouge, Map &map)
 			return;
 		}
 		break;
-	case 's':		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
-	{
-		Personnage::changerDeLigne(_direction, map);
-		return;
-	}
-					break;
+	case 's':
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
+		{
+			Personnage::changerDeLigne(_direction, map);
+			return;
+		}
+		break;
 	case 'w':
 		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
 		{

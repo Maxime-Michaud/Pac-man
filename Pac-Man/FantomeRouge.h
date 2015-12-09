@@ -2,6 +2,7 @@
 #include "fantome.h"
 class FantomeRouge : public Fantome
 {
+	std::deque<sf::Vector2f> _pointsPrecedents;
 public:
 	FantomeRouge();
 	~FantomeRouge();
