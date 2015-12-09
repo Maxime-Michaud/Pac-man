@@ -1,1 +1,1 @@
-boring.txt
+map2.txt

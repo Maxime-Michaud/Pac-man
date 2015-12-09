@@ -725,6 +725,35 @@ void Jeu::play()
 			_scoreTxt = sf::Text(temp, _8bitFont, 20);		
 		}
 
+		if (_pacman.getLaser())
+		{
+			sf::Vector2f end;
+			switch (_pacman.getDirection())
+			{
+			case 'a':
+				end = sf::Vector2f(50, _pacman.getPos().y);
+				break;
+			case 'd':
+				end = sf::Vector2f(600, _pacman.getPos().y);
+				break;	
+			case 's':
+				end = sf::Vector2f( _pacman.getPos().x, 600);
+				break;
+			case 'w':
+				end = sf::Vector2f(_pacman.getPos().x, 50);
+				break;
+			default:
+				break;
+			}
+
+			if (end != _pacman.getPos())
+				_map.ajouterLigne(Ligne(_pacman.getPos(), end));
+
+		}
+
+		if (_map.getChanged())
+			checkLines();
+
 		//Fait les mouvements des fantomes
 		for (auto f : _fantome)
 		{
@@ -1092,4 +1121,17 @@ void Jeu::loadSounds()
 	_sons.add("gagne", "gg.wav");
 	_sons.add("nuke", "deadSound0.wav");
 	_sons.add("plop", "plop.wav");
+}
+
+void Jeu::checkLines()
+{
+	_pacman.setLigne(_map.quelleLigne(_pacman.getPos(), 0));
+	_pacman.setVertical(_map.getLigne(_pacman.getNumLigne()).isVertical());
+
+	for (auto &f : _fantome)
+	{
+		f->setLigne(_map.quelleLigne(f->getPos(), 0));
+		f->setVertical(_map.getLigne(f->getNumLigne()).isVertical());
+
+	}
 }

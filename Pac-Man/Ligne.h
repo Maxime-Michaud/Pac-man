@@ -131,6 +131,12 @@ public:
 	bool traverse(const Ligne& l)const;
 
 	/// <summary>
+	/// Trouve si une ligne est a l'interieur d'une autre ligne. True si deux lignes partagent un point, sauf si ce point est situé a l'extrémité des deux lignes
+	/// </summary>
+	/// <param name="l">Ligne avec laquelle comparée</param>
+	bool estDedans(const Ligne& l)const;
+
+	/// <summary>
 	/// Trouve l'intersection entre deux lignes. Si les deux lignes sont dans la même direction, retourne le début de la ligne plus basse/a droite.
 	///  Si les lignes ne s'intersectent pas, retourne le point de l'intersection si elles seraient étirées jusqu'a se rencontrer.
 	/// </summary>

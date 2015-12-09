@@ -22,6 +22,8 @@ public:
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states)const;
 	sf::VertexArray getOutline() const;
 
+	bool getChanged() const;
+
 	std::vector<std::vector<bool>> getBoolMap() const;
 private:
 
@@ -32,6 +34,6 @@ private:
 	const float _width = 10;		//Largeur des lignes
 	static const int _thickness = 3;
 	sf::Color _mapColor;
-	std::vector<std::vector<bool>> _bools;
+	mutable std::vector<std::vector<bool>> _bools;
 	sf::Vector2f _ghostStart;
 };

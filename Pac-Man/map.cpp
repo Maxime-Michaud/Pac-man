@@ -16,6 +16,7 @@ void Map::ajouterLigne(Ligne ligne)
 	if (valideNouvelleLigne(ligne))
 	{
 		_map.push_back(ligne);
+		_hasChanged = true;
 		return;
 	}
 
@@ -23,6 +24,7 @@ void Map::ajouterLigne(Ligne ligne)
 	{
 		if (_map[i].traverse(ligne))
 		{
+			//if (_map[i].estDedans(ligne))return;	//La ligne est déja dans la map
 			//On efface l'ancienne ligne a la position i pour la remplacer plus tard
 			auto tmp = _map[i];
 			std::swap(_map[i], _map[_map.size() - 1]);
@@ -62,7 +64,7 @@ void Map::ajouterLigne(Ligne ligne)
 		}
 	}
 	//Cette partie de la fonction ne devrais jamais etre atteinte
-	assert(true);
+	assert(false);
 }
 
 void Map::lireMap(std::istream & map)
@@ -117,6 +119,7 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	if (_hasChanged)
 	{
+		_bools = getBoolMap();
 		_mapOutline = getOutline();
 		_hasChanged = false;
 	}
@@ -256,6 +259,11 @@ sf::VertexArray Map::getOutline() const
 	}
 
 	return walls;
+}
+
+bool Map::getChanged() const
+{
+	return _hasChanged;
 }
 
 std::vector<std::vector<bool>> Map::getBoolMap() const
