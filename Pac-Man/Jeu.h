@@ -94,7 +94,7 @@ class Jeu
 
 	//LES SONS ET VIDÉO	
 	Sons _sons;								//Conteneur pour les sons
-	UI _ui;									//Conteneur pour le UI
+	//UI _ui;									//Conteneur pour le UI
 
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
 
