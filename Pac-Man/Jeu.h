@@ -27,6 +27,8 @@
 #include <windows.h>
 #include <list>
 #include <iostream>
+#include "Sons.h"
+#include "UI.h"
 
 enum mangeable
 {
@@ -76,10 +78,10 @@ class Jeu
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge
-	int _nbFruitMange = 0;						  //Le nombre de fruit mangé, a chaque 3, donne un power up
+	int _nbFruitMange = 0;					  //Le nombre de fruit mangé, a chaque 3, donne un power up
 	bool _megaDragonShout = false;			  //Un bool pour gèrer le dragonshout et ne pas incrémenter plus d'une fois le nb de dragonshout
 	bool _dragonShoutDesactive = false;		  //Désactive le dragon shout pendant le MEGA dragon shout
-	bool _dragonShoutEffect = true;				  //Pour faire la shock wave qu'une seule fois dans le dragonShout
+	bool _dragonShoutEffect = true;			  //Pour faire la shock wave qu'une seule fois dans le dragonShout
 	sf::View _view;
 	sf::Vector2f _viewVector;
 	sf::Texture _explosionTextureComplet;
@@ -91,32 +93,10 @@ class Jeu
 	std::list<std::pair<std::string, int>>::const_iterator _mapsIterator;
 
 	//LES SONS ET VIDÉO	
-	sf::SoundBuffer _alarmBuffer;
-	mutable sf::Sound _alarmSound;			  //Son de l'alarme quand le laser est trop utilisé
-	mutable sf::Sound _intro;				  //Son de l'intro
-	sf::SoundBuffer _introBuffer;
-	mutable sf::Sound _chomp;				  //Son quand pac-man mange une boule
-	sf::SoundBuffer _chompBuffer;
-	mutable sf::Sound _fruit;				  //Son quand pac-man mange un fruit
-	sf::SoundBuffer _fruitBuffer;
-	mutable sf::Sound _mort;				  //Son quand pac-man meurt
-	sf::SoundBuffer _mortBuffer;
-	mutable sf::Sound _continue;			  //Son quand le joueur continue
-	sf::SoundBuffer _continueBuffer;
-	mutable sf::Sound _gg;					  //Son quand le joueur gagne un tableau
-	sf::SoundBuffer _ggBuffer;
-	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
+	Sons _sons;								//Conteneur pour les sons
+	UI _ui;									//Conteneur pour le UI
 
-	sf::SoundBuffer _megaDeadBuffer;		 
-	sf::Sound _megaDead;					  //Son overkill de mort
-	sf::SoundBuffer _starBuffer;
-	sf::Sound _star;						  //Son overkill de mort
-	sf::SoundBuffer _plopBuffer;
-	sf::Sound _plop;						  //Son quand l'ennemie est touché par pacMan avec un étoile
-	sf::SoundBuffer _alahuAkbarBuffer;
-	sf::Sound _alahuAkbar;					  //Son quand un fantome touche une boule rouge
-	sf::SoundBuffer _dragonLearnBuffer;
-	sf::Sound _dragonLearned;				  //Son quand pac-man apprend un dragon shout
+	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
 
 	bool _nextMap;
 
@@ -154,4 +134,7 @@ public:
 	sf::Vector2f choisirPosRandom();
 
 	void loadMap();
+
+	//Charge tous les sons dans l'objet de son
+	void loadSounds();
 };

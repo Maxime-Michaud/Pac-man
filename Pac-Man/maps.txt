@@ -4,3 +4,5 @@ map0.txt 0
 map1.txt 0
 bonus1.txt 0
 map2.txt 0
+boring.txt 0
+

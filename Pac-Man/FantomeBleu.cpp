@@ -125,20 +125,12 @@ void FantomeBleu::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 
 void FantomeBleu::move(char direction, sf::Vector2f& posFantomeRouge, Map &map)
 {
-	if (_alahuAkbar)
-	{
-		_vitesse = 5;
-		if (_clockAlahhuAkbar.getElapsedTime() > sf::milliseconds(3000))
-		{
-			_explosion.play();
-			_isDead = true;
-			_alahuAkbar = false;
-		}
-	}
-	else
+	Fantome::move(direction, posFantomeRouge, map);
+	if (!_alahuAkbar)
 	{
 		_vitesse = 2;
 	}
+
 	if (_isDead)
 	{
 		fantomeDead(map, sf::Vector2f(600, 600));

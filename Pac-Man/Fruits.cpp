@@ -358,3 +358,9 @@ void Fruits::ajouterFruitListe(sf::Vector2f &pos)
 	}
 	
 }
+
+void Fruits::vider()
+{
+	_fruitsSurMap.clear();
+	_fruitsListe.clear();
+}

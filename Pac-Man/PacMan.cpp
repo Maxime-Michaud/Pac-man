@@ -2,6 +2,8 @@
 
 PacMan::PacMan()
 {
+	loadSounds();
+
 	//Variables pour l'animation
 	_step = 0;
 	_stepIncrement = 1;
@@ -16,12 +18,8 @@ PacMan::PacMan()
 	_color = sf::Color(255, 255, 0, 255);
 
 	_pos = sf::Vector2f(300, 300);
-	_laserSB.loadFromFile("BWAAAAH.wav");
-	_laserSound.setBuffer(_laserSB);
-	_dragonShoutBuffer.loadFromFile("fusrohdah.wav");
-	_dragonShoutSound.setBuffer(_dragonShoutBuffer);
-	_megaDragonShoutSoundBuffer.loadFromFile("megafusrohdah.wav");
-	_megaDragonShoutSound.setBuffer(_megaDragonShoutSoundBuffer);
+
+
 	_dragonShout.resetClockDragonShout();
 
 	_powerUpNames.insert({ "laser", 1 });
@@ -50,9 +48,9 @@ void PacMan::fire()const
 
 	if (!_laser)
 	{
+		_sons.play("laser");
 		_tempsLaser.restart();
 		_laser = true;
-		_laserSound.play();
 	}
 	if (_nbMilisecondeLaser >= 0)
 	{
@@ -96,21 +94,13 @@ float PacMan::getTempsDragonShout()
 	return _clockDragonShout.getElapsedTime().asMilliseconds();
 }
 
-void PacMan::setSonDragonShout(bool valeur)
-{
-	if (!valeur)
-		_dragonShoutSound.stop();
-	else
-		_dragonShoutSound.play();
-}
-
 void PacMan::stop()const
 {
 	if (_laser)
 	{
 		//_tempsPassePowerUpLaser += _tempsLaser.getElapsedTime().asMilliseconds();
 		_laser = false;
-		_laserSound.stop();
+		_sons.stop("laser");
 		_tempsMemoireLaser += _tempsPassePowerUpLaser;
 		_tempsSansLaser.restart();
 
@@ -351,10 +341,12 @@ void PacMan::input(char c)
 				_clockDragonShout.restart();
 				_dragonShoutActivated = true;
 				_dragonShoutAnimation = false;
+
 				if (_nbDragonShout >= 3)
-					_megaDragonShoutSound.play();
+					_sons.replay("FUSRODAH");
 				else
-					_dragonShoutSound.play();
+					_sons.replay("fusrodah");
+
 				_dragonShout.resetClockDragonShout();
 				_nbDragonShout--;
 			}
@@ -372,15 +364,17 @@ void PacMan::input(char c)
 			}
 			break;
 		case 'c':
-			if (_appuyerBouton.getElapsedTime() > sf::milliseconds(200))
+			if (_appuyerBouton.getElapsedTime() > sf::milliseconds(500))
 			{
 				_clockDragonShout.restart();
 				_dragonShoutActivated = true;
 				_dragonShoutAnimation = false;
+
 				if (_nbDragonShout >= 2)
-					_megaDragonShoutSound.play();
+					_sons.replay("FUSRODAH");
 				else
-					_dragonShoutSound.play();
+					_sons.replay("fusrodah");
+
 				_dragonShout.resetClockDragonShout();
 			}
 			break;
@@ -429,6 +423,11 @@ void PacMan::setNormalStat()
 
 void PacMan::move(char direction, Map &map)
 {
+	if (_powerUpMarioStar)
+		_sons.play("etoile");
+	else
+		_sons.stop("etoile");
+
 	if (_dragonShoutActivated)
 	{
 		if (_clockDragonShout.getElapsedTime() > sf::milliseconds(700))
@@ -469,7 +468,6 @@ void PacMan::resetPowerUps()
 {
 	_powerUpDragonShout = false;
 	_dragonShout.resetClockDragonShout();
-	_dragonShoutSound.resetBuffer();
 	_nbDragonShout = 0;
 
 	_powerUpLaser = false;
@@ -481,4 +479,13 @@ void PacMan::resetPowerUps()
 
 	_powerUpMarioStar = false;
 	_nbMilisecondeEtoile = 0;
+}
+
+void PacMan::loadSounds()
+{
+	_sons.add("etoile", "star.wav");
+	_sons.add("dragon", "dragonLearned.wav");
+	_sons.add("fusrodah", "fusrohdah.wav");
+	_sons.add("FUSRODAH", "megafusrohdah.wav");
+	_sons.add("laser", "BWAAAAH.wav");
 }

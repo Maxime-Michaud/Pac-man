@@ -139,21 +139,7 @@ void FantomeOrange::deciderLigne(sf::Vector2f &posPacMan, Map &map)
 
 void FantomeOrange::move(char direction, sf::Vector2f& posPacMan, Map &map)
 {
-	if (_alahuAkbar)
-	{
-		_vitesse = 5;
-		if (_clockAlahhuAkbar.getElapsedTime() > sf::milliseconds(3000))
-		{
-			//explosion();
-			_explosion.play();
-			_isDead = true;
-			_alahuAkbar = false;
-		}
-	}
-	else
-	{
-		_vitesse = 3;
-	}
+	Fantome::move(direction, posPacMan, map);
 
 	if (_isDead)
 	{

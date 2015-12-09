@@ -16,6 +16,7 @@
 #include "map.h"
 #include <deque>
 #include <map>
+#include "Sons.h"
 
 class Fantome : public Personnage
 {
@@ -56,8 +57,6 @@ protected:
 	bool _alahuAkbar = false;
 	sf::Clock _clockAlahhuAkbar;
 	sf::Vector2f _posExplosion;
-	sf::SoundBuffer _explosionBuffer;
-	sf::Sound _explosion;				    //Le son d'explosion
 	int _explosionAnimation = 0;            //Les frames d'animation de l'explosion
 	bool _flagExplosion = false;			//Pour setter la position de l'explosuion qu'une seule fois
 	//Variables pour l'effet du dragonshout
@@ -67,6 +66,7 @@ protected:
 
 	std::map<std::string, int> _powerUpNames;	//Associe des noms au valeur des power-up
 
+	Sons _sons;
 public:
 	Fantome();
 	~Fantome();
@@ -104,4 +104,6 @@ public:
 	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 	virtual void move(char direction, sf::Vector2f& posPacMan, Map &map) = 0;	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
+	virtual void loadSounds();
+
 };
