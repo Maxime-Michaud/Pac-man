@@ -8,6 +8,7 @@ Fantome::Fantome()
 	_vitesse = 3;
 	_vertical = true;
 	_direction = 's';
+	_deathPoint = sf::Vector2f(600, 600);
 
 	//variables pour le dessin
 	_headOffset = sf::Vector2f(0, -_width / 1.2);
@@ -272,11 +273,11 @@ char Fantome::inverserDirection(char direction)
 //L'animation et la placement du fantome quand il est mort
 void Fantome::fantomeDead(Map &map, sf::Vector2f window)
 {
-	if (_pos != sf::Vector2f(window.x / 2, window.y / 2))
+	if (_pos != sf::Vector2f(_deathPoint.x, _deathPoint.y))
 	{
 		_direction = 's';
-		(_pos.x > window.x / 2) ? _pos.x -= 1 : (_pos.x < window.x / 2) ? _pos.x += 1 : NULL;
-		(_pos.y > window.y / 2) ? _pos.y -= 1 : (_pos.y < window.y / 2) ? _pos.y += 1 : NULL;
+		(_pos.x > _deathPoint.x) ? _pos.x -= 1 : (_pos.x < _deathPoint.x) ? _pos.x += 1 : NULL;
+		(_pos.y > _deathPoint.y) ? _pos.y -= 1 : (_pos.y < _deathPoint.y) ? _pos.y += 1 : NULL;
 	}
 	else
 	{

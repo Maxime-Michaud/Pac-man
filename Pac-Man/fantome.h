@@ -52,6 +52,7 @@ protected:
 	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const;
 
 	bool _isDead = false;				//Si le fantome est mort ou pas
+	sf::Vector2f _deathPoint;			//Le point auquel les fantomes vont quand il sont mort, par défaut a 300,300
 	bool aPritUnMauvaisChemin = false;	//Si le fantome a prit un mauvais chemin
 	bool _alahuAkbar = false;
 	sf::Clock _clockAlahhuAkbar;

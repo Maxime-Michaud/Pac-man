@@ -40,7 +40,7 @@ f orange 1 (600, 600)
 
 
 Map 3, préparez vous!
-flash 100 2000 donne nous 100%
+flash 2000 200 250,450 50 donne nous 100%
 0,0,255,255
 
 

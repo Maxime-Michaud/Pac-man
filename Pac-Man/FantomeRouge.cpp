@@ -4,6 +4,7 @@ FantomeRouge::FantomeRouge()
 {
 	_color = sf::Color(255, 0, 0, 255);
 	_nom = "rouge";
+	_pointsPrecedents.push_back(sf::Vector2f(1, 1));
 }
 
 FantomeRouge::~FantomeRouge()
@@ -14,7 +15,7 @@ FantomeRouge::~FantomeRouge()
 void FantomeRouge::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 {
 	char directionArrivee = _direction;			//La direction de départ
-	int tempNoLigne = map.quelleLigne(_pos, _numLigne);				//Le numéro de la ligne du fantome au départ
+	int tempNoLigne = _numLigne;				//Le numéro de la ligne du fantome au départ
 	char gaucheDroite;							//Contient une direction logique à prendre entre la gauche ou la droite
 	char basHaut;								//Contient une direction logique à prendre entre en haut ou en bas
 
@@ -45,14 +46,35 @@ void FantomeRouge::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 	else		//Sinon prendra une direction en Y pour sa rapprocher
 		_direction = basHaut;
 
-	if (aPritUnMauvaisChemin && _direction == gaucheDroite)
+	if (_pointsPrecedents[0] == _pos && _direction == gaucheDroite)
 	{
-		_direction = basHaut;
+ 		if (aPritUnMauvaisChemin)
+		{
+			if (basHaut == 'w')
+				_direction = 's';
+			else
+				_direction = 'w';
+		}
+		else
+		{
+			_direction = basHaut;
+		}
 		aPritUnMauvaisChemin = false;
 	}
-	else if (aPritUnMauvaisChemin && _direction == basHaut)
+	else if (_pointsPrecedents[0] == _pos && _direction == basHaut)
 	{
-		_direction = gaucheDroite;
+		if (aPritUnMauvaisChemin)
+		{
+			if (gaucheDroite == 'a')
+				_direction = 'd';
+			else
+				_direction = 'a';
+		}
+		else
+		{
+			_direction = gaucheDroite;
+		}
+   		
 		aPritUnMauvaisChemin = false;
 	}
 	//Vérifie si il peut simplement prendre la 1er direction qui lui est donné, si oui, il sort de la fonction
@@ -72,12 +94,13 @@ void FantomeRouge::deciderLigne(sf::Vector2f& posPacMan, Map &map)
 			return;
 		}
 		break;
-	case 's':		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
-	{
-		Personnage::changerDeLigne(_direction, map);
-		return;
-	}
-					break;
+	case 's':		
+		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y + 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y + 1))))
+		{
+			Personnage::changerDeLigne(_direction, map);
+			return;
+		}
+		break;
 	case 'w':
 		if (map.getLigne(map.quelleLigne((sf::Vector2f(_pos.x, _pos.y - 1)), _numLigne)).isOn((sf::Vector2f(_pos.x, _pos.y - 1))))
 		{
@@ -135,6 +158,11 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 			if (_vertical == false)
 				setPos(temp.getDebut());
 			deciderLigne(posPacMan, map);
+			_pointsPrecedents.push_back(_pos);
+			if (_pointsPrecedents.size() > 2)
+			{
+				_pointsPrecedents.pop_front();
+			}
 		}
 		break;
 
@@ -149,6 +177,11 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 			if (_vertical == true)
 				setPos(temp.getFin());
 			deciderLigne(posPacMan, map);
+			_pointsPrecedents.push_back(_pos);
+			if (_pointsPrecedents.size() > 2)
+			{
+				_pointsPrecedents.pop_front();
+			}
 		}
 		break;
 
@@ -163,6 +196,11 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 			if (_vertical == false)
 				setPos(temp.getFin());
 			deciderLigne(posPacMan, map);
+			_pointsPrecedents.push_back(_pos);
+			if (_pointsPrecedents.size() > 2)
+			{
+				_pointsPrecedents.pop_front();
+			}
 		}
 		break;
 
@@ -177,6 +215,11 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 			if (_vertical == true)
 				setPos(temp.getDebut());
 			deciderLigne(posPacMan, map);
+			_pointsPrecedents.push_back(_pos);
+			if (_pointsPrecedents.size() > 2)
+			{
+				_pointsPrecedents.pop_front();
+			}
 		}
 
 		break;

@@ -18,7 +18,7 @@ public:
 	void lireMap(std::istream &map);
 	bool valideNouvelleLigne(Ligne &l);
 	int quelleLigne(sf::Vector2f ligne, int numLigne);			//retourne le nu de la ligne selon la position
-
+	void initFlash(bool valeur, std::string texte, int frequence, int duree, int posX, int posY, int grosseur);
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states)const;
 	sf::VertexArray getOutline() const;
 
@@ -36,4 +36,13 @@ private:
 	sf::Color _mapColor;
 	mutable std::vector<std::vector<bool>> _bools;
 	sf::Vector2f _ghostStart;
+	bool _flashActif = false;
+	std::string _stringTexteFlash;		//La string du texte qui flash
+	int _frequenceFlash;				//La fréquence à laquelle le flash apparaît		
+	int _dureeFlash;					//La durée du texte qui flash
+	int _grosseurFlash;					//Grosseur texte qui flash
+	sf::Text _texteFlash;				//L'objet texte qui apparait a l'écran en flashant
+	sf::Vector2f _posTexteFlash;		//La position du texte qui flash
+	sf::Font _fontFlash;				//Le font de l'objet texte qui flash
+	mutable sf::Clock _clockFlash;
 };

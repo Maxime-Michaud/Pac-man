@@ -8,6 +8,30 @@ Map::Map()
 {
 	_mapColor = sf::Color();
 	_mapSize = sf::Vector2i(70, 70);
+
+	/*TODO a effacer apres, un test*/
+	_stringTexteFlash = "ta mere";
+	_posTexteFlash.x = 250;
+	_posTexteFlash.y = 400;
+	_fontFlash.loadFromFile("steelfish rg.ttf");
+	_frequenceFlash = 2000;
+	_dureeFlash = 100;
+	_texteFlash = sf::Text(_stringTexteFlash, _fontFlash, 40);
+	_texteFlash.setPosition(_posTexteFlash);
+}
+
+void Map::initFlash(bool actif, std::string texte, int frequence, int duree, int posX, int posY, int grosseur)
+{
+	_flashActif = actif;
+	_stringTexteFlash = texte;
+	_posTexteFlash.x = posX;
+	_posTexteFlash.y = posY;
+	_fontFlash.loadFromFile("steelfish rg.ttf");
+	_frequenceFlash = frequence;
+	_dureeFlash = duree;
+	_grosseurFlash = grosseur;
+	_texteFlash = sf::Text(_stringTexteFlash, _fontFlash, _grosseurFlash);
+	_texteFlash.setPosition(_posTexteFlash);
 }
 
 void Map::ajouterLigne(Ligne ligne)
@@ -24,9 +48,9 @@ void Map::ajouterLigne(Ligne ligne)
 	{
 		if (_map[i].traverse(ligne))
 		{
-			//if (_map[i].estDedans(ligne))return;	//La ligne est déja dans la map
 			//On efface l'ancienne ligne a la position i pour la remplacer plus tard
 			auto tmp = _map[i];
+
 			std::swap(_map[i], _map[_map.size() - 1]);
 			_map.resize(_map.size() - 1);
 
@@ -124,6 +148,15 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		_hasChanged = false;
 	}
 	target.draw(_mapOutline, states);
+
+	if (_flashActif)
+	{
+		if (_clockFlash.getElapsedTime().asMilliseconds() < _dureeFlash)
+			target.draw(_texteFlash);
+		else if (_clockFlash.getElapsedTime().asMilliseconds() > _frequenceFlash)
+			_clockFlash.restart();
+	}
+	
 }
 
 sf::VertexArray Map::getOutline() const

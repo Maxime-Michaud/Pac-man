@@ -1,8 +1,8 @@
 #pragma once
 #include "fantome.h"
-class FantomeBleu :
-	public Fantome
+class FantomeBleu : public Fantome
 {
+	std::deque<sf::Vector2f> _pointsPrecedents;
 public:
 	FantomeBleu();
 	~FantomeBleu();
