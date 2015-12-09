@@ -92,7 +92,7 @@
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <DisableSpecificWarnings>4512;4127;4100</DisableSpecificWarnings>
       <PreprocessorDefinitions>_MBCS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\sfeMovie-Debug-2.0.0-win32\include\;C:\SFML-2.3.2\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\sfeMovie-Debug-2.0.0-win32\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -153,6 +153,7 @@
     <ClCompile Include="SaisieSecurisee.cpp" />
     <ClCompile Include="Sons.cpp" />
     <ClCompile Include="testingMain.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="VecteurDeFantome.cpp" />
     <ClCompile Include="windowsAPIwrapper.cpp" />
   </ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="saisieSecurisee.h" />
     <ClInclude Include="Sons.h" />
     <ClInclude Include="TimeTraveller.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="VecteurDeFantome.h" />
     <ClInclude Include="windowsAPIwrapper.h" />
   </ItemGroup>

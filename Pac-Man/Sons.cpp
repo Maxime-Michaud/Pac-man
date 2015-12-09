@@ -62,8 +62,8 @@ bool Sons::stop(const std::string & nom)
 
 void Sons::stopAll()
 {
-	for (auto s : _sons)
-		s.second.stop();
+	for (auto s = _sons.begin(); s != _sons.end();++s)
+		s->second.stop();
 }
 
 bool Sons::add(const std::string & nom, const std::string & source)

@@ -467,6 +467,7 @@ sf::Vector2f Jeu::choisirPosRandom()
 void Jeu::loadMap()
 {
 	_nextMap = !(_mapsIterator == _maps.end());
+
 	if (!_nextMap)
 	{
 		_playing = false;

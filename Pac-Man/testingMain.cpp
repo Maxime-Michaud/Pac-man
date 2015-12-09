@@ -1,9 +1,11 @@
-//#include <iostream>
-//
-//void main()
-//{
-//	std::cout << "5 <= 6 <=4" << ((5 <= 6 <= 4) ? "\tTrue" : "\tFalse") << std::endl;
-//	std::cout << "7 >= 6 >=5" << ((7 >= 6 >= 5) ? "\tTrue" : "\tFalse") << std::endl;
-//
-//	system("pause");
-//}
+#include "UI.h"
+
+void main()
+{
+	sf::RenderWindow win;
+	win.create(sf::VideoMode(800, 800), "lol");
+	UI test;
+	test.addText("test", "test", "8bit.TTF", sf::Vector2f(500, 500));
+	win.draw(test);
+	system("pause");
+}

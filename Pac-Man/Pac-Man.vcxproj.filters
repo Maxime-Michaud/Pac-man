@@ -58,6 +58,9 @@
     <ClCompile Include="Sons.cpp">
       <Filter>Interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FantomeOrange.h">
@@ -118,6 +121,9 @@
       <Filter>Jeu\Personnage\Pac Man</Filter>
     </ClInclude>
     <ClInclude Include="Sons.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
