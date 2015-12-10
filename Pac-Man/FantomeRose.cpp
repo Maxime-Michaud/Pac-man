@@ -273,7 +273,7 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 		//Calcul la distance avant le déplacement théorique pour pouvoir comparer avec après
 		distanceXYAvant = abs((posTheorique.x - posPacMan.x)) + abs(posTheorique.y - posPacMan.y);
 		//Si le déplacement rencontre les normes d'un bon déplacement (ne s'éloigne pas plus de 2 fois, est sur une ligne valide et cette direction n'a pas été tenter encore)
-		if (nombreEssais < 4 && esseyerLigne(directionTheorique, ligneParcoursTheorique, pointsVisites, posTheorique, map, bonChemin.back()._direction) && bonChemin.back()._nbEloignement <= 1)
+		if (nombreEssais < 4 && esseyerLigne(directionTheorique, ligneParcoursTheorique, pointsVisites, posTheorique, map, bonChemin.back()._direction) && bonChemin.back()._nbEloignement <= _nbEloignementPourAiRose)
 		{	
 			distanceXYApres = abs((posTheorique.x - posPacMan.x)) + abs(posTheorique.y - posPacMan.y);
 			pointsVisites.push_back(posTheorique);
@@ -388,7 +388,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == false)
-			setPos(temp.getDebut());
+			setPosSecuritaire(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -413,7 +413,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == true)
-			setPos(temp.getFin());
+			setPosSecuritaire(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -438,7 +438,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == false)
-			setPos(temp.getFin());
+			setPosSecuritaire(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -463,7 +463,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == true)
-			setPos(temp.getDebut());
+			setPosSecuritaire(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;

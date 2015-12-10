@@ -94,7 +94,8 @@ class Jeu
 
 	//LES SONS ET VIDÉO	
 	Sons _sons;								//Conteneur pour les sons
-	//UI _ui;									//Conteneur pour le UI
+
+//	UI _ui;									//Conteneur pour le UI
 
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
 
@@ -137,4 +138,7 @@ public:
 
 	//Charge tous les sons dans l'objet de son
 	void loadSounds();
+
+	//Vérifie que tout le monde est sur la bonne ligne
+	void checkLines();
 };

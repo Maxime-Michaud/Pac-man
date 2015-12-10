@@ -23,6 +23,22 @@ void Personnage::setPos(sf::Vector2f pos)
 	_pos = pos;
 }
 
+//Set la position, mais vérifie si il se téléporte, ne doit pas se téléporter
+void Personnage::setPosSecuritaire(sf::Vector2f pos)
+{
+	int x = _pos.x - pos.x;
+	int y = _pos.y - pos.y;
+	if (x > _vitesse + 1)
+		pos.x = _pos.x + _vitesse;
+	else if (x < -_vitesse - 1)
+		pos.x = _pos.x - _vitesse;
+	if (y > _vitesse + 1)
+		pos.y = _pos.y + _vitesse;
+	else if (y < -_vitesse - 1)
+		pos.y = _pos.y - _vitesse;
+	_pos = pos;
+}
+
 void Personnage::setLigne(unsigned int ligne)
 {
 	_numLigne = ligne;
@@ -103,7 +119,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 			_direction = 'a';
 			_vertical = false;
 			//_change.push(_pos);
-			setPos(sf::Vector2f(map.getLigne(_numLigne).getFin().x - _vitesse, map.getLigne(_numLigne).getFin().y));
+			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getFin().x - _vitesse, map.getLigne(_numLigne).getFin().y));
 			return true;
 		}
 		break;
@@ -118,7 +134,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 			_vertical = false;
 			_direction = 'd';
 			//_change.push(_pos);
-			setPos(sf::Vector2f(map.getLigne(_numLigne).getDebut().x + _vitesse, map.getLigne(_numLigne).getDebut().y));
+			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getDebut().x + _vitesse, map.getLigne(_numLigne).getDebut().y));
 			return true;
 		}
 
@@ -132,7 +148,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 			_vertical = true;
 			_direction = 's';
 			//_change.push(_pos);
-			setPos(sf::Vector2f(map.getLigne(_numLigne).getDebut().x, map.getLigne(_numLigne).getDebut().y + _vitesse));
+			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getDebut().x, map.getLigne(_numLigne).getDebut().y + _vitesse));
 			return true;
 		}
 		break;
@@ -145,7 +161,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 			_vertical = true;
 			_direction = 'w';
 			//_change.push(_pos);
-			setPos(sf::Vector2f(map.getLigne(_numLigne).getFin().x, map.getLigne(_numLigne).getFin().y - _vitesse));
+			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getFin().x, map.getLigne(_numLigne).getFin().y - _vitesse));
 			return true;
 		}
 		break;
@@ -173,7 +189,7 @@ void Personnage::move(char direction, Map &map)
 		else								//Sinon regarde pour changer de ligne si l'axe correspond avec la direction
 		{
 			if (_vertical == false)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			char tempDirection = _direction;
 			if (!changerDeLigne(_directionProchaine, map))
 				changerDeLigne(tempDirection, map);
@@ -190,7 +206,7 @@ void Personnage::move(char direction, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			char tempDirection = _direction;
 			if (!changerDeLigne(_directionProchaine, map))
 				changerDeLigne(tempDirection, map);
@@ -207,7 +223,7 @@ void Personnage::move(char direction, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			char tempDirection = _direction;
 			if (!changerDeLigne(_directionProchaine, map))
 				changerDeLigne(tempDirection, map);
@@ -224,7 +240,7 @@ void Personnage::move(char direction, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			char tempDirection = _direction;
 			if (!changerDeLigne(_directionProchaine, map))
 				changerDeLigne(tempDirection, map);

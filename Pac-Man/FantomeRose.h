@@ -2,7 +2,8 @@
 #include "fantome.h"
 class FantomeRose : public Fantome
 {
-	const int _recalculeLeCheminTousLesXFois = 2;
+	const int _recalculeLeCheminTousLesXFois = 4;
+	int _nbEloignementPourAiRose = 3;			//le nombre de fois que le rose peut s'eloignement de pacman pour trouver un chemin, dans un labyrinthw, monter cette valeur.
 	int _nombreDintersectionsPassee = 0;
 	sf::Clock _clockFantomeRose;
 	bool _bougerCommeRouge = false;				//Bouge comme le rouge quand le chemin est trop demandant

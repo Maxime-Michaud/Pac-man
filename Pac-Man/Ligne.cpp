@@ -81,8 +81,6 @@ bool Ligne::isVertical() const
 
 bool Ligne::traverse(const Ligne & l) const
 {
-	if (l == *this) return false;	//Une ligne ne se traverse pas elle meme
-
 	if (isVertical() != l.isVertical()		//Les deux ne sont pas dans la meme direction
 		&& (_p1 == l._p1 || _p2 == l._p1 || _p1 == l._p2 || _p2 == l._p2)) //Les lignes partagent un coin
 		return false;	//Les lignes qui partagent un coin ne s'intersectent pas
@@ -105,6 +103,20 @@ bool Ligne::traverse(const Ligne & l) const
 			return	_p1.y == l._p1.y &&
 			!(_p1.x <= l._p1.x ||
 				l._p2.x <= _p1.x);
+}
+
+bool Ligne::estDedans(const Ligne & l) const
+{
+	if (isVertical() != l.isVertical()) return false;
+
+	return (_p1.x >= l._p1.x &&
+		    _p2.x <= l._p2.x &&
+			_p1.y >= l._p1.y &&
+			_p2.y <= l._p2.y)||
+		   (_p1.x <= l._p1.x &&
+			_p2.x >= l._p2.x &&
+			_p1.y <= l._p1.y &&
+			_p2.y >= l._p2.y);
 }
 
 sf::Vector2f Ligne::intersect(const Ligne & l) const

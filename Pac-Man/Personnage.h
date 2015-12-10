@@ -47,6 +47,9 @@ public:
 	/// <param name="pos">position ou placer le personnage</param>
 	virtual void setPos(sf::Vector2f pos);
 
+	//Set la position, mais vérifie si il se téléporte, ne doit pas se téléporter
+	void setPosSecuritaire(sf::Vector2f pos);
+
 	virtual void setLigne(unsigned int ligne);
 	/// <summary>
 	/// Set le numéro de la ligne du personnage
