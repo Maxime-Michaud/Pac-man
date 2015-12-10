@@ -166,7 +166,7 @@ void FantomeOrange::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			_nbIntersectionPasse++;
 			deciderLigne(sf::Vector2f(0, 0), map);
 		}
@@ -181,7 +181,7 @@ void FantomeOrange::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			_nbIntersectionPasse++;
 			deciderLigne(sf::Vector2f(0, 0), map);
 		}
@@ -196,7 +196,7 @@ void FantomeOrange::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			_nbIntersectionPasse++;
 			deciderLigne(sf::Vector2f(0, 0), map);
 		}
@@ -211,7 +211,7 @@ void FantomeOrange::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			_nbIntersectionPasse++;
 			deciderLigne(sf::Vector2f(0, 0), map);
 		}

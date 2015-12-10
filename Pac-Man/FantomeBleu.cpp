@@ -156,7 +156,7 @@ void FantomeBleu::move(char direction, sf::Vector2f& posFantomeRouge, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			deciderLigne(posFantomeRouge, map);
 		}
 		break;
@@ -170,7 +170,7 @@ void FantomeBleu::move(char direction, sf::Vector2f& posFantomeRouge, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			deciderLigne(posFantomeRouge, map);
 		}
 		break;
@@ -184,7 +184,7 @@ void FantomeBleu::move(char direction, sf::Vector2f& posFantomeRouge, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			deciderLigne(posFantomeRouge, map);
 		}
 		break;
@@ -198,7 +198,7 @@ void FantomeBleu::move(char direction, sf::Vector2f& posFantomeRouge, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			deciderLigne(posFantomeRouge, map);
 		}
 

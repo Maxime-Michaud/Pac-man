@@ -388,7 +388,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == false)
-			setPos(temp.getDebut());
+			setPosSecuritaire(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -413,7 +413,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == true)
-			setPos(temp.getFin());
+			setPosSecuritaire(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -438,7 +438,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == false)
-			setPos(temp.getFin());
+			setPosSecuritaire(temp.getFin());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;
@@ -463,7 +463,7 @@ void FantomeRose::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			//if (_vertical == true)
-			setPos(temp.getDebut());
+			setPosSecuritaire(temp.getDebut());
 			if (!_chemin.empty() && _nombreDintersectionsPassee <= _recalculeLeCheminTousLesXFois)
 			{
 				_direction = _chemin.front()._direction;

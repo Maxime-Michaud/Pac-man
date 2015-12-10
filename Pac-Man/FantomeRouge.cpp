@@ -156,7 +156,7 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			deciderLigne(posPacMan, map);
 			_pointsPrecedents.push_back(_pos);
 			if (_pointsPrecedents.size() > 2)
@@ -175,7 +175,7 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			deciderLigne(posPacMan, map);
 			_pointsPrecedents.push_back(_pos);
 			if (_pointsPrecedents.size() > 2)
@@ -194,7 +194,7 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == false)
-				setPos(temp.getFin());
+				setPosSecuritaire(temp.getFin());
 			deciderLigne(posPacMan, map);
 			_pointsPrecedents.push_back(_pos);
 			if (_pointsPrecedents.size() > 2)
@@ -213,7 +213,7 @@ void FantomeRouge::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		else
 		{
 			if (_vertical == true)
-				setPos(temp.getDebut());
+				setPosSecuritaire(temp.getDebut());
 			deciderLigne(posPacMan, map);
 			_pointsPrecedents.push_back(_pos);
 			if (_pointsPrecedents.size() > 2)
