@@ -280,7 +280,12 @@ sf::VertexArray PacMan::buildPacMan() const
 
 void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	_step += _stepIncrement;
+	//Si pacman est mort, il n'est pas dessiné
+	if (_isDead) return;
+
+	if (!_paused)
+		_step += _stepIncrement;
+
 	if (_step < 0 || _step >= _nbrCote / 4)
 		_stepIncrement *= -1;
 
@@ -318,6 +323,9 @@ void PacMan::deathAnimation(sf::RenderTarget & target) const
 		i + _step + 1 < vertices.getVertexCount();
 		i++)
 		vertices[i + _step + 1] = sf::Vertex(_pos, _color);
+
+	if (hasDisappeared())
+		_isDead = true;
 
 	target.draw(vertices);
 }
@@ -462,6 +470,7 @@ void PacMan::respawn(sf::Vector2f pos)
 	_pos = pos;
 	_step = 0;
 	_deathCount = 0;
+	_isDead = false;
 }
 
 void PacMan::resetPowerUps()

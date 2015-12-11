@@ -51,10 +51,8 @@ class Jeu
 	sf::Vector2f _startpos;		//Position de depart
 	sf::Vector2f _ghostStart;	//Position de depart des fantomes
 
-	sf::Font _font;
 	sf::Font _8bitFont;
 	sf::Font _dragonFont;
-	sf::Text _dragonShoutText;
 	sf::Text _dragonShoutLearned;
 
 	sf::Event event;
@@ -94,7 +92,7 @@ class Jeu
 
 	//LES SONS ET VIDÉO	
 	Sons _sons;								//Conteneur pour les sons
-//	UI _ui;									//Conteneur pour le UI
+	UI _ui;									//Conteneur pour le UI
 
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
 

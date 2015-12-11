@@ -163,9 +163,12 @@ void Fantome::buildFeet(sf::VertexArray & vert) const
 		buildFoot(vert, inverse, _pos.x - _width + _feetWidth * i);
 	}
 
-	_step++;
+	if (!_paused) 
+	{
+		_step++;
 
-	_step %= framePerStep * 2;
+		_step %= framePerStep * 2;
+	}
 }
 
 void Fantome::buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const

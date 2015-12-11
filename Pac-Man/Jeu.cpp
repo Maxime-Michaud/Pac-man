@@ -30,6 +30,12 @@ Jeu::Jeu(std::string maps)
 	_laserText.setPosition(sf::Vector2f(650, 150));
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
 
+	_ui.addText("laser", "Laser overdrive: ", "steelfish rg.ttf", sf::Vector2f(650, 150), 45);
+	//Construit le texte pour le menu de pause, mais ne l'affiche pas (frames = 0)
+	_ui.addText("pause", "Appuyez sur espace pour continuer", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
+	//Construit le texte pour continuer sans l'afficher
+	_ui.addText("continuer", "Voulez-vous continuer? (O/n)", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
+
 }
 
 void Jeu::init()
@@ -62,8 +68,6 @@ void Jeu::init()
 
 	_ghostStart = _fantome[0]->getPos();
 
-	//charge la police
-	_font.loadFromFile("steelfish rg.ttf");
 	_8bitFont.loadFromFile("8bit.ttf");
 	_dragonFont.loadFromFile("dragon.otf");
 
@@ -126,11 +130,7 @@ void Jeu::init()
 	}
 
 	//SET DES SONS, TEXTES ET VIDÉOS
-	_laserText = sf::Text("Laser overdredive:", _font, 45);
 	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
-
-	_laserText.setPosition(sf::Vector2f(650, 150));
-
 
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
 
@@ -278,21 +278,21 @@ void Jeu::drawDragonShoutUi()
 		_dragonShoutLearned.setColor(sf::Color(200, 200, 200, 255 - (ratio * 255)));
 		_window.draw(_dragonShoutLearned);
 	}
-	std::string temp = "Dragon shout avaible: " + std::to_string(_pacman.getNbDragonShout());
-	_dragonShoutText = sf::Text(temp, _font, 30);
-	_dragonShoutText.setPosition(sf::Vector2f(610, 310));
-	_window.draw(_dragonShoutText);
+ 	
+	//Écris le nombre de dragon shouts disponible
+	if (!_ui.hasText("shouts"))
+		_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(610, 310));
+	else
+		_ui.changeText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()));
 
 }
 
 //Draw le ui du laser
 void Jeu::drawLaserUi()
 {
-	std::string testStr = "Laser overdrive : " + std::to_string(_pacman.getTempsLaserRestant());
-	_laserText = sf::Text(testStr, _font, 45);
-	_laserText.setPosition(sf::Vector2f(650, 150));
-	_window.draw(_laserText);
+	_ui.changeText("laser", "Laser overdrive : " + std::to_string(_pacman.getTempsLaserRestant()));
 	sf::VertexArray laserGauge(sf::Quads);
+
 	//Draw la boite qui contient la jauge
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 200), sf::Color(200, 200, 200, 255))));
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 200), sf::Color(255, 255, 255, 255))));
@@ -397,6 +397,7 @@ void Jeu::draw(bool display)
 {
 
 	_window.clear();
+
 	if (!_pacman.getPowerUps(4))
 	{
 		_sons.stop("etoile");
@@ -405,16 +406,20 @@ void Jeu::draw(bool display)
 	{
 		drawEtoileUi();
 	}
-	_window.draw(_map);
-	drawMangeable();
+
 	if (_pacman.getPowerUps(1))
 		drawLaserUi();
+
 	if (_pacman.getPowerUps(5))
 		drawDragonShoutUi();
+
+	_window.draw(_map);
+	drawMangeable();
+
 	_window.draw(_pacman);
 	_window.draw(_fantome);
 	_window.draw(_scoreTxt);
-	//TODO faire l'animation de l'explosion
+
 	for (auto f : _fantome)
 	{
 		if (f->getExplosionStatus())
@@ -444,7 +449,9 @@ void Jeu::draw(bool display)
 		else
 			f->setFlagExplosion(false);
 	}
-	
+
+	_window.draw(_ui);
+
 	if (display)
 		_window.display();
 }
@@ -917,31 +924,36 @@ std::string Jeu::getKeyPress()
 
 void Jeu::pause(std::string msg)
 {
-	//Dessine le jeu
-	draw(false);
 	//Dessine un background pour le message
 	sf::RectangleShape rect;
 	rect.setFillColor(sf::Color(0, 0, 0, 100));	//noir semi-transparent
 	rect.setSize(sf::Vector2f(float(_window.getSize().x), 75));
 	_window.draw(rect);
 
-	//Dessine le message
-	sf::Text pauseMsg(msg, _font, 60);
-	_window.draw(pauseMsg);
+	//Affiche le message
+	_ui.changeText("pause", msg);
+	_ui.setFrames("pause", -1);
+	
+	//Pause les personnages
+	_pacman.pause();
 
-	//Affiche la fenêtre	//L'event queue a presque assurément déjà un key press qui a causé l'entrée dans Jeu::pause, donc on pop cet éènement avant la boucle de pause
-	_window.display();
+	for (auto f : _fantome)
+		f->pause();
+
+	//Dessine le jeu
+	draw();
+
 	bool loop = true;
 	while (loop)
 	{
 	 	captureEvent();
-		if (event.key.code == sf::Keyboard::Escape && event.type == sf::Event::KeyPressed)
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 		{
 			_window.close();
 			_playing = false;
 			loop = false;
 		}
-		if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::Escape))
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
 		{
 			//Attend qu'on relache avant de dépauser
 			while (loop)
@@ -953,6 +965,16 @@ void Jeu::pause(std::string msg)
 		}
 	}
 
+	//Efface le texte de pause
+	_ui.setFrames("pause", 0);
+
+	//Dépause les personnages
+	_pacman.unpause();
+
+	for (auto f : _fantome)
+		f->unpause();
+
+	//Sinon les fantomes explosent en sortant de pause, la au moins ils sont encore dangereux
 	for (auto &f : _fantome)
 		f->resetClockAlahuAkbar();
 }
@@ -991,14 +1013,14 @@ void Jeu::killPacman()
 			_window.draw(*f);
 
 		_pacman.deathAnimation(_window);
-
+		_window.draw(_ui);
 		_window.display();
 
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
 	}
 
-	sf::Text msg("Voulez-vous continuer? (O/n)", _font, 60);
-	_window.draw(msg);
+	_ui.setFrames("continuer", -1);
+	_window.draw(_ui);
 	_window.display();
 
 	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::O) && !sf::Keyboard::isKeyPressed(sf::Keyboard::N) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -1024,6 +1046,8 @@ void Jeu::killPacman()
 			f->setVertical(_map.getLigne(_map.quelleLigne(_ghostStart, 0)).isVertical());
 		}
 	}
+
+	_ui.setFrames("continuer", 0);
 }
 
 bool Jeu::verifieSiMort(Fantome &fantome)

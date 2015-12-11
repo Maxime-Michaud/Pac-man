@@ -67,6 +67,7 @@ protected:
 	std::map<std::string, int> _powerUpNames;	//Associe des noms au valeur des power-up
 
 	Sons _sons;
+
 public:
 	Fantome();
 	~Fantome();
@@ -105,5 +106,4 @@ public:
 	virtual void move(char direction, sf::Vector2f& posPacMan, Map &map) = 0;	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
 	virtual void loadSounds();
-
 };

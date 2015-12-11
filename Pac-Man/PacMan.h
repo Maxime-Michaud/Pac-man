@@ -68,6 +68,8 @@ class PacMan : public Personnage
 	sf::Clock _clockDragonShout;						//Un délais de 1500 ms entre chaque dragon shout
 	bool _dragonShoutActivated = false;
 	bool _dragonShoutAnimation = false;
+
+	mutable bool _isDead = false;
 public:
 	PacMan();
 	~PacMan();
