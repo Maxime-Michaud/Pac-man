@@ -9,11 +9,14 @@ Description:	Cette classe regroupe tous les éléments d'interface utilisateur d'u
 #include <SFML\Graphics.hpp>
 #include <map>
 #include <tuple>
+#include <vector>
+#include <functional>
 
 class UI:public sf::Drawable
 {
 	std::map<std::string, sf::Font*> _fonts;
 	mutable std::map<std::string, std::pair<sf::Text*, int>> _texts;
+	mutable std::map<std::string, std::pair<std::function<bool()>*, bool>> _functions;
 
 public:
 	UI();
@@ -53,5 +56,10 @@ public:
 	void setFrames(const std::string& desc, int frame);
 
 	bool hasText(const std::string& desc) const;
+
+	void addAnimation(const std::string& desc, std::function<bool()> * func);
+
+	void playAnimation(const std::string& desc);
 };
+
 

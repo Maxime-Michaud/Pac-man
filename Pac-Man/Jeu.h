@@ -51,8 +51,6 @@ class Jeu
 	sf::Vector2f _startpos;		//Position de depart
 	sf::Vector2f _ghostStart;	//Position de depart des fantomes
 
-	sf::Font _8bitFont;
-	sf::Font _dragonFont;
 	sf::Text _dragonShoutLearned;
 
 	sf::Event event;
@@ -64,14 +62,12 @@ class Jeu
 	Fruits _fruits;							  //Les fruits dans la map
 	std::clock_t _temps;					  //Sert à calculer le temps passé dans le jeu
 	bool _fermerHorloge = false;			  //Pour éviter de rouler plusieurs fois le script de x secondes
-	sf::Text _laserText;					  //Le texte du ui du laser (Laser overdrive)
 	sf::Time _tempsEntreLaserEtStop;		  //La temps passé à faire le laser
 	sf::Time _tempsEntreLaserEtStop2;		  //Le temps passé à ne pas faire de laser
 	int _nbFrame = 10;						  //Nombre de frame pour activer un action
 	int _randColor1 = 255;					  //un 1er nombre pour une couleur random
 	int _randColor2 = 255;					  //un 2e nombre pour une couleur random				  
 	int _randColor3 = 255;					  //un 3e nombre pour une couleur random
-	sf::Text _scoreTxt;						  //Le texte du score
 	int _score = 0;							  //Le score
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
@@ -85,7 +81,7 @@ class Jeu
 	sf::Texture _explosionTextureComplet;
 	sf::RectangleShape _explosionTexture[6][8];
 	sf::IntRect _explosionTextureRect[6][8];
-	int _vitesseExplosion = 0;				//Dessiner l'explosion tous les 5 frames
+	int _vitesseExplosion = 0;				  //Dessiner l'explosion tous les 5 frames
 
 	std::list<std::pair<std::string, int>> _maps;			  //Toutes les maps
 	std::list<std::pair<std::string, int>>::const_iterator _mapsIterator;
@@ -138,4 +134,8 @@ public:
 
 	//Vérifie que tout le monde est sur la bonne ligne
 	void checkLines();
+
+	void loadAnimations();
+
+	UI& getUI();
 };

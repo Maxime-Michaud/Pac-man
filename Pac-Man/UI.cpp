@@ -21,10 +21,26 @@ void UI::clear()
 	for (auto t = _texts.begin(); t != _texts.end(); ++t)
 		delete t->second.first;
 	_texts.clear();
+
+	//Désalloue la mémoire des fonctions
+	for (auto f = _functions.begin(); f != _functions.end(); ++f)
+		delete f->second.first;
+	_functions.clear();
 }
 
 void UI::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
+	for (auto f = _functions.begin(); f != _functions.end(); ++f)
+	{
+		//Si la fonction est activée
+		if (f->second.second)
+		{
+			//Apelle la fonction et store si elle doit etre réactivée dans sa valeur booléenne associée
+			auto func = f->second.first;
+			f->second.second = (*func)();
+		}
+	}
+
 	for (auto t = _texts.begin(); t != _texts.end(); ++t)
 	{
 		if (t->second.second != 0)
@@ -96,4 +112,20 @@ void UI::setFrames(const std::string & desc, int frame)
 bool UI::hasText(const std::string & desc) const
 {
 	return _texts.end() != _texts.find(desc);
+}
+
+void UI::addAnimation(const std::string & desc, std::function<bool()> * func)
+{
+	if (_functions.find(desc) != _functions.end()) throw std::exception("La fonction existe déja.");
+
+	_functions.insert(std::make_pair(desc, std::make_pair(func, false)));
+}
+
+void UI::playAnimation(const std::string& desc)
+{
+	auto it = _functions.find(desc);
+	if (it == _functions.end()) throw std::exception("La fonction n'existe pas.");
+
+	//Set le bool associé a la fonction de l'animation a true
+	it->second.second = true;
 }

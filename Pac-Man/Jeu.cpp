@@ -12,7 +12,6 @@ Jeu::Jeu(std::string maps)
 	using namespace winapi;
 
 	srand(time(NULL));
-	loadSounds();
 
 	//Lis la lsite des maps
 	readMaps(maps);
@@ -25,17 +24,22 @@ Jeu::Jeu(std::string maps)
 
 	init();
 
+	//Prépare l'interface graphique
 	loadSounds();
-
-	_laserText.setPosition(sf::Vector2f(650, 150));
-	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
 
 	_ui.addText("laser", "Laser overdrive: ", "steelfish rg.ttf", sf::Vector2f(650, 150), 45);
 	//Construit le texte pour le menu de pause, mais ne l'affiche pas (frames = 0)
 	_ui.addText("pause", "Appuyez sur espace pour continuer", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
 	//Construit le texte pour continuer sans l'afficher
 	_ui.addText("continuer", "Voulez-vous continuer? (O/n)", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
+	//Ajoute le texte du score
+	_ui.addText("score", "Score  ", "8bit.ttf", sf::Vector2f());
+	//Prépare les runes pour quand on apprend un dragon shout. Il disparait en devenant transparent, pas en n'étant pas dessiné
+	_ui.addText("dragon", "Fus Roh Dah", "dragon.otf", sf::Vector2f(200, 10), 30, sf::Color(200, 200, 200, 0), -1);
 
+	loadAnimations();
+
+	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
 }
 
 void Jeu::init()
@@ -67,11 +71,6 @@ void Jeu::init()
 	}
 
 	_ghostStart = _fantome[0]->getPos();
-
-	_8bitFont.loadFromFile("8bit.ttf");
-	_dragonFont.loadFromFile("dragon.otf");
-
-	_dragonShoutLearned = sf::Text("Fus Roh Dah", _dragonFont, 40);
 
 	_targetfps = 60;
 
@@ -130,8 +129,6 @@ void Jeu::init()
 	}
 
 	//SET DES SONS, TEXTES ET VIDÉOS
-	_scoreTxt = sf::Text("Score " + _score, _8bitFont, 20);
-
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
 
 	_sons.play("intro");
@@ -291,106 +288,125 @@ void Jeu::drawDragonShoutUi()
 void Jeu::drawLaserUi()
 {
 	_ui.changeText("laser", "Laser overdrive : " + std::to_string(_pacman.getTempsLaserRestant()));
-	sf::VertexArray laserGauge(sf::Quads);
 
-	//Draw la boite qui contient la jauge
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 200), sf::Color(200, 200, 200, 255))));
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 200), sf::Color(255, 255, 255, 255))));
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 220), sf::Color(255, 255, 255, 255))));
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 220), sf::Color(200, 200, 200, 255))));
+	_ui.addAnimation("laser", new std::function < bool() > {
+		[&, ](){
+			sf::VertexArray laserGauge(sf::Quads);
+			
+			//Draw la boite qui contient la jauge
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 200), sf::Color(200, 200, 200, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 200), sf::Color(255, 255, 255, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 220), sf::Color(255, 255, 255, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 220), sf::Color(200, 200, 200, 255))));
+			
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(0, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(0, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(0, 0, 0, 255))));
+			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(0, 0, 0, 255))));
 
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(0, 0, 0, 255))));
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(0, 0, 0, 255))));
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(0, 0, 0, 255))));
-	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(0, 0, 0, 255))));
-	if (_pacman.getLaser())	//Si le laser est activer
-	{
-		if (_tempsEntreLaserEtStop2 < sf::milliseconds(0))
-		{
-			_tempsEntreLaserEtStop2 = sf::milliseconds(0);
-		}
-		 sf::Time tempsMs = _tempsEntreLaserEtStop = _tempsEntreLaserEtStop2 + _pacman.getTempsLaser();
-		
-		double ratio = tempsMs / sf::milliseconds(2000);		//Le ration de sonconde passé /4
-		if (tempsMs < sf::milliseconds(2000))					//Dessine la barre verte qui monte
-		{
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255-(255 * ratio), 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
-		}
-		else		//Sinon le laser est en over load et dessine la barre rouge seulement et joue le son d'alerte
-		{
-			_sons.play("alarme");
+			
+		}})
 
-			int test = (std::clock() - _temps) / (double)CLOCKS_PER_SEC * 1000;
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, 0), sf::Color(255, 0, 0, test % 200))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, 0), sf::Color(255, 0, 0, test % 200))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
-
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
-			if (tempsMs > sf::milliseconds(5000))	//Si le laser atteint le point de non retour de 8 secondes, tout explose
-			{
-				_sons.stopAll();
-				_sons.play("nuke");
-
-				_window.setFramerateLimit(60);
-				_explosionNucleaire.fit(sf::FloatRect(0, 0, _window.getSize().x, _window.getSize().y));
-				_explosionNucleaire.play();
-				_explosionNucleaire.update();
-				_window.setPosition(sf::Vector2i(0, 0));
-				while (_explosionNucleaire.getStatus())		//Joue le vidéo de l'explosion nucléaire et ferme le jeu
-				{
-					_window.clear();
-					_explosionNucleaire.update();
-					_window.draw(_explosionNucleaire);
-					_window.display();
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-					{
-						break;
-					}
-				}
-#if !defined(_DEBUG)
-				//system("Shutdown -h");
-#endif
-				_playing = false;
-			}
-		}
-	}
-	else	//Si le laser n'est pas activé
-	{
-		sf::Time tempsMs = _tempsEntreLaserEtStop2 = _tempsEntreLaserEtStop - _pacman.getTempsSansLaser();
-		double ratio = tempsMs / sf::milliseconds(2000);
-		if (tempsMs > sf::milliseconds(0) && tempsMs < sf::milliseconds(2000))	//Si il est entre 0 et 4 seconde, dessine la barre qui monte ou descend
-		{
-			_sons.stop("alarme");
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
-		}
-		else if (tempsMs > sf::milliseconds(2000))			//Sinon si il est a plus de 4 seconde, dessine la barre en rouge
-		{
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
-
-			int test = (std::clock() - _temps) / (double)CLOCKS_PER_SEC * 1000;
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, 0), sf::Color(255, 0, 0, test % 200))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, 0), sf::Color(255, 0, 0, test % 200))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
-			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
-		}
-
-	}
-
-	_window.draw(_laserText);
-	_window.draw(laserGauge);
+//	sf::VertexArray laserGauge(sf::Quads);
+//
+//	//Draw la boite qui contient la jauge
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 200), sf::Color(200, 200, 200, 255))));
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 200), sf::Color(255, 255, 255, 255))));
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(850, 220), sf::Color(255, 255, 255, 255))));
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(650, 220), sf::Color(200, 200, 200, 255))));
+//
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(0, 0, 0, 255))));
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(0, 0, 0, 255))));
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(0, 0, 0, 255))));
+//	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(0, 0, 0, 255))));
+//	if (_pacman.getLaser())	//Si le laser est activer
+//	{
+//		if (_tempsEntreLaserEtStop2 < sf::milliseconds(0))
+//		{
+//			_tempsEntreLaserEtStop2 = sf::milliseconds(0);
+//		}
+//		 sf::Time tempsMs = _tempsEntreLaserEtStop = _tempsEntreLaserEtStop2 + _pacman.getTempsLaser();
+//		
+//		double ratio = tempsMs / sf::milliseconds(2000);		//Le ration de sonconde passé /4
+//		if (tempsMs < sf::milliseconds(2000))					//Dessine la barre verte qui monte
+//		{
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255-(255 * ratio), 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+//		}
+//		else		//Sinon le laser est en over load et dessine la barre rouge seulement et joue le son d'alerte
+//		{
+//			_sons.play("alarme");
+//
+//			int test = (std::clock() - _temps) / (double)CLOCKS_PER_SEC * 1000;
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, 0), sf::Color(255, 0, 0, test % 200))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, 0), sf::Color(255, 0, 0, test % 200))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
+//
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
+//			if (tempsMs > sf::milliseconds(5000))	//Si le laser atteint le point de non retour de 8 secondes, tout explose
+//			{
+//				_sons.stopAll();
+//				_sons.play("nuke");
+//
+//				_window.setFramerateLimit(60);
+//				_explosionNucleaire.fit(sf::FloatRect(0, 0, _window.getSize().x, _window.getSize().y));
+//				_explosionNucleaire.play();
+//				_explosionNucleaire.update();
+//				_window.setPosition(sf::Vector2i(0, 0));
+//
+//				while (_explosionNucleaire.getStatus())		//Joue le vidéo de l'explosion nucléaire et ferme le jeu
+//				{
+//					_window.clear();
+//					_explosionNucleaire.update();
+//					_window.draw(_explosionNucleaire);
+//					_window.display();
+//					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+//					{
+//						break;
+//					}
+//				}
+//#if !defined(_DEBUG)
+//				//system("Shutdown -h");
+//#endif
+//				_playing = false;
+//			}
+//		}
+//	}
+//	else	//Si le laser n'est pas activé
+//	{
+//		sf::Time tempsMs = _tempsEntreLaserEtStop2 = _tempsEntreLaserEtStop - _pacman.getTempsSansLaser();
+//		double ratio = tempsMs / sf::milliseconds(2000);
+//		if (tempsMs > sf::milliseconds(0) && tempsMs < sf::milliseconds(2000))	//Si il est entre 0 et 4 seconde, dessine la barre qui monte ou descend
+//		{
+//			_sons.stop("alarme");
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 203), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653 + (ratio * 194), 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255 * ratio, 255 - (255 * ratio), 0, 255))));
+//		}
+//		else if (tempsMs > sf::milliseconds(2000))			//Sinon si il est a plus de 4 seconde, dessine la barre en rouge
+//		{
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 203), sf::Color(255, 0, 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(255, 0, 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(255, 0, 0, 255))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(255, 0, 0, 255))));
+//
+//			int test = (std::clock() - _temps) / (double)CLOCKS_PER_SEC * 1000;
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, 0), sf::Color(255, 0, 0, test % 200))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, 0), sf::Color(255, 0, 0, test % 200))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(_window.getSize().x, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
+//			laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(0, _window.getSize().y), sf::Color(255, 0, 0, test % 200))));
+//		}
+//
+//	}
+//
+//	_window.draw(laserGauge);
 }
 
 void Jeu::draw(bool display)
@@ -418,7 +434,6 @@ void Jeu::draw(bool display)
 
 	_window.draw(_pacman);
 	_window.draw(_fantome);
-	_window.draw(_scoreTxt);
 
 	for (auto f : _fantome)
 	{
@@ -647,6 +662,10 @@ void Jeu::donnerUnPowerUpPacman()
 		_pacman.changerTempsPowerUp(4, 5000);
 		break;
 	case 5:
+		//Affiche le texte 
+		_ui.Text("dragon").setColor(sf::Color(200, 200, 200, 255));
+		_ui.playAnimation("dragon");
+
 		//jouer son dragonshou learned
 		_pacman.setPowerUps(5, true);
 		_dragonShoutEffect = true;
@@ -714,6 +733,7 @@ void Jeu::play()
 			{
 				donnerUnPowerUpPacman();
 			}
+
 			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
 				_nbBouleMange++;
 
@@ -728,8 +748,8 @@ void Jeu::play()
 				break;
 			}
 			_mangeable[x][y] = 0;
-			std::string temp = "Score  " + std::to_string(_score);
-			_scoreTxt = sf::Text(temp, _8bitFont, 20);		
+
+			_ui.changeText("score", "Score  " + std::to_string(_score));
 		}
 
 		if (_pacman.getLaser())
@@ -1061,8 +1081,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
-				std::string temp = "Score  " + std::to_string(_score);
-				_scoreTxt = sf::Text(temp, _8bitFont, 20);
+				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
 			break;
@@ -1071,8 +1090,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
-				std::string temp = "Score  " + std::to_string(_score);
-				_scoreTxt = sf::Text(temp, _8bitFont, 20);
+				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
 			break;
@@ -1081,8 +1099,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
-				std::string temp = "Score  " + std::to_string(_score);
-				_scoreTxt = sf::Text(temp, _8bitFont, 20);
+				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
 			break;
@@ -1091,8 +1108,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
-				std::string temp = "Score  " + std::to_string(_score);
-				_scoreTxt = sf::Text(temp, _8bitFont, 20);
+				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
 			break;
@@ -1112,8 +1128,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				_sons.play("plop");
 				_score += 30;
-				std::string temp = "Score  " + std::to_string(_score);
-				_scoreTxt = sf::Text(temp, _8bitFont, 20);
+				_ui.changeText("score", "Score  " + std::to_string(_score));
 				fantome.setIsDead(true);
 			}
 			else if (!_pacman.getInvincible())
@@ -1121,8 +1136,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 				_sons.play("mort");
 
 				_score -= (_score / 2 > 100 ? _score / 2:100);
-				std::string temp = "Score  " + std::to_string(_score);
-				_scoreTxt = sf::Text(temp, _8bitFont, 20);
+				_ui.changeText("score", "Score  " + std::to_string(_score));
 				killPacman();
 			}
 			
@@ -1158,4 +1172,19 @@ void Jeu::checkLines()
 		f->setVertical(_map.getLigne(f->getNumLigne()).isVertical());
 
 	}
+}
+
+UI& Jeu::getUI()
+{
+	return _ui;
+}
+
+void Jeu::loadAnimations()
+{
+	_ui.addAnimation("dragon", new std::function < bool() >{ [&, this](){
+		float alpha = this->getUI().Text("dragon").getColor().a - 1;
+		alpha = alpha > 0 ? alpha : 0;
+		this->getUI().Text("dragon").setColor(sf::Color(200, 200, 200, alpha));
+		return alpha != 0;
+	} });
 }
