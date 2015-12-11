@@ -303,6 +303,7 @@ void Jeu::drawLaserUi()
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 203), sf::Color(0, 0, 0, 255))));
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(847, 217), sf::Color(0, 0, 0, 255))));
 	laserGauge.append(sf::Vertex(sf::Vertex(sf::Vector2f(653, 217), sf::Color(0, 0, 0, 255))));
+
 	if (_pacman.getLaser())	//Si le laser est activer
 	{
 		if (_tempsEntreLaserEtStop2 < sf::milliseconds(0))
@@ -389,7 +390,6 @@ void Jeu::drawLaserUi()
 
 	}
 
-	_window.draw(_laserText);
 	_window.draw(laserGauge);
 }
 
@@ -407,8 +407,7 @@ void Jeu::draw(bool display)
 		drawEtoileUi();
 	}
 
-	if (_pacman.getPowerUps(1))
-		drawLaserUi();
+	drawLaserUi();
 
 	if (_pacman.getPowerUps(5))
 		drawDragonShoutUi();
@@ -984,7 +983,11 @@ void Jeu::shakeScreen()
 	if (_pacman.getLaser() || (_pacman.getDragonAnimation() && _pacman.getTempsDragonShout() > 800 && _pacman.getNbDragonShout() >= 2))
 	{
 		if (_shake < 1) _shake = 1;
-		_shake+= 0.4;
+		_shake+= 0.7;
+
+		//Cruauté envers les joueurs supplémentaire
+		if (_pacman.getLaser() && (_pacman.getDragonAnimation() && _pacman.getTempsDragonShout() > 800 && _pacman.getNbDragonShout() >= 2))
+			_shake *= 1.03;
 
 		sf::Vector2i windowPos;
 		windowPos.x = static_cast<int>(_defaultWinPos.x + rand() % static_cast<int>(_shake) - _shake/ 2);
