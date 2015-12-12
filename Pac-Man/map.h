@@ -36,7 +36,7 @@ private:
 	sf::Color _mapColor;
 	mutable std::vector<std::vector<bool>> _bools;
 	sf::Vector2f _ghostStart;
-	bool _flashActif = false;
+	bool _flashActif = true;
 	std::string _stringTexteFlash;		//La string du texte qui flash
 	int _frequenceFlash;				//La fréquence à laquelle le flash apparaît		
 	int _dureeFlash;					//La durée du texte qui flash

@@ -10,14 +10,15 @@ Map::Map()
 	_mapSize = sf::Vector2i(70, 70);
 
 	/*TODO a effacer apres, un test*/
-	_stringTexteFlash = "ta mere";
-	_posTexteFlash.x = 250;
+	_stringTexteFlash = "Appuyer sur P pour commencer =D!";
+	_posTexteFlash.x = 50;
 	_posTexteFlash.y = 400;
 	_fontFlash.loadFromFile("steelfish rg.ttf");
-	_frequenceFlash = 2000;
-	_dureeFlash = 100;
-	_texteFlash = sf::Text(_stringTexteFlash, _fontFlash, 40);
+	_frequenceFlash = 1500;
+	_dureeFlash = 1000;
+	_texteFlash = sf::Text(_stringTexteFlash, _fontFlash, 80);
 	_texteFlash.setPosition(_posTexteFlash);
+	_flashActif = true;
 }
 
 void Map::initFlash(bool actif, std::string texte, int frequence, int duree, int posX, int posY, int grosseur)

@@ -260,8 +260,10 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 	bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique, 0));
 	int nombreEssais = 0;
 	int compteurCheminCalculés = 0;
+	int nbBoucle = 0;
 	while (bonChemin.size() >= 1)
 	{
+		nbBoucle ++;
 		/*compteurCheminCalculés++;
 		if (tousBonsChemins.empty() &&compteurCheminCalculés > 70)
 		{
@@ -286,8 +288,12 @@ void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &po
 				bonChemin.push_back(Direction(ligneParcoursTheorique, directionTheorique, 0, posTheorique, 0));
 			nombreEssais = 0;
 			//Si le fantome se trouve sur la même ligne que pac-man, enregistre ce chemin
-			if (ligneParcoursTheorique == LignePacMan)
+			if (ligneParcoursTheorique == LignePacMan || nbBoucle > 2000)
 			{
+				if (nbBoucle > 2000)
+				{
+					std::cout << "fantome rose probleme, boucle + 2000";
+				}
 				//tousBonsChemins.push_back(bonChemin);
 				_chemin = bonChemin;
 				break;

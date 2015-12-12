@@ -42,8 +42,6 @@ void Jeu::init()
 	_window.setView(_view);
 
 	//Initialisation de pacman
-	_startpos = _map.getLigne(0).getDebut();
-	_pacman.setPos(_startpos);
 	srand(std::time(NULL));
 	_ghostStart = _map.getLigne(3).getFin();
 
@@ -134,7 +132,10 @@ void Jeu::init()
 
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
 
-	_sons.play("intro");
+	if (_mapsIterator != ++_maps.begin())
+		_sons.play("intro");
+	else
+		_sons.play("MusicIntro");
 }
 
 void Jeu::readMaps(std::string maps)
@@ -506,6 +507,7 @@ void Jeu::loadMap()
 		else
 			pos = _startpos;
 
+		_startpos = pos;
 		_pacman.setPos(pos);
 
 		//Ajoute les power-up
@@ -653,8 +655,10 @@ void Jeu::donnerUnPowerUpPacman()
 
 void Jeu::play()
 {
+	if (_mapsIterator != ++_maps.begin())
+		pause("Appuyer sur sur espace pour commencer!");
+		
 	_nextMap = false;
-	pause("Appuyez sur espace pour commencer!");
 
 	sf::Event event;
 
@@ -671,7 +675,12 @@ void Jeu::play()
 			{
 				_nbBouleMange = _nbBoulesTotal;
 			}
-
+			if (c == 'p' && _mapsIterator == ++_maps.begin())
+			{
+				_playing = false;
+				_fruits.vider();
+				init();
+			}
 			if (c == 'f' && _dragonShoutDesactive)
 			{
 				c = '\0';
@@ -869,6 +878,8 @@ void Jeu::play()
 
 	if (_nextMap)
 	{
+		_playing = true;
+		_sons.stop("MusicIntro");
 		play();
 	}
 }
@@ -1121,6 +1132,7 @@ void Jeu::loadSounds()
 	_sons.add("gagne", "gg.wav");
 	_sons.add("nuke", "deadSound0.wav");
 	_sons.add("plop", "plop.wav");
+	_sons.add("MusicIntro", "musicIntro.wav");
 }
 
 void Jeu::checkLines()

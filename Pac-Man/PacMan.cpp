@@ -55,7 +55,6 @@ void PacMan::fire()const
 	if (_nbMilisecondeLaser >= 0)
 	{
 		_tempsPassePowerUpLaser = _tempsLaser.getElapsedTime().asMilliseconds() + _tempsMemoireLaser;
-		std::cout << _tempsLaser.getElapsedTime().asMilliseconds() << std::endl;
 		if (_tempsLaser.getElapsedTime().asMilliseconds() >= _nbMilisecondeLaser - _tempsMemoireLaser)
 		{
 			std::cout << "arrêt du laser par le temps ecouler" << std::endl;
