@@ -45,20 +45,6 @@ void Jeu::init()
 
 	//Initialisation de pacman
 	srand(std::time(NULL));
-
-	_explosionTextureComplet.loadFromFile("explosion.png");
-
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			_explosionTextureRect[i][j] = sf::IntRect(i * 256, j * 256, 256, 256);
-			_explosionTexture[i][j].setSize(sf::Vector2f(256, 256));
-			_explosionTexture[i][j].setTexture(&_explosionTextureComplet);
-			_explosionTexture[i][j].setTextureRect(_explosionTextureRect[i][j]);
-		}
-	}
-
 	_targetfps = 60;
 
 	_shake = 10;
@@ -277,32 +263,8 @@ void Jeu::draw(bool display)
 
 	for (auto f : _fantome)
 	{
-		if (f->getExplosionStatus())
-		{
-			if (!f->getFlagExplosion())
-			{
-				for (int i = 0; i < 6; i++)
-				{
-					for (int j = 0; j < 8; j++)
-					{
-						_explosionTexture[i][j].setPosition(f->getPos());
-						_explosionTexture[i][j].setOrigin(128, 128);
-					}
-				}
-				
-				f->setFlagExplosion(true);
-			}
-			_window.draw(_explosionTexture[(f->getExplosionAnimation()/8)][f->getExplosionAnimation() % 8]);
-			_vitesseExplosion++;
-			if (_vitesseExplosion >= 8)
-			{
-				f->incrementerAnimationExplosion();
-				_vitesseExplosion = 0;
-			}
-				
-		}
-		else
-			f->setFlagExplosion(false);
+		if (f->getExploser())
+			f->playExplosion(_window);
 	}
 
 	_window.draw(_ui);
@@ -686,7 +648,21 @@ void Jeu::play()
 				}
 				
 			}
-				
+			//Tue dans un range quand il explose
+			if (f->getExploser())
+			{
+				for (auto f2 : _fantome)
+				{
+					if (abs(f->getPos().x - f2->getPos().x) + abs(f->getPos().y - f2->getPos().y) < 150)
+					{
+						f2->setIsDead(true);
+					}
+				}
+				if (abs(f->getPos().x - _pacman.getPos().x) + abs(f->getPos().y - _pacman.getPos().y) < 150)
+				{
+					killPacman();
+				}
+			}
 		}
 		_dragonShoutEffect = false;
 		//Pour vérifier l'effect du dragon shout une seule fois
@@ -876,6 +852,8 @@ void Jeu::shakeScreen()
 
 void Jeu::killPacman()
 {
+	if (!_sons.isPlaying("mort"))
+		_sons.play("mort");
 	while (!_pacman.hasDisappeared())
 	{
 		sf::Clock clock;
@@ -889,6 +867,12 @@ void Jeu::killPacman()
 
 		_pacman.deathAnimation(_window);
 		_window.draw(_ui);
+
+		for (auto f : _fantome)
+		{
+			if (f->getExploser())
+				f->playExplosion(_window);
+		}
 		_window.display();
 
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
@@ -1152,10 +1136,7 @@ void Jeu::loadAnimations()
 		[&, this]() {
 		if (_pacman.getTempsDragonShout() < 2000)
 		{
-			float ratio = _pacman.getTempsDragonShout() / 2000;
-			_dragonShoutLearned.setPosition(sf::Vector2f(200, 10));
-			_dragonShoutLearned.setColor(sf::Color(200, 200, 200, 255 - (ratio * 255)));
-			_window.draw(_dragonShoutLearned);
+			_ui.playAnimation("dragon");
 		}
 
 		//Écris le nombre de dragon shouts disponible

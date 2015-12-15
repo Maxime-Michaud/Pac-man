@@ -64,6 +64,9 @@
     <ClCompile Include="mire.cpp">
       <Filter>divers</Filter>
     </ClCompile>
+    <ClCompile Include="animationsSprites.cpp">
+      <Filter>Jeu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FantomeOrange.h">
@@ -131,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="mire.h">
       <Filter>divers</Filter>
+    </ClInclude>
+    <ClInclude Include="animationsSprites.h">
+      <Filter>Jeu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

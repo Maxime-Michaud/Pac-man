@@ -1,7 +1,7 @@
 /********************************************************************************
 *Date:			16 octobre 2015													*
-*Programme:		PacMan.h														*
-*Programmeur:	Maxime Michaud-Corriveau										*
+*Programme:		Fantome.h														*
+*Programmeur:	Nicholas Marcil									*
 *Description:	Fantome du jeu de Pac-Man.										*
 *				Il s'agit d'un personnage qui se déplace selon les mêmes règles	*
 *				que pac-man, mais qui est controlé par l'ordinateur. Si il		*
@@ -17,6 +17,7 @@
 #include <deque>
 #include <map>
 #include "Sons.h"
+#include "animationsSprites.h"
 
 class Fantome : public Personnage
 {
@@ -51,15 +52,16 @@ protected:
 	void buildFeet(sf::VertexArray & vert) const;
 	void buildEye(sf::VertexArray & vert, sf::Vector2f eyePos) const;
 
-	bool _isDead = false;				//Si le fantome est mort ou pas
+	mutable bool _isDead = false;				//Si le fantome est mort ou pas
 	sf::Vector2f _deathPoint;			//Le point auquel les fantomes vont quand il sont mort, par défaut a 300,300
 	bool aPritUnMauvaisChemin = false;	//Si le fantome a prit un mauvais chemin
-	bool _alahuAkbar = false;
+	mutable bool _alahuAkbar = false;
 	sf::Clock _clockAlahhuAkbar;
-	sf::Vector2f _posExplosion;
 	int _explosionAnimation = 0;            //Les frames d'animation de l'explosion
 	bool _flagExplosion = false;			//Pour setter la position de l'explosuion qu'une seule fois
 
+	mutable bool _exploser = false;				//Si le fantome explose, met a true pour 1 frame
+	mutable Explosion _explosion;
 	//Variables pour l'effet du dragonshout
 	sf::Vector2f _posRecul;					//La pos a laquelle il a été projeté
 	bool _toucherParDragonshout = false;	//Si il est affecté ou non pas un dragon shout
@@ -75,7 +77,7 @@ public:
 
 	const int Width = _width;
 
-	bool getExplosionStatus();
+	bool getExploser();
 	void resetClockAlahuAkbar();
 	void setPowerUp(int nbPowerUp, bool valeur);
 
@@ -89,17 +91,13 @@ public:
 	bool getAlahuAckbar() const;
 
 	sf::Vector2f getPosExplosion();             //Get la position de l'explosion du fantome (alahu akbar)
-	void setPosExplosion(sf::Vector2f);                     //Set la position de l'explosion du fantom (alahu akbar)
-	void incrementerAnimationExplosion();       //Incrément l'animation pour l'explosion
-	int getExplosionAnimation();
+	void playExplosion(sf::RenderTarget & target);
 	std::string getNom();	//Renvois le nom du fantome(nommer par sa couleur)
 	char inverserDirection(char direction);
 	void setIsDead(bool isDead);
 	void fantomeDead(Map & map, sf::Vector2f window);						 //L'animation et la placement du fantome quand il est mort
 	void fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f &window);				//Quand le fantome est affecté par le dragonshout
 	bool getToucherParDragonshout();
-	bool getFlagExplosion();
-	void setFlagExplosion(bool valeur);
 	bool isDead() const;	//Obtiens si le fantome est mort ou vivant
 	void setDragonShoutEffect(sf::Vector2f pos);
 	sf::VertexArray getVertexArray()const;

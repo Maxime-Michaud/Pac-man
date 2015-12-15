@@ -2,7 +2,7 @@
 #include "fantome.h"
 class FantomeRose : public Fantome
 {
-	const int _recalculeLeCheminTousLesXFois = 1;
+	const int _recalculeLeCheminTousLesXFois = 6;
 	int _nbEloignementPourAiRose = 25;			//le nombre de fois que le rose peut s'eloignement de pacman pour trouver un chemin, dans un labyrinthw, monter cette valeur.
 	int _nombreDintersectionsPassee = 0;
 	sf::Clock _clockFantomeRose;
