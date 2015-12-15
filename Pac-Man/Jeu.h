@@ -135,5 +135,6 @@ public:
 	//Vérifie que tout le monde est sur la bonne ligne
 	void checkLines();
 
+	//Charge toutes les animations dans la classe UI. C'est un peu l'équivalent de balayer la poussière sous le tapis: au moins, ça PARAIS plus propre
 	void loadAnimations();
 };

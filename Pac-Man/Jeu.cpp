@@ -228,60 +228,13 @@ void Jeu::drawMangeable()
 
 void Jeu::drawEtoileUi()
 {
-	// crée une forme vide
-	sf::ConvexShape convex;
-
-	// définit le nombre de points (5)
-	convex.setPointCount(10);
-
-	// définit les points
-	convex.setPoint(0, sf::Vector2f(715, 235));
-	convex.setPoint(1, sf::Vector2f(738, 275));
-	convex.setPoint(2, sf::Vector2f(785, 285));
-	convex.setPoint(3, sf::Vector2f(752, 317));
-	convex.setPoint(4, sf::Vector2f(758, 365));
-	convex.setPoint(5, sf::Vector2f(715, 345));
-	convex.setPoint(6, sf::Vector2f(675, 365));
-	convex.setPoint(7, sf::Vector2f(681, 317));
-	convex.setPoint(8, sf::Vector2f(648, 285));
-	convex.setPoint(9, sf::Vector2f(695, 275));
-
-	if (_nbFrame < 1)
-	{
-		_randColor1 = rand() % 100;
-		_randColor2 = rand() % 100;
-		_randColor3 = rand() % 156;
-		_nbFrame = 10;
-	}
-	else
-	{
-		_nbFrame--;
-	}
-
-
-	convex.setFillColor(sf::Color(_randColor1 + 115, _randColor2 + 115, _randColor3 + 100, (_pacman.getTempsEtoile() / 5000) * 255));
-
-	_window.draw(convex);
+	_ui.playAnimation("etoile");
 }
 
 //Dessiner le UI du dragonShout
 void Jeu::drawDragonShoutUi()
 {
-
-	if (_pacman.getTempsDragonShout() < 2000)
-	{
-		float ratio = _pacman.getTempsDragonShout() / 2000;
-		_dragonShoutLearned.setPosition(sf::Vector2f(200, 10));
-		_dragonShoutLearned.setColor(sf::Color(200, 200, 200, 255 - (ratio * 255)));
-		_window.draw(_dragonShoutLearned);
-	}
- 	
-	//Écris le nombre de dragon shouts disponible
-	if (!_ui.hasText("shouts"))
-		_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(610, 310));
-	else
-		_ui.changeText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()));
-
+	_ui.playAnimation("dragonUI");
 }
 
 //Draw le ui du laser
@@ -1062,12 +1015,14 @@ void Jeu::checkLines()
 
 void Jeu::loadAnimations()
 {
-	_ui.addAnimation("dragon", new std::function < bool() >{ [&, this](){
+	_ui.addAnimation("dragon", new std::function < bool() >{ 
+		[&, this](){
 		float alpha = _ui.Text("dragon").getColor().a - 1;
 		alpha = alpha > 0 ? alpha : 0;
 		_ui.Text("dragon").setColor(sf::Color(200, 200, 200, alpha));
 		return alpha != 0;
-	} });
+	} 
+	});
 
 	_ui.addAnimation("laser", new std::function < bool() >{
 		[&, this]() {
@@ -1175,4 +1130,63 @@ void Jeu::loadAnimations()
 		//On veut continuer l'animation
 		return true;
 	} });
+
+	_ui.addAnimation("dragonUI", new std::function<bool()>{
+		[&, this]() {
+		if (_pacman.getTempsDragonShout() < 2000)
+		{
+			float ratio = _pacman.getTempsDragonShout() / 2000;
+			_dragonShoutLearned.setPosition(sf::Vector2f(200, 10));
+			_dragonShoutLearned.setColor(sf::Color(200, 200, 200, 255 - (ratio * 255)));
+			_window.draw(_dragonShoutLearned);
+		}
+
+		//Écris le nombre de dragon shouts disponible
+		if (!_ui.hasText("shouts"))
+			_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(610, 310));
+		else
+			_ui.changeText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()));
+
+		//On veut continuer l'animation
+		return true;
+	} });
+
+	_ui.addAnimation("etoile", new std::function<bool()>{
+		[&, this]() {// crée une forme vide
+	sf::ConvexShape convex;
+
+	// définit le nombre de points (5)
+	convex.setPointCount(10);
+
+	// définit les points
+	convex.setPoint(0, sf::Vector2f(715, 235));
+	convex.setPoint(1, sf::Vector2f(738, 275));
+	convex.setPoint(2, sf::Vector2f(785, 285));
+	convex.setPoint(3, sf::Vector2f(752, 317));
+	convex.setPoint(4, sf::Vector2f(758, 365));
+	convex.setPoint(5, sf::Vector2f(715, 345));
+	convex.setPoint(6, sf::Vector2f(675, 365));
+	convex.setPoint(7, sf::Vector2f(681, 317));
+	convex.setPoint(8, sf::Vector2f(648, 285));
+	convex.setPoint(9, sf::Vector2f(695, 275));
+
+	if (_nbFrame < 1)
+	{
+		_randColor1 = rand() % 100;
+		_randColor2 = rand() % 100;
+		_randColor3 = rand() % 156;
+		_nbFrame = 10;
+	}
+	else
+	{
+		_nbFrame--;
+	}
+
+
+	convex.setFillColor(sf::Color(_randColor1 + 115, _randColor2 + 115, _randColor3 + 100, (_pacman.getTempsEtoile() / 5000) * 255));
+
+	_window.draw(convex);
+	return true;
+	}
+	});
 }
