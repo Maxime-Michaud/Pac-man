@@ -283,10 +283,12 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	if (_isDead) return;
 
 	if (!_paused)
+	{
 		_step += _stepIncrement;
 
-	if (_step < 0 || _step >= _nbrCote / 4)
-		_stepIncrement *= -1;
+		if (_step < 0 || _step >= _nbrCote / 4)
+			_stepIncrement *= -1;
+	}
 
 	auto vertices = buildPacMan();
 

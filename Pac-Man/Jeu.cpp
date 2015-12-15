@@ -295,7 +295,7 @@ void Jeu::loadMap()
 	if (!_nextMap)
 	{
 		_playing = false;
-		std::cout << "Tu gagnes? je sais c'Est plate comme message de fin";
+		std::cout << "Tu gagnes?";
 		system("pause");
 		return;
 	}
@@ -304,7 +304,9 @@ void Jeu::loadMap()
 		delete f;
 
 	_fantome.clear();
-	
+
+	_map.initFlash(false, "", 0, 0, 0, 0, 0);
+
 	std::string mapName = _mapsIterator->first;
 	++_mapsIterator;
 	
@@ -440,6 +442,20 @@ void Jeu::loadMap()
 		f->setVertical(_map.getLigne(f->getNumLigne()).isVertical());
 	}
 
+	while (in.peek() == '\n') in.get();
+	if (in.peek() != EOF)
+		std::getline(in, _mapMsg);
+
+	std::string var;	//OUI C'EST UN NOM SIGNIFICATIF CAR JE LIS UNE VARIABLE INCONNUE! :)
+
+	while (in.peek() != EOF)
+	{
+		while (in.peek() == '\n') in.get();
+		if (in.peek() != EOF)
+			std::getline(in, var);
+
+		char type = var.substr(1).c_str[0];
+	}
 	_pacman.setLigne(_map.quelleLigne(_pacman.getPos(), 0));
 	_pacman.setVertical(_map.getLigne(_pacman.getNumLigne()).isVertical());
 }
@@ -484,7 +500,7 @@ void Jeu::donnerUnPowerUpPacman()
 void Jeu::play()
 {
 	if (_mapsIterator != ++_maps.begin())
-		pause("Appuyer sur sur espace pour commencer!");
+		pause(_mapMsg);
 		
 	_nextMap = false;
 

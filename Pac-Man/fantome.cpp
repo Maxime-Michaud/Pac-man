@@ -46,7 +46,6 @@ void Fantome::setPowerUp(int nbPowerUp, bool valeur)
 void Fantome::resetClockAlahuAkbar()
 {
 	_clockAlahhuAkbar.restart();
-	_sons.play("allah");
 }
 
 void Fantome::setPowerUp(std::string nomPowerUp, bool valeur)

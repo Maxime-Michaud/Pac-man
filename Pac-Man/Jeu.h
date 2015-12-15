@@ -88,6 +88,7 @@ class Jeu
 
 	bool _nextMap;
 
+	std::string _mapMsg;
 public:
 	Jeu(std::string map);
 	~Jeu();
