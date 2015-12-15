@@ -26,17 +26,7 @@ Jeu::Jeu(std::string maps)
 
 	//Prépare l'interface graphique
 	loadSounds();
-
-	_ui.addText("laser", "Laser overdrive: ", "steelfish rg.ttf", sf::Vector2f(650, 150), 45);
-	//Construit le texte pour le menu de pause, mais ne l'affiche pas (frames = 0)
-	_ui.addText("pause", "Appuyez sur espace pour continuer", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
-	//Construit le texte pour continuer sans l'afficher
-	_ui.addText("continuer", "Voulez-vous continuer? (O/n)", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
-	//Ajoute le texte du score
-	_ui.addText("score", "Score  ", "8bit.ttf", sf::Vector2f());
-	//Prépare les runes pour quand on apprend un dragon shout. Il disparait en devenant transparent, pas en n'étant pas dessiné
-	_ui.addText("dragon", "Fus Roh Dah", "dragon.otf", sf::Vector2f(200, 10), 30, sf::Color(200, 200, 200, 0), -1);
-
+	loadTexts();
 	loadAnimations();
 
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
@@ -46,6 +36,8 @@ void Jeu::init()
 {
 	loadMap();
 
+	setTutorialText();
+
 	_viewVector = sf::Vector2f(_window.getSize().x, _window.getSize().y);
 	_view.setSize(_viewVector);
 	_view.setCenter(sf::Vector2f(_window.getSize().x / 2, _window.getSize().y / 2));
@@ -53,8 +45,6 @@ void Jeu::init()
 
 	//Initialisation de pacman
 	srand(std::time(NULL));
-	_ghostStart = _map.getLigne(3).getFin();
-
 	_explosionTextureComplet.loadFromFile("explosion.png");
 
 	for (int i = 0; i < 6; i++)
@@ -67,8 +57,6 @@ void Jeu::init()
 			_explosionTexture[i][j].setTextureRect(_explosionTextureRect[i][j]);
 		}
 	}
-
-	_ghostStart = _fantome[0]->getPos();
 
 	_targetfps = 60;
 
@@ -229,21 +217,35 @@ void Jeu::drawMangeable()
 
 void Jeu::drawEtoileUi()
 {
-	_ui.playAnimation("etoile");
+	if (_mapsIterator != ++_maps.begin())
+		_ui.playAnimation("etoile");
+	else
+		_ui.stopAnimation("etoile");
 }
 
 //Dessiner le UI du dragonShout
 void Jeu::drawDragonShoutUi()
 {
-	_ui.playAnimation("dragonUI");
+	if (_mapsIterator != ++_maps.begin())
+		_ui.playAnimation("dragonUI");
+	else
+		_ui.stopAnimation("dragonUI");
 }
 
 //Draw le ui du laser
 void Jeu::drawLaserUi()
 {
-	_ui.changeText("laser", "Laser overdrive : " + std::to_string(_pacman.getTempsLaserRestant()));
-	_ui.playAnimation("laser");
-
+	if (_mapsIterator != ++_maps.begin())
+	{
+		_ui.setFrames("laser", 1);
+		_ui.changeText("laser", "Laser overdrive : " + std::to_string(_pacman.getTempsLaserRestant()));
+		_ui.playAnimation("laser");
+	}
+	else
+	{
+		_ui.setFrames("laser", 0);
+		_ui.stopAnimation("laser");
+	}
 }
 
 void Jeu::draw(bool display)
@@ -457,6 +459,7 @@ void Jeu::loadMap()
 		for (int i = 0; i < count; i++)
 		{
 			fantomes[i]->setPos(pos);
+			fantomes[i]->setDeathPoint(pos);
 			_fantome.add(fantomes[i]);
 		}
 
@@ -911,9 +914,9 @@ void Jeu::killPacman()
 
 		for (auto f : _fantome)
 		{
-			f->setPos(_ghostStart);
-			f->setLigne(_map.quelleLigne(_ghostStart, 0));
-			f->setVertical(_map.getLigne(_map.quelleLigne(_ghostStart, 0)).isVertical());
+			f->setPos(f->getDeathPoint());
+			f->setLigne(_map.quelleLigne(f->getDeathPoint(), 0));
+			f->setVertical(_map.getLigne(_map.quelleLigne(f->getDeathPoint(), 0)).isVertical());
 		}
 	}
 
@@ -1155,7 +1158,7 @@ void Jeu::loadAnimations()
 
 		//Écris le nombre de dragon shouts disponible
 		if (!_ui.hasText("shouts"))
-			_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(610, 310));
+			_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(650, 310));
 		else
 			_ui.changeText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()));
 
@@ -1201,4 +1204,55 @@ void Jeu::loadAnimations()
 	return true;
 	}
 	});
+}
+
+void Jeu::loadTexts()
+{
+
+	_ui.addText("laser", "Laser overdrive: ", "steelfish rg.ttf", sf::Vector2f(650, 150), 45);
+	//Construit le texte pour le menu de pause, mais ne l'affiche pas (frames = 0)
+	_ui.addText("pause", "Appuyez sur espace pour continuer", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
+	//Construit le texte pour continuer sans l'afficher
+	_ui.addText("continuer", "Voulez-vous continuer? (O/n)", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
+	//Ajoute le texte du score
+	_ui.addText("score", "Score  ", "8bit.ttf", sf::Vector2f());
+	//Prépare les runes pour quand on apprend un dragon shout. Il disparait en devenant transparent, pas en n'étant pas dessiné
+	_ui.addText("dragon", "Fus Roh Dah", "dragon.otf", sf::Vector2f(200, 10), 30, sf::Color(200, 200, 200, 0), -1);
+
+
+	//Ajoute les textes pour le premier niveau qui expliquent les controles
+	_ui.addText("tutW", "W", "keyboard.otf", sf::Vector2f(815, 45), 75);
+	_ui.Text("tutW").setStyle(sf::Text::Bold);
+
+	_ui.addText("tutASD", "ASD", "keyboard.otf", sf::Vector2f(750, 110), 75);
+	_ui.Text("tutASD").setStyle(sf::Text::Bold);
+
+	_ui.addText("tutMove", "Déplacements", "steelfish rg.ttf", sf::Vector2f(975, 90), 60);
+
+	_ui.addText("tutL", "L", "keyboard.otf",sf::Vector2f(750, 200),75);
+	_ui.Text("tutL").setStyle(sf::Text::Bold);
+
+	_ui.addText("tutLaser", "Laser", "steelfish rg.ttf", sf::Vector2f(825, 210), 60);
+
+	_ui.addText("tutF", "F", "keyboard.otf", sf::Vector2f(750, 280), 75);
+	_ui.Text("tutF").setStyle(sf::Text::Bold);
+
+	_ui.addText("tutShout", "Fus Roh Dah", "steelfish rg.ttf", sf::Vector2f(825, 290), 60);
+	_ui.addText("tutMegaShout", "3 X Fus Roh Dah = Mega Fus Roh Dah", "steelfish rg.ttf", sf::Vector2f(700, 350), 60);
+}
+
+//Cache les texte du tutorial si nécéssaire
+void Jeu::setTutorialText()
+{
+	if (_mapsIterator != ++_maps.begin())
+	{
+		_ui.setFrames("tutW", 0);
+		_ui.setFrames("tutASD", 0);
+		_ui.setFrames("tutMove", 0);
+		_ui.setFrames("tutL", 0);
+		_ui.setFrames("tutLaser", 0);
+		_ui.setFrames("tutF", 0);
+		_ui.setFrames("tutShout", 0);
+		_ui.setFrames("tutMegaShout", 0);
+	}
 }

@@ -61,6 +61,9 @@
     <ClCompile Include="UI.cpp">
       <Filter>Interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="mire.cpp">
+      <Filter>divers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FantomeOrange.h">
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="UI.h">
       <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="mire.h">
+      <Filter>divers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

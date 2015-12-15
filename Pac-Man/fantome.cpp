@@ -497,3 +497,13 @@ void Fantome::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		_vitesse = 3;
 	}
 }
+
+sf::Vector2f Fantome::getDeathPoint() const
+{
+	return _deathPoint;
+}
+
+void Fantome::setDeathPoint(sf::Vector2f pos)
+{
+	_deathPoint = pos;
+}

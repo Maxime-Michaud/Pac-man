@@ -49,8 +49,6 @@ class Jeu
 	//Carte
 	Map _map;					//Carte du jeu
 	sf::Vector2f _startpos;		//Position de depart
-	sf::Vector2f _ghostStart;	//Position de depart des fantomes
-
 	sf::Text _dragonShoutLearned;
 
 	sf::Event event;
@@ -133,9 +131,14 @@ public:
 	//Charge tous les sons dans l'objet de son
 	void loadSounds();
 
+	//Charge les explications
+	void setTutorialText();
+
 	//Vérifie que tout le monde est sur la bonne ligne
 	void checkLines();
 
 	//Charge toutes les animations dans la classe UI. C'est un peu l'équivalent de balayer la poussière sous le tapis: au moins, ça PARAIS plus propre
 	void loadAnimations();
+
+	void loadTexts();
 };

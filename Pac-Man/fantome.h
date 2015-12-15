@@ -106,4 +106,7 @@ public:
 	virtual void move(char direction, sf::Vector2f& posPacMan, Map &map) = 0;	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
 	virtual void loadSounds();
+
+	sf::Vector2f getDeathPoint() const;
+	void setDeathPoint(sf::Vector2f pos);
 };
