@@ -472,7 +472,6 @@ void Fantome::deciderLigne(sf::Vector2f posPacMan, Map &map)
 	}
 }
 
-
 void Fantome::loadSounds()
 {
 	_sons.add("allah", "alahuAkbar.wav");

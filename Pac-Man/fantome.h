@@ -59,6 +59,7 @@ protected:
 	sf::Vector2f _posExplosion;
 	int _explosionAnimation = 0;            //Les frames d'animation de l'explosion
 	bool _flagExplosion = false;			//Pour setter la position de l'explosuion qu'une seule fois
+
 	//Variables pour l'effet du dragonshout
 	sf::Vector2f _posRecul;					//La pos a laquelle il a été projeté
 	bool _toucherParDragonshout = false;	//Si il est affecté ou non pas un dragon shout
@@ -106,7 +107,6 @@ public:
 	virtual void move(char direction, sf::Vector2f& posPacMan, Map &map) = 0;	 //Fait bouger le fantome
 	virtual void deciderLigne(sf::Vector2f posPacMan, Map &map);					 //Prend une décision de la direction à un intersection
 	virtual void loadSounds();
-
 	sf::Vector2f getDeathPoint() const;
 	void setDeathPoint(sf::Vector2f pos);
 };

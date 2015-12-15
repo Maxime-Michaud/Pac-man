@@ -49,6 +49,7 @@ class Jeu
 	//Carte
 	Map _map;					//Carte du jeu
 	sf::Vector2f _startpos;		//Position de depart
+
 	sf::Text _dragonShoutLearned;
 
 	sf::Event event;

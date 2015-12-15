@@ -3,12 +3,11 @@
 *Programme:		Main.cpp														*
 *Programmeur:	Maxime Michaud-Corriveau										*
 *Description:	Jeu de Pacman													*
-TODO ajouter une description
+*TODO ajouter une description													*
 *																				*
 *																				*
 *																				*
 *********************************************************************************/
-
 #include "autosfml.h"	//Définis des macros pour inclure les .lib de SFML, like a paresseux
 #include "Jeu.h"
 

@@ -45,6 +45,7 @@ void Jeu::init()
 
 	//Initialisation de pacman
 	srand(std::time(NULL));
+
 	_explosionTextureComplet.loadFromFile("explosion.png");
 
 	for (int i = 0; i < 6; i++)
@@ -217,10 +218,11 @@ void Jeu::drawMangeable()
 
 void Jeu::drawEtoileUi()
 {
-	if (_mapsIterator != ++_maps.begin())
-		_ui.playAnimation("etoile");
-	else
-		_ui.stopAnimation("etoile");
+	if (!(_mapsIterator == ++_maps.begin()))
+		if (_pacman.getPowerUps(4))
+			_ui.playAnimation("etoile");
+		else
+			_ui.stopAnimation("etoile");
 }
 
 //Dessiner le UI du dragonShout
