@@ -21,7 +21,7 @@ class Personnage : public sf::Drawable, public TimeTraveller <sf::Vector2f>
 {
 protected:
 	sf::Vector2f _pos;		//Position sur la map
-	int _vitesse;
+	mutable int _vitesse;
 	int _numLigne;
 	bool _vertical;	//Si le personnage est sur une ligne vertical ou non
 	char _direction;

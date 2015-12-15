@@ -30,11 +30,6 @@ void Fantome::setIsDead(bool isDead)
 	_isDead = isDead;
 }
 
-bool Fantome::getExplosionStatus()
-{
-	return _sons.isPlaying("explosion");
-}
-
 void Fantome::setPowerUp(int nbPowerUp, bool valeur)
 {
 	switch (nbPowerUp)
@@ -341,13 +336,9 @@ bool Fantome::getToucherParDragonshout()
 	return _toucherParDragonshout;
 }
 
-bool Fantome::getFlagExplosion()
+bool Fantome::getExploser()
 {
-	return _flagExplosion;
-}
-void Fantome::setFlagExplosion(bool valeur)
-{
-	_flagExplosion = valeur;
+	return _exploser;
 }
 
 bool Fantome::isDead() const
@@ -355,36 +346,10 @@ bool Fantome::isDead() const
 	return _isDead;
 }
 
-//Get la position de l'explosion du fantome (alahu akbar)
-sf::Vector2f Fantome::getPosExplosion()
-{
-	return _posExplosion;
-}
-
-//Set la position de l'explosion du fantom (alahu akbar)
-void Fantome::setPosExplosion(sf::Vector2f pos)
-{
-	_posExplosion = pos;
-}
-
 void Fantome::setDragonShoutEffect(sf::Vector2f pos)
 {
 	_posRecul = pos;
 	_toucherParDragonshout = true;
-}
-
-void Fantome::incrementerAnimationExplosion()
-{
-	_explosionAnimation++;
-	if (_explosionAnimation > 47)
-	{
-		_explosionAnimation = 0;
-	}
-}
-
-int Fantome::getExplosionAnimation()
-{
-	return _explosionAnimation;
 }
 
 //Permet au fantome, à chaque intersection,  de décider quelle ligne il va prendre, en fonction de la position de pacMan
@@ -484,13 +449,22 @@ void Fantome::move(char direction, sf::Vector2f& posPacMan, Map &map)
 		if (_clockAlahhuAkbar.getElapsedTime() > sf::milliseconds(3000))
 		{
 			//explosion();
-			_sons.play("explosion");
+			_explosion.setPos(_pos);
+			_explosion.playSonExplosion();
+			_exploser = true;
 			_isDead = true;
 			_alahuAkbar = false;
 		}
 	}
 	else
 	{
+		if (_clockAlahhuAkbar.getElapsedTime() > sf::milliseconds(4500))
+			_exploser = false;
 		_vitesse = 3;
 	}
+}
+
+void Fantome::playExplosion(sf::RenderTarget & target)
+{
+	_explosion.drawExplosion(target);
 }

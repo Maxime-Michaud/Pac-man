@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="animationsSprites.cpp" />
     <ClCompile Include="dragonShout.cpp" />
     <ClCompile Include="fantome.cpp" />
     <ClCompile Include="FantomeBleu.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algo.h" />
+    <ClInclude Include="animationsSprites.h" />
     <ClInclude Include="autosfml.h" />
     <ClInclude Include="dragonShout.h" />
     <ClInclude Include="fantome.h" />

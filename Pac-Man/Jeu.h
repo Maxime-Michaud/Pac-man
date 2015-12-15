@@ -84,10 +84,6 @@ class Jeu
 	bool _dragonShoutEffect = true;			  //Pour faire la shock wave qu'une seule fois dans le dragonShout
 	sf::View _view;
 	sf::Vector2f _viewVector;
-	sf::Texture _explosionTextureComplet;
-	sf::RectangleShape _explosionTexture[6][8];
-	sf::IntRect _explosionTextureRect[6][8];
-	int _vitesseExplosion = 0;				//Dessiner l'explosion tous les 5 frames
 
 	std::list<std::pair<std::string, int>> _maps;			  //Toutes les maps
 	std::list<std::pair<std::string, int>>::const_iterator _mapsIterator;
