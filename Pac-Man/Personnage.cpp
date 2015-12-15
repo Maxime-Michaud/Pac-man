@@ -258,3 +258,13 @@ void Personnage::stopSounds()
 {
 	_sons.stopAll();
 }
+
+void Personnage::pause()
+{
+	_paused = true;
+}
+
+void Personnage::unpause()
+{
+	_paused = false;
+}

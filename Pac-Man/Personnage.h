@@ -28,6 +28,8 @@ protected:
 	char _directionProchaine; //La direction dans laquelle le personnage veut se diriger
 
 	mutable Sons _sons;
+
+	bool _paused = false;
 public:
 	/// <summary>
 	/// Set toute les variables a 0
@@ -87,4 +89,7 @@ public:
 
 	virtual void loadSounds() = 0;
 	void stopSounds();
+
+	void pause();
+	void unpause();
 };
