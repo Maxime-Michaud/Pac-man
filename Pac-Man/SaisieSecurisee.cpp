@@ -230,3 +230,35 @@ bool siFichierVide(std::ifstream & stream, std::string messageVide)
 
 	return vide;
 }
+
+std::vector<std::string> split(const std::string & in, char splitC)
+{
+	std::vector<std::string> out;
+
+	std::string s;
+
+	for (char c : in)
+	{
+		if (c != splitC)
+		{
+			s += c;
+		}
+		else if (s != "")
+		{
+			out.push_back(s);
+			s = "";
+		}
+	}
+
+	if (s != "")
+		out.push_back(s);
+
+	return out;
+}
+
+void remplacer(std::string & in, char ca, char parca)
+{
+	for (char & c : in)
+		if (c == ca)
+			c = parca;
+}

@@ -154,6 +154,16 @@ bool FantomeRose::esseyerLigne(char direction, int &ligneParcoursTheorique, std:
 		return false;
 }
 
+void FantomeRose::setNbEssai(int n)
+{
+	_nbEloignementPourAiRose = n;
+}
+
+void FantomeRose::setFreqRecalc(int n)
+{
+	_recalculeLeCheminTousLesXFois = n;
+}
+
 void FantomeRose::bougerCommeRouge(sf::Vector2f& posPacMan, Map &map)
 {
 	char directionArrivee = _direction;			//La direction de départ

@@ -69,9 +69,9 @@ f orange 1 (550,200)
 630,100 630,300
 
 
-Map 6, Labyrinthe! (texte affiché en début de map)
-flash true 2000 200 250,450 50 void initFlash(bool valeur, std::string texte, int frequence, int duree, int posX, int posY, int grosseur);
-0,0,255,255 la couleur de la map
-_nbEloignementPourAiRose 20 (nombre deloignement du rose)
-_recalculeLeCheminTousLesXFois 2 (recalcule le chemin du rose tout les x intersection)
-pas oublier de setter _deathPoint dans fantome.h a la valeur du spawn point
+Map 6, Labyrinthe!
+f Appuyez_sur_P_pour_commencer 2000 1500 90 375 80
+c 238 248 187 255
+e 20
+r 2
+

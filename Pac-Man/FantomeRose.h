@@ -2,7 +2,7 @@
 #include "fantome.h"
 class FantomeRose : public Fantome
 {
-	const int _recalculeLeCheminTousLesXFois = 6;
+	int _recalculeLeCheminTousLesXFois = 6;
 	int _nbEloignementPourAiRose = 25;			//le nombre de fois que le rose peut s'eloignement de pacman pour trouver un chemin, dans un labyrinthw, monter cette valeur.
 	int _nombreDintersectionsPassee = 0;
 	sf::Clock _clockFantomeRose;
@@ -36,4 +36,7 @@ public:
 	virtual void deciderLigne(sf::Vector2f& posPacMan, Map &map);			 //Prend une décision de la direction à un intersection
 	void tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &posPacMan);
 	bool esseyerLigne(char direction, int &ligneParcoursTheorique, std::vector<sf::Vector2f> &pointsVisites, sf::Vector2f &posTheorique, Map &map, char directionArrivee);
+
+	void setNbEssai(int n);
+	void setFreqRecalc(int n);
 };
