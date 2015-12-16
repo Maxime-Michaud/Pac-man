@@ -154,6 +154,16 @@ bool FantomeRose::esseyerLigne(char direction, int &ligneParcoursTheorique, std:
 		return false;
 }
 
+void FantomeRose::setNbEssai(int n)
+{
+	_nbEloignementPourAiRose = n;
+}
+
+void FantomeRose::setFreqRecalc(int n)
+{
+	_recalculeLeCheminTousLesXFois = n;
+}
+
 void FantomeRose::tentativeAmbuscade(int LignePacMan, Map &map, sf::Vector2f &posPacMan)
 {
 	std::deque<Direction> bonChemin;					//Contient les directions pour le bon chemin vers pacman

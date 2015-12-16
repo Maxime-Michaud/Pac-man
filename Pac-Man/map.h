@@ -25,8 +25,10 @@ public:
 	bool getChanged() const;
 
 	std::vector<std::vector<bool>> getBoolMap() const;
-private:
 
+	void setColor(int r, int g, int b, int a);
+private:
+	sf::Color _lineColor;
 	mutable bool _hasChanged = true;		//Si la map a changée depuis la derniere fois qu'on a fait getOutline
 	sf::Vector2i _mapSize;
 	std::vector<Ligne> _map;		//Contient toutes les lignes

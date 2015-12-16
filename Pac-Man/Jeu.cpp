@@ -452,7 +452,52 @@ void Jeu::loadMap()
 		if (in.peek() != EOF)
 			std::getline(in, var);
 
-		char type = var.substr(1).c_str[0];
+		auto params = split(var);
+
+		char type = var.c_str()[0];
+
+		switch (type)
+		{
+			case 'f':
+				assert(params.size() == 7);
+				remplacer(params[1], '_', ' ');
+
+				_map.initFlash(true,						//Flash
+								params[1],					//Texte a afficher
+								atoi(params[2].c_str()),	//Fréquence
+								atoi(params[3].c_str()),	//Durée
+								atoi(params[4].c_str()),	//Position (X)
+								atoi(params[5].c_str()),	//Position (Y)
+								atoi(params[6].c_str()));	//Grosseur du texte
+				break;
+
+			case 'c':
+				assert(params.size() == 5);
+				_map.setColor(atoi(params[1].c_str()),		//R
+								atoi(params[2].c_str()),	//G
+								atoi(params[3].c_str()),	//B
+								atoi(params[4].c_str()));	//A
+				break;
+
+			case 'e':
+				assert(params.size() == 2);
+
+				for (auto f : _fantome)
+					if (typeid(*f) == typeid(FantomeRose))	//Cette variable affecte uniquement les fantomes roses
+						dynamic_cast<FantomeRose*>(f)->setNbEssai(atoi(params[1].c_str()));
+				break;
+
+			case 'r':
+				assert(params.size() == 2);
+
+				for (auto f : _fantome)
+					if (typeid(*f) == typeid(FantomeRose))	//Cette variable affecte uniquement les fantomes roses
+						dynamic_cast<FantomeRose*>(f)->setFreqRecalc(atoi(params[1].c_str()));
+				break;
+		default:
+			in.get();
+			break;
+		}
 	}
 	_pacman.setLigne(_map.quelleLigne(_pacman.getPos(), 0));
 	_pacman.setVertical(_map.getLigne(_pacman.getNumLigne()).isVertical());

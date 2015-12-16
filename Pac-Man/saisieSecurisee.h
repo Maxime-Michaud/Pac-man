@@ -163,3 +163,7 @@ std::vector<T> readNumFromStream(std::istream & in, int count = 1, const char * 
 
 	return ret;
 }
+
+std::vector<std::string> split(const std::string & in, char splitC = ' ');
+
+void remplacer(std::string & in, char ca, char parca);
