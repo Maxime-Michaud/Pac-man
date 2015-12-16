@@ -22,14 +22,12 @@ Jeu::Jeu(std::string maps)
 	_window.setPosition(_defaultWinPos);
 	_window.setKeyRepeatEnabled(false);
 
-	init();
-
 	//Prépare l'interface graphique
 	loadSounds();
 	loadTexts();
 	loadAnimations();
-
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
+	init();
 }
 
 void Jeu::init()
@@ -82,7 +80,7 @@ void Jeu::init()
 				{
 					for (int l = 0; l < _mangeable[k].size(); l++)
 					{
-						if (_mangeable[k][l] & mangeable::grosseBoule && abs(k-i) + abs(l-j) < 6)
+						if (_mangeable[k][l] & mangeable::grosseBoule && abs(k-i) + abs(l-j) < 20)
 							tropPres = true;
 					}
 				}
@@ -660,7 +658,8 @@ void Jeu::play()
 				}
 				if (abs(f->getPos().x - _pacman.getPos().x) + abs(f->getPos().y - _pacman.getPos().y) < 150)
 				{
-					killPacman();
+					if (!_pacman.getInvincible() && !_pacman.getPowerUps(4))
+						killPacman();
 				}
 			}
 		}
@@ -901,7 +900,7 @@ void Jeu::killPacman()
 		for (auto f : _fantome)
 		{
 			f->setPos(f->getDeathPoint());
-			f->setLigne(_map.quelleLigne(f->getDeathPoint(), 0));
+ 			f->setLigne(_map.quelleLigne(f->getDeathPoint(), 0));
 			f->setVertical(_map.getLigne(_map.quelleLigne(f->getDeathPoint(), 0)).isVertical());
 		}
 	}

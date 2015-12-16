@@ -281,10 +281,9 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	//Si pacman est mort, il n'est pas dessiné
 	if (_isDead) return;
-
+	int testeurIncrement = _step;
 	if (!_paused)
 		_step += _stepIncrement;
-
 	if (_step < 0 || _step >= _nbrCote / 4)
 		_stepIncrement *= -1;
 
