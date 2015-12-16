@@ -66,6 +66,7 @@ class Jeu
 	int _randColor2 = 255;					  //un 2e nombre pour une couleur random				  
 	int _randColor3 = 255;					  //un 3e nombre pour une couleur random
 	int _score = 0;							  //Le score
+	int _scoreMap = 0;						  //Le score sur la map en cours
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge

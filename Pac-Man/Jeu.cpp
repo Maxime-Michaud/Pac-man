@@ -27,7 +27,10 @@ Jeu::Jeu(std::string maps)
 	loadTexts();
 	loadAnimations();
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
+	_score = 0;
 	init();
+
+	_scoreMap = 1;
 }
 
 void Jeu::init()
@@ -51,7 +54,6 @@ void Jeu::init()
 	_nbBouleRouge = 4;
 
 	_nbBouleMange = 0;
-	_score = 0;
 
 	auto temp = _map.getBoolMap();
 	_mangeable.clear();
@@ -106,6 +108,8 @@ void Jeu::init()
 		_sons.play("intro");
 	else
 		_sons.play("MusicIntro");
+
+
 }
 
 void Jeu::readMaps(std::string maps)
@@ -243,10 +247,8 @@ void Jeu::draw(bool display)
 	{
 		_sons.stop("etoile");
 	}
-	else
-	{
-		drawEtoileUi();
-	}
+
+	drawEtoileUi();
 
 	drawLaserUi();
 
@@ -288,15 +290,27 @@ sf::Vector2f Jeu::choisirPosRandom()
 
 void Jeu::loadMap()
 {
-	_nextMap = !(_mapsIterator == _maps.end());
-
-	if (!_nextMap)
+	int minScore;
+	std::string mapName;
+	do
 	{
-		_playing = false;
-		std::cout << "Tu gagnes?";
-		system("pause");
-		return;
-	}
+		_nextMap = !(_mapsIterator == _maps.end());
+
+		if (!_nextMap)
+		{
+			_playing = false;
+			std::cout << "Tu gagnes?";
+			system("pause");
+			return;
+
+		}
+
+		mapName = _mapsIterator->first;
+		minScore = _mapsIterator->second;
+		++_mapsIterator;
+	} while (_scoreMap < minScore);
+
+	_scoreMap = 0;
 
 	for (auto f : _fantome)
 		delete f;
@@ -305,8 +319,7 @@ void Jeu::loadMap()
 
 	_map.initFlash(false, "", 0, 0, 0, 0, 0);
 
-	std::string mapName = _mapsIterator->first;
-	++_mapsIterator;
+
 	
 	std::ifstream in;
 	in.open(mapName);
@@ -585,12 +598,14 @@ void Jeu::play()
 			_sons.play("chomp");
 
 			_score += 1;
+			_scoreMap += 1;
 			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
 			{
 				_sons.play("fruit");
 				_sons.stop("chomp");	//Arretele son des boules
 
 				_score += 20;
+				_scoreMap += 20;
 				std::cout << "pacman mange un fruit" << std::endl;
 				_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10));
 				_nbFruitMange++;
@@ -980,6 +995,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
+				_scoreMap += 30;
 				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
@@ -989,6 +1005,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
+				_scoreMap += 30;
 				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
@@ -998,6 +1015,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
+				_scoreMap += 30;
 				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
@@ -1007,6 +1025,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				fantome.setIsDead(true);
 				_score += 30;
+				_scoreMap += 30;
 				_ui.changeText("score", "Score  " + std::to_string(_score));
 				return true;
 			}
@@ -1027,6 +1046,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 			{
 				_sons.play("plop");
 				_score += 30;
+				_scoreMap += 30;
 				_ui.changeText("score", "Score  " + std::to_string(_score));
 				fantome.setIsDead(true);
 			}
@@ -1035,6 +1055,7 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 				_sons.play("mort");
 
 				_score -= (_score / 2 > 100 ? _score / 2:100);
+				_scoreMap -= (_score / 2 > 100 ? _score / 2 : 100);
 				_ui.changeText("score", "Score  " + std::to_string(_score));
 				killPacman();
 			}
@@ -1244,7 +1265,7 @@ void Jeu::loadAnimations()
 	convex.setFillColor(sf::Color(_randColor1 + 115, _randColor2 + 115, _randColor3 + 100, (_pacman.getTempsEtoile() / 5000) * 255));
 
 	_window.draw(convex);
-	return true;
+	return _pacman.getTempsEtoile() < 5000;
 	}
 	});
 }

@@ -451,6 +451,7 @@ void PacMan::move(char direction, Map &map)
 	}
 	if (_dragonShoutAnimation && _clockDragonShout.getElapsedTime() > sf::milliseconds(4000))
 		_dragonShoutAnimation = false;
+
 	if (_powerUpMarioStar && _clockEtoile.getElapsedTime().asMilliseconds() < _nbMilisecondeEtoile)
 	{
 		_stopRepeating = false;
