@@ -29,13 +29,13 @@ void Personnage::setPosSecuritaire(sf::Vector2f pos)
 	int x = _pos.x - pos.x;
 	int y = _pos.y - pos.y;
 	if (x > _vitesse + 1)
-		pos.x = _pos.x + _vitesse;
-	else if (x < -_vitesse - 1)
 		pos.x = _pos.x - _vitesse;
+	else if (x < -_vitesse - 1)
+		pos.x = _pos.x + _vitesse;
 	if (y > _vitesse + 1)
-		pos.y = _pos.y + _vitesse;
-	else if (y < -_vitesse - 1)
 		pos.y = _pos.y - _vitesse;
+	else if (y < -_vitesse - 1)
+		pos.y = _pos.y + _vitesse;
 	_pos = pos;
 }
 
