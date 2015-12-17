@@ -29,6 +29,7 @@
 #include <iostream>
 #include "Sons.h"
 #include "UI.h"
+#include "mire.h"
 
 enum mangeable
 {
@@ -90,6 +91,8 @@ class Jeu
 	bool _nextMap;
 
 	std::string _mapMsg;
+
+	Mire _mire = Mire(sf::Color::Red, 3);;
 public:
 	Jeu(std::string map);
 	~Jeu();

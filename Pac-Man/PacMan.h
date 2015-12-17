@@ -44,7 +44,7 @@ class PacMan : public Personnage
 
 	mutable bool _powerUpLaser = false;				  //Le power up du laser
 	mutable bool _powerUpTimeTravel = false;		  //Le power up time traveller
-	mutable bool _powerUpMindControl = false;		  //Le power up mind control
+	mutable bool _powerUpGun = false;				  //Le power up du gun
 	mutable bool _powerUpMarioStar = false;			  //Le power up de l'étoile de mario
 	mutable bool _powerUpDragonShout = false;		  //Le power up du dragonshout FUS ROH DAH
 
@@ -70,6 +70,8 @@ class PacMan : public Personnage
 	bool _dragonShoutAnimation = false;
 
 	mutable bool _isDead = false;
+
+	int _balles = 0;
 public:
 	PacMan();
 	~PacMan();
@@ -119,4 +121,8 @@ public:
 	void resetPowerUps();
 
 	virtual void loadSounds();
+
+	bool getPaused()const;
+
+	void shoot();
 };
