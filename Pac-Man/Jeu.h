@@ -30,6 +30,7 @@
 #include "Sons.h"
 #include "UI.h"
 #include <thread>
+#include "mire.h"
 
 enum mangeable
 {
@@ -93,6 +94,8 @@ class Jeu
 	bool _nextMap;
 	bool _stopPause = true;			//Pour stoper le pause de jouer 2x au début avec le loading screen
 	std::string _mapMsg;
+
+	Mire _mire = Mire(sf::Color::Red, 3);;
 public:
 	Jeu(std::string map);
 	~Jeu();

@@ -344,6 +344,10 @@ void Jeu::draw(bool display)
 
 	_window.draw(_ui);
 
+	//si pacman a un gun, dessine une mire
+	if (_pacman.getPowerUps(3))
+		_window.draw(_mire);
+
 	if (display)
 		_window.display();
 }
@@ -583,6 +587,11 @@ void Jeu::loadMap()
 				for (auto f : _fantome)
 					if (typeid(*f) == typeid(FantomeRose))	//Cette variable affecte uniquement les fantomes roses
 						dynamic_cast<FantomeRose*>(f)->setFreqRecalc(atoi(params[1].c_str()));
+				break;
+
+			case 'b':
+				assert(params.size() == 2);
+				_nbBouleRouge = atoi(params[1].c_str());
 				break;
 		default:
 			in.get();
@@ -894,6 +903,26 @@ void Jeu::captureEvent()
 	if (_window.pollEvent(event))
 		switch (event.type)
 		{
+			case sf::Event::MouseMoved:
+				_mire.setCentre(sf::Vector2f(event.mouseMove.x, event.mouseMove.y));
+				break;
+			case sf::Event::MouseButtonPressed:
+				if (_pacman.getPowerUps(3) && !_pacman.getPaused() && !_sons.isPlaying("gun"))
+				{
+					_sons.play("gun");
+
+					if (_pacman.getPos().x > event.mouseButton.x - 21 && _pacman.getPos().x < event.mouseButton.x + 21 &&
+						_pacman.getPos().y > event.mouseButton.y - 21 && _pacman.getPos().y < event.mouseButton.y + 21)
+						killPacman();
+					else
+						for (auto f : _fantome)
+							if (f->getPos().x > event.mouseButton.x - 21 && f->getPos().x < event.mouseButton.x + 21 &&
+								f->getPos().y > event.mouseButton.y - 21 && f->getPos().y < event.mouseButton.y + 21)
+								f->setIsDead(true);
+
+					_pacman.shoot();
+				}
+				break;
 			// fenêtre fermée
 			case sf::Event::Closed:
 				_window.close();
@@ -1171,6 +1200,7 @@ void Jeu::loadSounds()
 	_sons.add("nuke", "deadSound0.wav");
 	_sons.add("plop", "plop.wav");
 	_sons.add("MusicIntro", "musicIntro.wav");
+	_sons.add("gun", "shotgun.wav");
 }
 
 void Jeu::checkLines()
@@ -1393,7 +1423,10 @@ void Jeu::loadTexts()
 	_ui.Text("tutF").setStyle(sf::Text::Bold);
 
 	_ui.addText("tutShout", "Fus Roh Dah", "steelfish rg.ttf", sf::Vector2f(825, 290), 60);
-	_ui.addText("tutMegaShout", "3 X Fus Roh Dah = Mega Fus Roh Dah", "steelfish rg.ttf", sf::Vector2f(700, 350), 60);
+	_ui.addText("tutMegaShout", "3 X Fus Roh Dah = surprise", "steelfish rg.ttf", sf::Vector2f(700, 350), 60);
+
+	_ui.addText("tutGun", "Si le curseur change, essayez de cliquer!", "steelfish rg.ttf", sf::Vector2f(700, 425), 60);
+	//_ui.addText("tutPause", "Espace pour faire pause", "steelfish rg.ttf")
 }
 
 //Cache les texte du tutorial si nécéssaire

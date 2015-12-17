@@ -128,7 +128,7 @@ bool PacMan::getPowerUps(int powerUp)
 		return _powerUpTimeTravel;
 		break;
 	case 3:
-		return _powerUpMindControl;
+		return _powerUpGun;
 		break;
 	case 4:
 		return _powerUpMarioStar;
@@ -155,7 +155,7 @@ void PacMan::setPowerUps(int numDuPowerUp, bool valeur)
 		_powerUpTimeTravel = valeur;
 		break;
 	case 3:
-		_powerUpMindControl = valeur;
+		_powerUpGun = valeur;
 		break;
 	case 4:
 		_powerUpMarioStar = valeur;
@@ -215,7 +215,8 @@ void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 		//_powerUpTimeTravel = valeur;
 		break;
 	case 3:
-		//_powerUpMindControl = valeur;
+		_balles += valeur;
+		_powerUpGun = valeur;
 		break;
 	case 4:
 		_clockEtoile.restart();
@@ -503,4 +504,17 @@ void PacMan::loadSounds()
 	_sons.add("fusrodah", "fusrohdah.wav");
 	_sons.add("FUSRODAH", "megafusrohdah.wav");
 	_sons.add("laser", "BWAAAAH.wav");
+}
+
+bool PacMan::getPaused() const
+{
+	return _paused;
+}
+
+void PacMan::shoot()
+{
+	--_balles;
+
+	if (!_balles)
+		_powerUpGun = false;
 }
