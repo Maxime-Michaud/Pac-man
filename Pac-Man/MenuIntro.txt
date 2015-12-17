@@ -1,8 +1,8 @@
-p (100, 100)
+p (100, 100) laser -1 shout 100000
 f orange 1 (240,200)
 f orange 1 (260,100)
 f orange 1 (340,100)
-f orange 1 (420,300)
+f orange 1 (420,100)
 f orange 1 (550,200)
 
 100,100 100,50
@@ -74,4 +74,5 @@ f Appuyez_sur_P_pour_commencer 2000 1500 90 375 80
 c 238 248 187 255
 e 20
 r 2
+b 0
 

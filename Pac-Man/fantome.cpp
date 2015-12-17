@@ -304,11 +304,11 @@ void Fantome::fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f &wi
 			_pushBack = false;
 		}
 	}
-	else if (_pos != sf::Vector2f(window.x / 2, window.y / 2))
+	else if (_pos != _deathPoint)
 	{
 		_direction = 'a';
-		(_pos.x > window.x / 2) ? _pos.x -= 1 : (_pos.x < window.x / 2) ? _pos.x += 1 : NULL;
-		(_pos.y > window.y / 2) ? _pos.y -= 1 : (_pos.y < window.y / 2) ? _pos.y += 1 : NULL;
+		(_pos.x > _deathPoint.x) ? _pos.x -= 1 : (_pos.x < _deathPoint.x) ? _pos.x += 1 : NULL;
+		(_pos.y > _deathPoint.y) ? _pos.y -= 1 : (_pos.y < _deathPoint.y) ? _pos.y += 1 : NULL;
 		_numLigne = -1;
 		_numLigne = map.quelleLigne(_pos, _numLigne);
 		if (_numLigne != -1)

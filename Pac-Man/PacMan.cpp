@@ -229,6 +229,11 @@ void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 	}
 }
 
+void PacMan::setDragonShout(int valeur)
+{
+	_nbDragonShout = valeur;
+}
+
 void PacMan::changerTempsPowerUp(std::string nomDuPowerUp, float valeur)
 {
 	changerTempsPowerUp(_powerUpNames[nomDuPowerUp], valeur);

@@ -29,6 +29,7 @@
 #include <iostream>
 #include "Sons.h"
 #include "UI.h"
+#include <thread>
 
 enum mangeable
 {
@@ -42,6 +43,8 @@ class Jeu
 	sf::RenderWindow _window;		//Fenetre du jeu
 	sf::Vector2i _defaultWinPos;	//Position de la fenetre du jeu par défaut
 
+	std::thread *_loadingThread;
+	sfe::Movie _loadingMovie;
 	//Personnages
 	PacMan _pacman;					//Personnage principal
 	VecteurDeFantome _fantome;			//Fantomes
@@ -88,7 +91,7 @@ class Jeu
 	sfe::Movie _explosionNucleaire;			  //Video de l'explosion nucléaire
 
 	bool _nextMap;
-
+	bool _stopPause = true;			//Pour stoper le pause de jouer 2x au début avec le loading screen
 	std::string _mapMsg;
 public:
 	Jeu(std::string map);
@@ -96,6 +99,8 @@ public:
 
 	void init();
 
+	void loading();
+	bool _loading = true;
 	void draw(bool display = true);
 	void donnerUnPowerUpPacman();
 	void drawMangeable();
