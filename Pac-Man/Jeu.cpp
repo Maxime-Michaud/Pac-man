@@ -53,8 +53,6 @@ void Jeu::init()
 	_shake = 10;
 
 	//Initialise les boules jaune et rouge à manger sur tout la map
-	_nbBouleRouge = 4;
-
 	_nbBouleMange = 0;
 
 	auto temp = _map.getBoolMap();
@@ -391,7 +389,7 @@ void Jeu::loadMap()
 
 	_scoreMap = 0;
 
-	if (_mapsIterator != _maps.begin())
+	if (_mapsIterator != ++_maps.begin())
 		_loadingThread = new std::thread(&Jeu::loading, this);
 	for (auto f : _fantome)
 		delete f;

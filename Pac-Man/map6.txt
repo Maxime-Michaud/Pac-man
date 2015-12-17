@@ -116,12 +116,11 @@ f orange 1 (600,590)
 
 530,230 600,230
 
-
-
-
 Map 6, Labyrinthe!
-flash 2000 200 250,450 50 
-0,0,255,255
-20 (nombre deloignement du rose)
+c 34 139 34 100
+e 20
+r 2
+b 5
+
 
 

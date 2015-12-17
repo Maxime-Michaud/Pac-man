@@ -1,8 +1,8 @@
 p (350, 350) laser -10000
-f orange 25 (50, 50)
-f orange 25 (550, 50)
-f orange 25 (50, 550)
-f orange 25 (550, 550)
+f orange 25 (60, 50)
+f orange 25 (550, 60)
+f orange 25 (60, 550)
+f orange 25 (550, 540)
 
 50,50 550,50
 50,150 550,150
@@ -18,7 +18,6 @@ f orange 25 (550, 550)
 550,50 550,550
 
 BONUS, laser infini!
-f Appuyez_sur_P_pour_commencer 2000 1500 90 375 80
 c 255 0 0 255
 e 2
 r 2

@@ -1,8 +1,8 @@
-p (100, 100)
-f rouge 1 (600, 600) bouleRouge
-f bleu 1 (600, 600) bouleRouge
-f orange 1 (600, 600) bouleRouge
-f rose 1 (600, 600) bouleRouge
+p (80, 50)
+f rouge 1 (600, 590) bouleRouge
+f bleu 1 (600, 590) bouleRouge
+f orange 1 (600, 590) bouleRouge
+f rose 1 (600, 590) bouleRouge
 50,50 100,50
 50,50 50,100
 50,100 600,100
@@ -25,3 +25,12 @@ f rose 1 (600, 600) bouleRouge
 100,150 600,150
 100,200 600,200
 100,250 600,250
+130,50 130,330
+50,440 330,440
+450,450 630,450
+
+Map 2 Préparer-Vous!
+c 125 255 125 255
+e 2
+r 1
+b 15
