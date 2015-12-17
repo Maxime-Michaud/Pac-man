@@ -1332,7 +1332,10 @@ void Jeu::loadTexts()
 	_ui.Text("tutF").setStyle(sf::Text::Bold);
 
 	_ui.addText("tutShout", "Fus Roh Dah", "steelfish rg.ttf", sf::Vector2f(825, 290), 60);
-	_ui.addText("tutMegaShout", "3 X Fus Roh Dah = Mega Fus Roh Dah", "steelfish rg.ttf", sf::Vector2f(700, 350), 60);
+	_ui.addText("tutMegaShout", "3 X Fus Roh Dah = surprise", "steelfish rg.ttf", sf::Vector2f(700, 350), 60);
+
+	_ui.addText("tutGun", "Si le curseur change, essayez de cliquer!", "steelfish rg.ttf", sf::Vector2f(700, 425), 60);
+	_ui.addText("tutPause", "Espace pour faire pause", "steelfish rg.ttf")
 }
 
 //Cache les texte du tutorial si nécéssaire
