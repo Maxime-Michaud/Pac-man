@@ -10,17 +10,19 @@
 Jeu::Jeu(std::string maps)
 {
 	using namespace winapi;
-
-	srand(time(NULL));
-
-	//Lis la lsite des maps
-	readMaps(maps);
-
 	//Initialisation de la fenêtre
 	sf::VideoMode test(ScreenWidth, ScreenHeight);
 	_window.create(test, "Pac-Man");
 	_window.setPosition(_defaultWinPos);
 	_window.setKeyRepeatEnabled(false);
+
+	_loadingThread = new std::thread(&Jeu::loading, this);
+
+
+	srand(time(NULL));
+
+	//Lis la lsite des maps
+	readMaps(maps);
 
 	//Prépare l'interface graphique
 	loadSounds();
@@ -69,25 +71,29 @@ void Jeu::init()
 				_posValides.push_back(sf::Vector2f(i * 10, j * 10));
 			}
 			//Si la boule est dans un coin, elle devient une grosse boule
-			if ((i > 0 && i < temp.size() - 1 && j > 0 && j < temp[i].size() - 1) &&
-				((temp[i - 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
+			if (_mapsIterator != ++_maps.begin())
+			{
+				if ((i > 0 && i < temp.size() - 1 && j > 0 && j < temp[i].size() - 1) &&
+					((temp[i - 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
 					(temp[i + 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i - 1][j] == false && temp[i][j] == false) ||
 					(temp[i - 1][j] == true && temp[i][j + 1] == true && temp[i][j - 1] == false && temp[i + 1][j] == false && temp[i][j] == false) ||
 					(temp[i + 1][j] == true && temp[i][j - 1] == true && temp[i][j + 1] == false && temp[i - 1][j] == false && temp[i][j] == false)))
-			{
-				bool tropPres = false;		//Pour savoir si une autre boule est trop pres
-				for (int k = 0; k < _mangeable.size(); k++)		//Vérifie tout le vecteur à la recherche de grosse boules près (12 = 120 pixel pres)
 				{
-					for (int l = 0; l < _mangeable[k].size(); l++)
+					bool tropPres = false;		//Pour savoir si une autre boule est trop pres
+					for (int k = 0; k < _mangeable.size(); k++)		//Vérifie tout le vecteur à la recherche de grosse boules près (12 = 120 pixel pres)
 					{
-						if (_mangeable[k][l] & mangeable::grosseBoule && abs(k-i) + abs(l-j) < 20)
-							tropPres = true;
+						for (int l = 0; l < _mangeable[k].size(); l++)
+						{
+							if (_mangeable[k][l] & mangeable::grosseBoule && abs(k - i) + abs(l - j) < 20)
+								tropPres = true;
+						}
 					}
+					if (!tropPres)		//Si aucune grosse boule n'est dans un rayon de 120 pixel, la grosse boule est placé
+						_mangeable[i][j] = mangeable::grosseBoule;
+					tropPres = false;
 				}
-				if (!tropPres)		//Si aucune grosse boule n'est dans un rayon de 120 pixel, la grosse boule est placé
-					_mangeable[i][j] = mangeable::grosseBoule;
-				tropPres = false;
 			}
+			
 		}
 	}
 	_nbBoulesTotal = _posValides.size() - _nbBouleRouge;
@@ -135,6 +141,67 @@ void Jeu::clear()
 {
 	for (auto f : _fantome)
 		delete f;
+}
+
+void Jeu::loading()
+{
+	_loading = true;
+	_stopPause = true;
+	sf::RenderWindow temp;
+	sf::Text loadingPleaseWait;
+	sf::Font tempFont;
+	tempFont.loadFromFile("steelfish rg.ttf");
+	loadingPleaseWait = sf::Text("Chargement, veuillez patienter", tempFont, 45);
+	loadingPleaseWait.setPosition(sf::Vector2f(20, 300));
+	loadingPleaseWait.setColor(sf::Color::Black);
+	loadingPleaseWait.setStyle(sf::Text::Style::Bold);
+	//_window.setVisible(false);
+	temp.create(sf::VideoMode(400, 400), "loading",sf::Style::None);
+	temp.setPosition(sf::Vector2i(winapi::ScreenWidth / 3, winapi::ScreenHeight / 3 - 100));
+	_loadingMovie.openFromFile("loading.ogv");
+	temp.setFramerateLimit(60);
+	_loadingMovie.fit(sf::FloatRect(0, 0, 400, 400));
+	_loadingMovie.play();
+	_loadingMovie.update();
+
+	while (_loading)
+	{
+		temp.clear();
+		_loadingMovie.update();
+		temp.draw(_loadingMovie);
+		temp.draw(loadingPleaseWait);
+		temp.display();
+		if (!_loadingMovie.getStatus())
+		{
+			_loadingMovie.play();
+		}
+
+	}
+
+	sf::Event event;
+	temp.pollEvent(event);
+	while (temp.pollEvent(event));
+	event = sf::Event();
+	loadingPleaseWait.setString("Appuyer sur une touche");
+	while (event.type != sf::Event::KeyReleased && event.type != sf::Event::LostFocus)
+	{
+		temp.pollEvent(event);
+		temp.clear();
+		_loadingMovie.update();
+		temp.draw(_loadingMovie);
+		temp.draw(loadingPleaseWait);
+		temp.display();
+		if (!_loadingMovie.getStatus())
+		{
+			_loadingMovie.play();
+		}
+	}
+
+	_window.requestFocus();
+	_stopPause = false;
+	_loadingThread->detach();
+	delete _loadingThread;
+
 }
 
 void Jeu::drawMangeable()
@@ -202,11 +269,12 @@ void Jeu::drawMangeable()
 
 void Jeu::drawEtoileUi()
 {
-	if (!(_mapsIterator == ++_maps.begin()))
+	if (!(_mapsIterator == ++_maps.begin())){
 		if (_pacman.getPowerUps(4))
 			_ui.playAnimation("etoile");
 		else
 			_ui.stopAnimation("etoile");
+	}
 }
 
 //Dessiner le UI du dragonShout
@@ -215,7 +283,14 @@ void Jeu::drawDragonShoutUi()
 	if (_mapsIterator != ++_maps.begin())
 		_ui.playAnimation("dragonUI");
 	else
+	{
+		if (_pacman.getNbDragonShout() != 1)
+		{
+			_pacman.setDragonShout(1);
+		}
 		_ui.stopAnimation("dragonUI");
+	}
+		
 }
 
 //Draw le ui du laser
@@ -298,6 +373,8 @@ void Jeu::loadMap()
 		return;
 	}
 
+	if (_mapsIterator != _maps.begin())
+		_loadingThread = new std::thread(&Jeu::loading, this);
 	for (auto f : _fantome)
 		delete f;
 
@@ -542,11 +619,11 @@ void Jeu::donnerUnPowerUpPacman()
 
 void Jeu::play()
 {
+	_loading = false;
 	if (_mapsIterator != ++_maps.begin())
 		pause(_mapMsg);
 		
 	_nextMap = false;
-
 	sf::Event event;
 
 	while (_playing)
@@ -564,6 +641,7 @@ void Jeu::play()
 			}
 			if (c == 'p' && _mapsIterator == ++_maps.begin())
 			{
+				_sons.stopAll();
 				_playing = false;
 				_fruits.vider();
 				init();
@@ -661,6 +739,12 @@ void Jeu::play()
 			verifieSiMort(*f);
 			if (!f->getToucherParDragonshout())
 			{
+				if (f->getPos().x  < 30 || f->getPos().x > 660 || f->getPos().y < 30 || f->getPos().y > 620)
+				{
+					f->setIsDead(true);
+					continue;
+				}
+					
 				if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
 				{
 					f->setPowerUp(1, true);
@@ -739,11 +823,15 @@ void Jeu::play()
 			{
 				sf::Vector2f randomV = choisirPosRandom();
 				//ici les fruits
-				if (_fruits.getNombreFruitSurMap() < 3)
+				if (_mapsIterator != ++_maps.begin())
 				{
-					_fruits.ajouterFruitListe(randomV);
-					_mangeable[randomV.x / 10][randomV.y / 10] = mangeable::fruit | _mangeable[randomV.x / 10][randomV.y / 10];
+					if (_fruits.getNombreFruitSurMap() < 3)
+					{
+						_fruits.ajouterFruitListe(randomV);
+						_mangeable[randomV.x / 10][randomV.y / 10] = mangeable::fruit | _mangeable[randomV.x / 10][randomV.y / 10];
+					}
 				}
+				
 				
 				_fermerHorloge = true;
 			}
@@ -782,7 +870,6 @@ void Jeu::play()
 	if (_nextMap)
 	{
 		_playing = true;
-		_sons.stop("MusicIntro");
 		play();
 	}
 }
@@ -798,7 +885,10 @@ void Jeu::captureEvent()
 				_playing = false;
 				break;
 			case sf::Event::LostFocus:
-				pause();
+				if (!_stopPause)
+				{
+					pause();
+				}
 				event = sf::Event();
 				break;
 			case sf::Event::Resized:
@@ -833,13 +923,14 @@ void Jeu::pause(std::string msg)
 {
 	//Dessine un background pour le message
 	sf::RectangleShape rect;
-	rect.setFillColor(sf::Color(0, 0, 0, 100));	//noir semi-transparent
+	rect.setFillColor(sf::Color(0, 0, 0, 225));	//noir semi-transparent
 	rect.setSize(sf::Vector2f(float(_window.getSize().x), 75));
 	_window.draw(rect);
 
 	//Affiche le message
 	_ui.changeText("pause", msg);
 	_ui.setFrames("pause", -1);
+	_ui.setFrames("score", 0);
 	
 	//Pause les personnages
 	_pacman.pause();
@@ -874,7 +965,7 @@ void Jeu::pause(std::string msg)
 
 	//Efface le texte de pause
 	_ui.setFrames("pause", 0);
-
+	_ui.setFrames("score", -1);
 	//Dépause les personnages
 	_pacman.unpause();
 
