@@ -92,7 +92,9 @@ class Jeu
 
 	std::string _mapMsg;
 
-	Mire _mire = Mire(sf::Color::Red, 3);;
+	Mire _mire = Mire(sf::Color::Red, 3);
+
+	std::vector<int> _powerUpDispo;
 public:
 	Jeu(std::string map);
 	~Jeu();
@@ -106,6 +108,7 @@ public:
 	void drawLaserUi();
 	void drawDragonShoutUi();
 	void drawEtoileUi();
+	void drawGunUI();
 	void play();
 
 	void captureEvent();
