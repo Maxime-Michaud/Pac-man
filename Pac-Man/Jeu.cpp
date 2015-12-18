@@ -132,7 +132,7 @@ void Jeu::readMaps(std::string maps)
 	}
 
 	_mapsIterator = _maps.begin();
-
+	mapList.close();
 }
 
 Jeu::~Jeu()
@@ -402,7 +402,7 @@ void Jeu::loadMap()
 		++_mapsIterator;
 	} while (_scoreMap < minScore);
 
-	_scoreMap = 0;
+	_scoreMap = 1;
 
 	if (_mapsIterator != ++_maps.begin())
 		_loadingThread = new std::thread(&Jeu::loading, this);
@@ -1194,7 +1194,6 @@ bool Jeu::verifieSiMort(Fantome &fantome)
 				_sons.play("mort");
 
 				_score -= (_score / 2 > 100 ? _score / 2:100);
-				_scoreMap -= (_score / 2 > 100 ? _score / 2 : 100);
 				_ui.changeText("score", "Score  " + std::to_string(_score));
 				killPacman();
 			}
@@ -1416,7 +1415,7 @@ void Jeu::loadTexts()
 	_ui.addText("laser", "Laser overdrive: ", "steelfish rg.ttf", sf::Vector2f(650, 150), 45);
 
 	//Affiche le nombre de balles disponibles
-	_ui.addText("gun", "Munitions: 0", "steelfish rg.ttf", sf::Vector2f(650, 350),45);
+	_ui.addText("gun", "Munitions: 0", "steelfish rg.ttf", sf::Vector2f(650, 350));
 
 	//Construit le texte pour le menu de pause, mais ne l'affiche pas (frames = 0)
 	_ui.addText("pause", "Appuyez sur espace pour continuer", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
@@ -1449,12 +1448,9 @@ void Jeu::loadTexts()
 	_ui.addText("tutMegaShout", "3 X Fus Roh Dah = surprise", "steelfish rg.ttf", sf::Vector2f(700, 350), 60);
 
 	_ui.addText("tutGun", "Si le curseur change, essayez de cliquer!", "steelfish rg.ttf", sf::Vector2f(700, 425), 60);
-<<<<<<< HEAD
-	//_ui.addText("tutPause", "Espace pour faire pause", "steelfish rg.ttf")
-=======
+
 	_ui.addText("tutPause", "Espace pour faire pause", "steelfish rg.ttf", sf::Vector2f(700, 500), 60);
 	_ui.addText("tutFruit", "3 Fruits = 1 power up", "steelfish rg.ttf", sf::Vector2f(700, 575), 60);
->>>>>>> max
 }
 
 //Cache les texte du tutorial si nécéssaire
