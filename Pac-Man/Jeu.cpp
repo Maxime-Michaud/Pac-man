@@ -38,6 +38,7 @@ Jeu::Jeu(std::string maps)
 
 void Jeu::init()
 {
+	_nbBouleRougeMange = 0;
 	loadMap();
 
 	setTutorialText();
@@ -97,14 +98,32 @@ void Jeu::init()
 			
 		}
 	}
-	_nbBoulesTotal = _posValides.size() - _nbBouleRouge;
+	if (_nbBouleRouge != -1)
+		_nbBoulesTotal = _posValides.size() - _nbBouleRouge;
+	else
+		_nbBoulesTotal = _posValides.size();
 	_temps = std::clock();
 
-	for (int i = 0; i < _nbBouleRouge; i++)
+	if (_nbBouleRouge != -1)
 	{
-		sf::Vector2f temp = choisirPosRandom();
-		_mangeable[temp.x / 10][temp.y / 10] = mangeable::bouleRouge;
+		for (int i = 0; i < _nbBouleRouge; i++)
+		{
+			sf::Vector2f temp = choisirPosRandom();
+			_mangeable[temp.x / 10][temp.y / 10] = mangeable::bouleRouge;
+		}
 	}
+	else
+	{
+		for (int i = 0; i < _mangeable.size(); i++)		//Vérifie tout le vecteur à la recherche de grosse boules près (12 = 120 pixel pres)
+		{
+			for (int j = 0; j < _mangeable[i].size(); j++)
+			{
+				if(_mangeable[i][j])
+					_mangeable[i][j] = mangeable::bouleRouge;
+			}
+		}
+	}
+	
 
 	//SET DES SONS, TEXTES ET VIDÉOS
 	_explosionNucleaire.openFromFile("exp.ogg");		  //Vidéo de l'exp nucléaire
@@ -723,8 +742,9 @@ void Jeu::play()
 
 			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
 				_nbBouleMange++;
-
-			if (_nbBouleMange >= _nbBoulesTotal)
+			else if (_mangeable[x][y] & mangeable::bouleRouge)
+				_nbBouleRougeMange++;
+			if (_nbBouleMange >= _nbBoulesTotal || _nbBouleRougeMange >= _nbBoulesTotal)
 			{
 				_sons.stopAll();
 				_pacman.stopSounds();
@@ -789,6 +809,17 @@ void Jeu::play()
 					f->setPowerUp(1, true);
 					f->resetClockAlahuAkbar();
 					_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
+					_nbBouleRougeMange++;
+					if (_nbBouleRougeMange >= _nbBoulesTotal)
+					{
+						_sons.stopAll();
+						_pacman.stopSounds();
+						_sons.play("gagne");
+						Sleep(5500);
+						_fruits.vider();
+						init();
+						break;
+					}
 				}
 			}
 

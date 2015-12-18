@@ -1,8 +1,8 @@
 p (370, 330) laser -10000
-f rose 1 (50, 60) bouleRouge
-f rose 1 (590, 50) bouleRouge
+f rose 1 (50, 50) bouleRouge
+f rose 1 (600, 50) bouleRouge
 f rose 1 (60, 600) bouleRouge
-f rose 1 (600, 590) bouleRouge
+f rose 1 (600, 600) bouleRouge
 
 50,50 50,340
 50,340 150,340
@@ -43,4 +43,4 @@ Bonus 2, tirer juste et rapide!
 c 40 248 152 100
 e 20
 r 2
-b 0
+b -1

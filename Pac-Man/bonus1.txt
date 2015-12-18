@@ -1,4 +1,4 @@
-p (350, 350) laser -10000
+p (350, 350) laser -10000 shout 4
 f orange 25 (60, 50)
 f orange 25 (550, 60)
 f orange 25 (60, 550)
@@ -21,4 +21,4 @@ BONUS, laser infini!
 c 255 0 0 255
 e 2
 r 2
-b 0
+b -1

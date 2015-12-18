@@ -74,6 +74,7 @@ class Jeu
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge
+	int _nbBouleRougeMange = 0;				  //lE NOMBRE DE BOULE ROUGE MANGÉS
 	int _nbFruitMange = 0;					  //Le nombre de fruit mangé, a chaque 3, donne un power up
 	bool _megaDragonShout = false;			  //Un bool pour gèrer le dragonshout et ne pas incrémenter plus d'une fois le nb de dragonshout
 	bool _dragonShoutDesactive = false;		  //Désactive le dragon shout pendant le MEGA dragon shout
