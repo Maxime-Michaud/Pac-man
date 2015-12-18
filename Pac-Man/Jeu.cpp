@@ -1359,6 +1359,7 @@ void Jeu::loadTexts()
 
 	_ui.addText("tutGun", "Si le curseur change, essayez de cliquer!", "steelfish rg.ttf", sf::Vector2f(700, 425), 60);
 	_ui.addText("tutPause", "Espace pour faire pause", "steelfish rg.ttf", sf::Vector2f(700, 500), 60);
+	_ui.addText("tutFruit", "3 Fruits = 1 power up", "steelfish rg.ttf", sf::Vector2f(700, 575), 60);
 }
 
 //Cache les texte du tutorial si nécéssaire
@@ -1376,5 +1377,6 @@ void Jeu::setTutorialText()
 		_ui.setFrames("tutMegaShout", 0);
 		_ui.setFrames("tutGun", 0);
 		_ui.setFrames("tutPause", 0);
+		_ui.setFrames("tutFruit", 0);
 	}
 }
