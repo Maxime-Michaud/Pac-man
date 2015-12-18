@@ -32,7 +32,8 @@ Jeu::Jeu(std::string maps)
 	_score = 0;
 	init();
 
-	_scoreMap = 1;
+	_scoreMap = 0;
+	_nbBouleRouge = 4;
 }
 
 void Jeu::init()
@@ -279,6 +280,19 @@ void Jeu::drawEtoileUi()
 	}
 }
 
+void Jeu::drawGunUI()
+{
+	if (_mapsIterator != ++_maps.begin())
+	{
+		_ui.setFrames("gun", 1);
+		_ui.changeText("gun", "Munitions: " + std::to_string(_pacman.getNbBalles()));
+	}
+	else
+	{
+		_ui.setFrames("gun", 0);
+	}
+}
+
 //Dessiner le UI du dragonShout
 void Jeu::drawDragonShoutUi()
 {
@@ -340,6 +354,7 @@ void Jeu::draw(bool display)
 			f->playExplosion(_window);
 	}
 
+	drawGunUI();
 	_window.draw(_ui);
 
 	//si pacman a un gun, dessine une mire
@@ -605,13 +620,15 @@ void Jeu::donnerUnPowerUpPacman()
 	int random = rand() % 3 + 1;
 	if (random == 2)
 		random = 4;
-	else if (random == 3)
-		random = 5;
 	switch (random)
 	{
 	case 1:
 		_pacman.setPowerUps(1, true);
 		_pacman.changerTempsPowerUp(1, 2000);
+		break;
+	case 3:
+		_pacman.setPowerUps(3, true);
+		_pacman.changerTempsPowerUp(3, rand() % 2 + 1);
 		break;
 	case 4:
 		_sons.play("etoile");
@@ -939,6 +956,10 @@ void Jeu::captureEvent()
 				_view.setSize(sf::Vector2f(_viewVector.x += event.mouseWheel.delta *10, _viewVector.y += event.mouseWheel.delta *10));
 				_window.setView(_view);
 				draw();
+				break;
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::F9)
+					donnerUnPowerUpPacman();
 				break;
 			default:
 				break;
@@ -1393,6 +1414,10 @@ void Jeu::loadTexts()
 {
 
 	_ui.addText("laser", "Laser overdrive: ", "steelfish rg.ttf", sf::Vector2f(650, 150), 45);
+
+	//Affiche le nombre de balles disponibles
+	_ui.addText("gun", "Munitions: 0", "steelfish rg.ttf", sf::Vector2f(650, 350),45);
+
 	//Construit le texte pour le menu de pause, mais ne l'affiche pas (frames = 0)
 	_ui.addText("pause", "Appuyez sur espace pour continuer", "steelfish rg.ttf", sf::Vector2f(), 60, sf::Color::White, 0);
 	//Construit le texte pour continuer sans l'afficher
@@ -1424,7 +1449,12 @@ void Jeu::loadTexts()
 	_ui.addText("tutMegaShout", "3 X Fus Roh Dah = surprise", "steelfish rg.ttf", sf::Vector2f(700, 350), 60);
 
 	_ui.addText("tutGun", "Si le curseur change, essayez de cliquer!", "steelfish rg.ttf", sf::Vector2f(700, 425), 60);
+<<<<<<< HEAD
 	//_ui.addText("tutPause", "Espace pour faire pause", "steelfish rg.ttf")
+=======
+	_ui.addText("tutPause", "Espace pour faire pause", "steelfish rg.ttf", sf::Vector2f(700, 500), 60);
+	_ui.addText("tutFruit", "3 Fruits = 1 power up", "steelfish rg.ttf", sf::Vector2f(700, 575), 60);
+>>>>>>> max
 }
 
 //Cache les texte du tutorial si nécéssaire
@@ -1440,5 +1470,8 @@ void Jeu::setTutorialText()
 		_ui.setFrames("tutF", 0);
 		_ui.setFrames("tutShout", 0);
 		_ui.setFrames("tutMegaShout", 0);
+		_ui.setFrames("tutGun", 0);
+		_ui.setFrames("tutPause", 0);
+		_ui.setFrames("tutFruit", 0);
 	}
 }

@@ -95,7 +95,9 @@ class Jeu
 	bool _stopPause = true;			//Pour stoper le pause de jouer 2x au début avec le loading screen
 	std::string _mapMsg;
 
-	Mire _mire = Mire(sf::Color::Red, 3);;
+	Mire _mire = Mire(sf::Color::Red, 3);
+
+	std::vector<int> _powerUpDispo;
 public:
 	Jeu(std::string map);
 	~Jeu();
@@ -111,6 +113,7 @@ public:
 	void drawLaserUi();
 	void drawDragonShoutUi();
 	void drawEtoileUi();
+	void drawGunUI();
 	void play();
 
 	void captureEvent();

@@ -78,6 +78,11 @@ int PacMan::getNbDragonShout()
 	return _nbDragonShout;
 }
 
+int PacMan::getNbBalles()
+{
+	return _balles;
+}
+
 bool PacMan::getDragonShoutActivated()
 {
 	return _dragonShoutActivated;

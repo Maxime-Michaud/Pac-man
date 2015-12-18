@@ -100,6 +100,7 @@ public:
 	bool getLaser();
 	void incrementeurDragonShout(int increment);
 	int getNbDragonShout();
+	int getNbBalles();
 	void resetClockDragon();
 	bool getDragonShoutActivated();
 	float getTempsDragonShout();	//Retourne le temps écoulé depuis l'activation du dragonShout
