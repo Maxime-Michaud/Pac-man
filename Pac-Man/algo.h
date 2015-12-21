@@ -3,7 +3,7 @@
 *Programme:		algo.h															*
 *Programmeur:	Maxime Michaud-Corriveau										*
 *Description:	Librairie contenant des fonctions d'usage général ne faisant	*
-*				pas partie de la librairie standard.							*
+*				pas partie de la librairie standard.	    					*
 *********************************************************************************/
 #pragma once
 
