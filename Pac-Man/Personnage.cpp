@@ -66,6 +66,9 @@ char Personnage::getDirection()
 
 void Personnage::setDirection(char d)
 {
+	if (d != _direction)
+		_change.push(_pos);
+
 	switch (d)
 	{
 	case 'w': case 's':
@@ -118,7 +121,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{								//place le personnage dans cette ligne au début(ou à la fin) +(ou -) sa vitesse
 			_direction = 'a';
 			_vertical = false;
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getFin().x - _vitesse, map.getLigne(_numLigne).getFin().y));
 			return true;
 		}
@@ -133,7 +136,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = false;
 			_direction = 'd';
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getDebut().x + _vitesse, map.getLigne(_numLigne).getDebut().y));
 			return true;
 		}
@@ -147,7 +150,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = true;
 			_direction = 's';
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getDebut().x, map.getLigne(_numLigne).getDebut().y + _vitesse));
 			return true;
 		}
@@ -160,7 +163,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = true;
 			_direction = 'w';
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getFin().x, map.getLigne(_numLigne).getFin().y - _vitesse));
 			return true;
 		}
@@ -267,4 +270,51 @@ void Personnage::pause()
 void Personnage::unpause()
 {
 	_paused = false;
+}
+
+void Personnage::goBack(Map map)
+{
+	sf::Vector2f destination = getPrevState(_pos);
+
+	auto deplacement = destination - _pos;
+
+	int vitesse = std::min(_vitesse,
+					std::max<int>(std::abs(deplacement.x), std::abs(deplacement.y)));
+
+	if (deplacement.x > 0)
+		_direction = 'd';
+	else if (deplacement.x < 0)
+		_direction = 'a';
+	else if (deplacement.y > 0)
+		_direction = 'w';
+	else
+		_direction = 's';
+
+	switch (_direction)
+	{
+	case 'd':
+		_pos.x += vitesse;
+		break;
+	case 'a':
+		_pos.x -= vitesse;
+		break;
+	case 's':
+		_pos.y -= vitesse;
+		break;
+	case 'w':
+		_pos.y += vitesse;
+		break;
+	default:
+		break;
+	}
+
+	if (_direction == 'a')
+	{
+		_direction = 'd';
+	}
+	else if (_direction == 'd')
+	{
+		_direction = 'a';
+	}
+
 }

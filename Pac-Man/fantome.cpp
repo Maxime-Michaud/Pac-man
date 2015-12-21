@@ -27,6 +27,7 @@ Fantome::~Fantome()
 
 void Fantome::setIsDead(bool isDead)
 {
+	_change.push(_pos);
 	_isDead = isDead;
 }
 
@@ -295,6 +296,7 @@ void Fantome::fantomeDead(Map &map, sf::Vector2f window)
 //Le placement du fantome quand il est hors de la grille
 void Fantome::fantomeDragonShouter(sf::Vector2f &pos, Map &map, sf::Vector2f &window)
 {
+	_change.push(_pos);
 	if (_pushBack && _pos != pos)
 	{
 		(_pos.x > pos.x) ? _pos.x -= 10 : (_pos.x < pos.x) ? _pos.x += 10 : NULL;

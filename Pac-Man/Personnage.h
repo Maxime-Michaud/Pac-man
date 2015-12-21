@@ -17,7 +17,7 @@
 #include "Sons.h"
 #include "TimeTraveller.h"
 
-class Personnage : public sf::Drawable, public TimeTraveller <sf::Vector2f>
+class Personnage : public sf::Drawable, public TimeTraveller <sf::Vector2f, Map>
 {
 protected:
 	sf::Vector2f _pos;		//Position sur la map
@@ -92,4 +92,6 @@ public:
 
 	void pause();
 	void unpause();
+
+	void goBack(Map map);
 };

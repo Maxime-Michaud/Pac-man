@@ -24,7 +24,7 @@
 #include <stack>
 
 #pragma once
-template <typename T>
+template <typename T, typename U>
 class TimeTraveller
 {
 protected:
@@ -35,23 +35,26 @@ public:
 	/// <summary>
 	/// Obtiens l'état précédent. Si l'état précédent est le même que l'actuel, efface le précédent et retourne celui d'avant
 	/// </summary>
-	/// <param name="current">État actuel</param>
-	T& getPrevState(const T& current);
+	/// <param name="current">
+	/// État actuel. N'est pas modifié par la fonction, 
+	///	mais puisque current peut etre retourné, il n'est pas const.
+	/// </param>
+	T& getPrevState(T& current);
 
 	/// <summary>
 	/// Retourne dans le passé
 	/// </summary>
-	//virtual void goBack();
+	virtual void goBack(U params);
 };
 
-template<typename T>
-inline T& TimeTraveller<T>::getPrevState(const T& current)
+template<typename T, typename U>
+T& TimeTraveller<T, U>::getPrevState(T& current)
 {
 	//Si la pile de changement est vide, retourne l'état actuel
 	if (!_change.size())
 		return current;
 
-	//Pop tous lés états pareils a l'état actuel
+	//Pop tous les états pareils a l'état actuel
 	while (_change.top() == current)
 	{
 		_change.pop();
@@ -61,4 +64,10 @@ inline T& TimeTraveller<T>::getPrevState(const T& current)
 	}
 
 	return _change.top();
+}
+
+template<typename T, typename U>
+void TimeTraveller<T, U>::goBack(U params)
+{
+	throw std::bad_exception("Fonction non implémentée");
 }

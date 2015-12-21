@@ -681,9 +681,23 @@ void Jeu::play()
 		
 	_nextMap = false;
 	sf::Event event;
-
+	bool tempsNormal = true;
 	while (_playing)
 	{
+		if (!tempsNormal)
+		{
+			_pacman.setLigne(_map.quelleLigne(_pacman.getPos(), 0));
+			_pacman.setVertical(_map.getLigne(_map.quelleLigne(_pacman.getPos(), 0)).isVertical());
+			
+			for (auto f : _fantome)
+			{
+				f->setLigne(_map.quelleLigne(f->getPos(), 0));
+				f->setVertical(_map.getLigne(_map.quelleLigne(f->getPos(), 0)).isVertical());
+			}
+		}
+
+		tempsNormal = true;
+
 		//Fais une pause a la fin de la boucle en attendant d'arriver a un temps voulu
 		sf::Clock clock;
 		//Vérifie l'entrée de l'utilisateur
@@ -695,70 +709,79 @@ void Jeu::play()
 			{
 				_nbBouleMange = _nbBoulesTotal;
 			}
-			if (c == 'p' && _mapsIterator == ++_maps.begin())
+			else if (c == 'p' && _mapsIterator == ++_maps.begin())
 			{
 				_sons.stopAll();
 				_playing = false;
 				_fruits.vider();
 				init();
 			}
-			if (c == 'f' && _dragonShoutDesactive)
+			else if (c == 'f' && _dragonShoutDesactive)
 			{
 				c = '\0';
 			}
+			else if (c == 'r' && _pacman.getPowerUps(2))
+			{
+				tempsNormal = false;
+			}
+
 			_pacman.input(c);
 		}
+
 		shakeScreen();
-		_pacman.move(_pacman.getDirection(), _map);
 
-		int x = round(_pacman.getPos().x / 10);
-		int y = round(_pacman.getPos().y / 10);
-		//Vérifie si la case contient un élément mangeable
-		if (_mangeable[x][y])
+		if (tempsNormal)
 		{
-			_sons.play("chomp");
+			_pacman.move(_pacman.getDirection(), _map);
 
-			_score += 1;
-			_scoreMap += 1;
-			if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
+			int x = round(_pacman.getPos().x / 10);
+			int y = round(_pacman.getPos().y / 10);
+			//Vérifie si la case contient un élément mangeable
+			if (_mangeable[x][y])
 			{
-				_sons.play("fruit");
-				_sons.stop("chomp");	//Arretele son des boules
+				_sons.play("chomp");
 
-				_score += 20;
-				_scoreMap += 20;
-				std::cout << "pacman mange un fruit" << std::endl;
-				_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10));
-				_nbFruitMange++;
-				if (_nbFruitMange % 3 == 0)
+				_score += 1;
+				_scoreMap += 1;
+				if (_mangeable[x][y] & mangeable::fruit) //Si c'est un fruit, l'enlève
+				{
+					_sons.play("fruit");
+					_sons.stop("chomp");	//Arretele son des boules
+
+					_score += 20;
+					_scoreMap += 20;
+					std::cout << "pacman mange un fruit" << std::endl;
+					_fruits.retirerFruitManger(sf::Vector2f(x * 10, y * 10));
+					_nbFruitMange++;
+					if (_nbFruitMange % 3 == 0)
+						donnerUnPowerUpPacman();
+
+				}
+
+				if (_mangeable[x][y] & mangeable::grosseBoule)
+				{
 					donnerUnPowerUpPacman();
-				
-			}
+				}
 
-			if (_mangeable[x][y] & mangeable::grosseBoule)
-			{
-				donnerUnPowerUpPacman();
-			}
+				if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
+					_nbBouleMange++;
+				else if (_mangeable[x][y] & mangeable::bouleRouge)
+					_nbBouleRougeMange++;
+				if (_nbBouleMange >= _nbBoulesTotal || _nbBouleRougeMange >= _nbBoulesTotal)
+				{
+					_sons.stopAll();
+					_pacman.stopSounds();
+					_sons.play("gagne");
+					Sleep(5500);
+					_fruits.vider();
+					init();
+					break;
+				}
+				_mangeable[x][y] = 0;
 
-			if (_mangeable[x][y] & mangeable::boule || _mangeable[x][y] & mangeable::grosseBoule)
-				_nbBouleMange++;
-			else if (_mangeable[x][y] & mangeable::bouleRouge)
-				_nbBouleRougeMange++;
-			if (_nbBouleMange >= _nbBoulesTotal || _nbBouleRougeMange >= _nbBoulesTotal)
-			{
-				_sons.stopAll();
-				_pacman.stopSounds();
-				_sons.play("gagne");
-				Sleep(5500);
-				_fruits.vider();
-				init();
-				break;
+				_ui.changeText("score", "Score  " + std::to_string(_score));
 			}
-			_mangeable[x][y] = 0;
-
-			_ui.changeText("score", "Score  " + std::to_string(_score));
 		}
-
 		if (_pacman.getLaser())
 		{
 			sf::Vector2f end;
@@ -787,97 +810,101 @@ void Jeu::play()
 
 		if (_map.getChanged())
 			checkLines();
-
+		if (tempsNormal)
+		{ 
 		//Fait les mouvements des fantomes
-		for (auto f : _fantome)
-		{
-			if (f->getNom() != "bleu")
-				f->move(f->getDirection(), _pacman.getPos(), _map);
-			else
-				f->move(f->getDirection(), _fantome[0]->getPos(), _map);
-			verifieSiMort(*f);
-			if (!f->getToucherParDragonshout())
+			for (auto f : _fantome)
 			{
-				if (f->getPos().x  < 30 || f->getPos().x > 660 || f->getPos().y < 30 || f->getPos().y > 620)
-				{
-					f->setIsDead(true);
-					continue;
-				}
-					
-				if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
-				{
-					f->setPowerUp(1, true);
-					f->resetClockAlahuAkbar();
-					_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
-					_nbBouleRougeMange++;
-					if (_nbBouleRougeMange >= _nbBoulesTotal)
-					{
-						_sons.stopAll();
-						_pacman.stopSounds();
-						_sons.play("gagne");
-						Sleep(5500);
-						_fruits.vider();
-						init();
-						break;
-					}
-				}
-			}
+				if (f->getNom() != "bleu")
+					f->move(f->getDirection(), _pacman.getPos(), _map);
+				else
+					f->move(f->getDirection(), _fantome[0]->getPos(), _map);
 
-			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
-			{
-				//Si le fantome est en range du dragonShout
-				if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
+				verifieSiMort(*f);
+				if (!f->getToucherParDragonshout())
 				{
+					if (f->getPos().x < 30 || f->getPos().x > 660 || f->getPos().y < 30 || f->getPos().y > 620)
+					{
+						f->setIsDead(true);
+						continue;
+					}
 
-					sf::Vector2f posRecul;
-					float x = (_pacman.getPos().x - f->getPos().x);
-					float y = (_pacman.getPos().y - f->getPos().y);
-					float ratioX = x / 250;
-					float ratioY = y / 250;
-					int reculX = 150 / ratioX;
-					int reculY = 150 / ratioY;
-					if (reculX > 350)
-						reculX = 350;
-					if (reculY > 350)
-						reculY = 350;
-					if (reculX < -350)
-						reculX = -350;
-					if (reculY < -350)
-						reculY = -350;
-					if (_pacman.getNbDragonShout() >= 2)
+					if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
 					{
-						if (reculX < 0)
-							reculX = -1000;
-						else
-							reculX = 1000;
-						if (reculY < 0)
-							reculY = -1000;
-						else
-							reculY = 1000;
-					}
-					posRecul.x = f->getPos().x - reculX;
-					posRecul.y = f->getPos().y - reculY;
-					f->setDragonShoutEffect(posRecul);
-				}
-				
-			}
-			//Tue dans un range quand il explose
-			if (f->getExploser())
-			{
-				for (auto f2 : _fantome)
-				{
-					if (abs(f->getPos().x - f2->getPos().x) + abs(f->getPos().y - f2->getPos().y) < 150)
-					{
-						f2->setIsDead(true);
+						f->setPowerUp(1, true);
+						f->resetClockAlahuAkbar();
+						_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
+						_nbBouleRougeMange++;
+						if (_nbBouleRougeMange >= _nbBoulesTotal)
+						{
+							_sons.stopAll();
+							_pacman.stopSounds();
+							_sons.play("gagne");
+							Sleep(5500);
+							_fruits.vider();
+							init();
+							break;
+						}
 					}
 				}
-				if (abs(f->getPos().x - _pacman.getPos().x) + abs(f->getPos().y - _pacman.getPos().y) < 150)
+
+				if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
 				{
-					if (!_pacman.getInvincible() && !_pacman.getPowerUps(4))
-						killPacman();
+					//Si le fantome est en range du dragonShout
+					if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
+					{
+
+						sf::Vector2f posRecul;
+						float x = (_pacman.getPos().x - f->getPos().x);
+						float y = (_pacman.getPos().y - f->getPos().y);
+						float ratioX = x / 250;
+						float ratioY = y / 250;
+						int reculX = 150 / ratioX;
+						int reculY = 150 / ratioY;
+						if (reculX > 350)
+							reculX = 350;
+						if (reculY > 350)
+							reculY = 350;
+						if (reculX < -350)
+							reculX = -350;
+						if (reculY < -350)
+							reculY = -350;
+						if (_pacman.getNbDragonShout() >= 2)
+						{
+							if (reculX < 0)
+								reculX = -1000;
+							else
+								reculX = 1000;
+							if (reculY < 0)
+								reculY = -1000;
+							else
+								reculY = 1000;
+						}
+						posRecul.x = f->getPos().x - reculX;
+						posRecul.y = f->getPos().y - reculY;
+						f->setDragonShoutEffect(posRecul);
+					}
+
+				}
+				//Tue dans un range quand il explose
+				if (f->getExploser())
+				{
+					for (auto f2 : _fantome)
+					{
+						if (abs(f->getPos().x - f2->getPos().x) + abs(f->getPos().y - f2->getPos().y) < 150)
+						{
+							f2->setIsDead(true);
+						}
+					}
+					if (abs(f->getPos().x - _pacman.getPos().x) + abs(f->getPos().y - _pacman.getPos().y) < 150)
+					{
+						if (!_pacman.getInvincible() && !_pacman.getPowerUps(4))
+							killPacman();
+					}
 				}
 			}
 		}
+
 		_dragonShoutEffect = false;
 		//Pour vérifier l'effect du dragon shout une seule fois
 		/*if (!_dragonShoutEffect && _pacman.getTempsDragonShout() > 5000)
@@ -933,6 +960,16 @@ void Jeu::play()
 		}
 		else
 			_megaDragonShout = false;
+
+		if (!tempsNormal)
+		{
+			_pacman.goBack(_map);
+
+			for (auto f : _fantome)
+				f->goBack(_map);
+		}
+
+
 		draw();
 		while (clock.getElapsedTime().asMilliseconds() < 1000 / _targetfps);
 	}

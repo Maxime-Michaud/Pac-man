@@ -61,6 +61,7 @@ class PacMan : public Personnage
 	mutable bool _stopRepeating = false;
 
 	sf::Clock _appuyerBouton;
+	int _nbFrameRecule = 0;
 
 	//Pour le power up dragonshout
 	dragonShout _dragonShout;
@@ -72,6 +73,9 @@ class PacMan : public Personnage
 	mutable bool _isDead = false;
 
 	int _balles = 0;
+
+	mutable bool _reversed = false;
+	mutable bool _reversedLast = false;
 public:
 	PacMan();
 	~PacMan();

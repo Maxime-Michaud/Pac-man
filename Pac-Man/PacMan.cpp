@@ -250,6 +250,24 @@ sf::VertexArray PacMan::buildPacMan() const
 	//possition du prochain vertex
 	sf::Vector2f pos;
 
+	//Utilisé pour orienter pac-man
+	float offset = -1;
+	switch (_direction)
+	{
+	case 'd':
+		offset = -1;
+		break;
+	case 'a':
+		offset = (float)_nbrCote / 2 - 1;
+		break;
+	case 'w':
+		offset = 3 * (float)_nbrCote / 4 - 1;
+		break;
+	case 's':
+		offset = (float)_nbrCote / 4 - 1;
+		break;
+	}
+
 	//nombre de points : le centre + 1 par coté + 1 pour aller rejoindre le premier point et fermer le cercle
 	sf::VertexArray vertices(sf::TrianglesFan);
 
@@ -257,28 +275,10 @@ sf::VertexArray PacMan::buildPacMan() const
 
 	for (int i = 1; i <= _nbrCote + 1; i++)
 	{
-		float offset = -1;
-
-		switch (_direction)
-		{
-		case 'd':
-			offset = -1;
-			break;
-		case 'a':
-			offset = (float)_nbrCote / 2 - 1;
-			break;
-		case 'w':
-			offset = 3 * (float)_nbrCote / 4 - 1;
-			break;
-		case 's':
-			offset = (float)_nbrCote / 4 - 1;
-			break;
-		}
-
 		pos.x = _radius * cos(2 * (float)M_PI * (i + offset) / _nbrCote) + _pos.x;
 		pos.y = _radius * sin(2 * (float)M_PI * (i + offset) / _nbrCote) + _pos.y;
 
-		vertices.append(sf::Vertex(sf::Vertex(pos, _color)));
+		vertices.append(sf::Vertex(pos, _color));
 	}
 
 	//Fais ouvrir et fermer la bouche de pac-man
@@ -290,14 +290,23 @@ sf::VertexArray PacMan::buildPacMan() const
 
 void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
+	//Si le dernier frame on allais a l'envers mais pas celui ci, inverse l'ouverture/fermeture de la bouche de pac-man
+	if (_reversedLast && !_reversed)
+		_stepIncrement *= -1;
+
 	//Si pacman est mort, il n'est pas dessiné
 	if (_isDead) return;
-	int testeurIncrement = _step;
+
 	if (!_paused)
 	{
 		_step += _stepIncrement;
 		if (_step < 0 || _step >= _nbrCote / 4)
+		{
 			_stepIncrement *= -1;
+
+			if (_step < 0) _step = 0;
+			else if (_step >= _nbrCote / 4)_step = _nbrCote / 4;
+		}
 	}
 
 	auto vertices = buildPacMan();
@@ -323,6 +332,9 @@ void PacMan::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		_dragonShout.draw(target, states);
 	}
 	target.draw(vertices);
+
+	_reversedLast = _reversed;
+	_reversed = false;
 }
 
 void PacMan::deathAnimation(sf::RenderTarget & target) const
@@ -404,6 +416,18 @@ void PacMan::input(char c)
 				_invincible = !_invincible;
 			}
 			break;
+		case 'r':
+			if (_powerUpTimeTravel)	//Si le power up est disponible
+			{
+				--_nbFrameRecule;
+				_reversed = true;	//Indique que pacman va a l'envers pour ce frame
+
+				if (!_reversedLast)	//Si pacman allais a l'endroit le frame d'avant, inverse l'ouverture/fermeture de sa bouche
+					_stepIncrement *= -1;
+
+				if (!_nbFrameRecule)
+					_powerUpTimeTravel = false;
+			}
 	default:
 		break;
 	}
@@ -475,6 +499,7 @@ void PacMan::move(char direction, Map &map)
 			setNormalStat();
 	}
 	Personnage::move(direction, map);
+
 }
 
 void PacMan::respawn(sf::Vector2f pos)
