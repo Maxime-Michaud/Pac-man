@@ -118,7 +118,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{								//place le personnage dans cette ligne au début(ou à la fin) +(ou -) sa vitesse
 			_direction = 'a';
 			_vertical = false;
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getFin().x - _vitesse, map.getLigne(_numLigne).getFin().y));
 			return true;
 		}
@@ -133,7 +133,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = false;
 			_direction = 'd';
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getDebut().x + _vitesse, map.getLigne(_numLigne).getDebut().y));
 			return true;
 		}
@@ -147,7 +147,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = true;
 			_direction = 's';
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getDebut().x, map.getLigne(_numLigne).getDebut().y + _vitesse));
 			return true;
 		}
@@ -160,7 +160,7 @@ bool Personnage::changerDeLigne(char direction, Map &map)
 		{
 			_vertical = true;
 			_direction = 'w';
-			//_change.push(_pos);
+			_change.push(_pos);
 			setPosSecuritaire(sf::Vector2f(map.getLigne(_numLigne).getFin().x, map.getLigne(_numLigne).getFin().y - _vitesse));
 			return true;
 		}

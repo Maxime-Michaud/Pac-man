@@ -498,6 +498,9 @@ void PacMan::resetPowerUps()
 	_tempsMemoireLaser = 0;
 	_tempsSansLaser = sf::Clock();
 
+	_balles = 0;
+	_powerUpGun = false;
+
 	_powerUpMarioStar = false;
 	_nbMilisecondeEtoile = 0;
 }

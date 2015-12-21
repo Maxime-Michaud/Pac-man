@@ -1,8 +1,7 @@
 p (80, 50)
 f rouge 1 (600, 600)
 f bleu 1 (600, 600)
-f orange 1 (600, 600)
-f rose 1 (600, 600)
+f orange 2 (600, 600)
 50,50 300,50
 360,50 600,50
 50,50 50,180
@@ -49,10 +48,11 @@ f rose 1 (600, 600)
 490,530 600,530
 600,530 600,600
 
-Map classique, manger tous les fromages pour gagner!
+Map classique avec laser!
 c 0 0 255 255
 e 1
 r 2
 b 0
+v 1
 
 

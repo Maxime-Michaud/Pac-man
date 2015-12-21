@@ -86,7 +86,7 @@ void Jeu::init()
 					{
 						for (int l = 0; l < _mangeable[k].size(); l++)
 						{
-							if (_mangeable[k][l] & mangeable::grosseBoule && abs(k - i) + abs(l - j) < 20)
+							if (_mangeable[k][l] & mangeable::grosseBoule && abs(k - i) + abs(l - j) < _distanceGrosseBoule)
 								tropPres = true;
 						}
 					}
@@ -197,33 +197,7 @@ void Jeu::loading()
 		{
 			_loadingMovie.play();
 		}
-
 	}
-
-	sf::Event event;
-	temp.pollEvent(event);
-	while (temp.pollEvent(event));
-	event = sf::Event();
-	loadingPleaseWait.setString("Appuyer sur une touche");
-	while (event.type != sf::Event::KeyReleased && event.type != sf::Event::LostFocus)
-	{
-		temp.pollEvent(event);
-		temp.clear();
-		_loadingMovie.update();
-		temp.draw(_loadingMovie);
-		temp.draw(loadingPleaseWait);
-		temp.display();
-		if (!_loadingMovie.getStatus())
-		{
-			_loadingMovie.play();
-		}
-	}
-
-	_window.requestFocus();
-	_stopPause = false;
-	_loadingThread->detach();
-	delete _loadingThread;
-
 }
 
 void Jeu::drawMangeable()
@@ -402,6 +376,8 @@ sf::Vector2f Jeu::choisirPosRandom()
 void Jeu::loadMap()
 {
 	int minScore;
+	_distanceGrosseBoule = 20;		//La distance des grosses boulles par défaut
+	_powerUps.clear();
 	std::string mapName;
 	do
 	{
@@ -613,6 +589,17 @@ void Jeu::loadMap()
 						dynamic_cast<FantomeRose*>(f)->setNbEssai(atoi(params[1].c_str()));
 				break;
 
+
+			case 'd':
+				_distanceGrosseBoule = atoi(params[1].c_str());
+				break;
+
+			case 'v':
+				for (int i = 1; i < params.size(); i++)
+				{
+					_powerUps.push_back(atoi(params[i].c_str()));
+				}
+				break;
 			case 'r':
 				assert(params.size() == 2);
 
@@ -636,9 +623,18 @@ void Jeu::loadMap()
 
 void Jeu::donnerUnPowerUpPacman()
 {
-	int random = rand() % 3 + 1;
-	if (random == 2)
-		random = 4;
+	int random;
+	if (!_powerUps.empty())
+	{
+		random = _powerUps[rand() % _powerUps.size()];
+	}
+	else
+	{
+		random = rand() % 3 + 1;
+		if (random == 2)
+			random = 4;
+	}
+	
 	switch (random)
 	{
 	case 1:
@@ -647,7 +643,7 @@ void Jeu::donnerUnPowerUpPacman()
 		break;
 	case 3:
 		_pacman.setPowerUps(3, true);
-		_pacman.changerTempsPowerUp(3, rand() % 2 + 1);
+		_pacman.changerTempsPowerUp(3, rand() % 3 + 3);
 		break;
 	case 4:
 		_sons.play("etoile");
@@ -676,6 +672,8 @@ void Jeu::donnerUnPowerUpPacman()
 void Jeu::play()
 {
 	_loading = false;
+	_loadingThread->detach();
+	delete _loadingThread;
 	if (_mapsIterator != ++_maps.begin())
 		pause(_mapMsg);
 		
@@ -818,11 +816,13 @@ void Jeu::play()
 						Sleep(5500);
 						_fruits.vider();
 						init();
+						_playing = false;
+						_loading = false;
 						break;
 					}
 				}
 			}
-
+				
 			if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
 			{
 				//Si le fantome est en range du dragonShout

@@ -37,11 +37,12 @@ f orange 1 (590, 600)
 50,330,600,330
 330,50 330,600
 
-Map 5 Préparez-vous!
-c 255 255 255 255
+Préparez-vous à manipuler le temps!
+c 255 255 255 20
 e 2
 r 1
 b 8
+v 2
 
 
 

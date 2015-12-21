@@ -1,4 +1,4 @@
-p (370, 330) laser -10000
+p (370, 330) gun 10000
 f rose 1 (50, 50) bouleRouge
 f rose 1 (600, 50) bouleRouge
 f rose 1 (60, 600) bouleRouge
@@ -44,3 +44,4 @@ c 40 248 152 100
 e 20
 r 2
 b -1
+v 3

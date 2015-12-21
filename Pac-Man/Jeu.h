@@ -57,6 +57,7 @@ class Jeu
 	sf::Event event;
 	int _targetfps;
 	float _shake;
+	bool _flagGGFantomeBouleRouge = false;	  //Un flag pour quand le fantome fait gagner en mangant une boule rouge pour éviter que le loading screen ne ferme pas
 	bool _playing = true;
 	std::vector<sf::Vector2f> _posValides;    //Les positions valides dans la map
 	std::vector<std::vector<int>> _mangeable; //Les boules à manger sur la map
@@ -72,8 +73,10 @@ class Jeu
 	int _score = 0;							  //Le score
 	int _scoreMap = 0;						  //Le score sur la map en cours
 	int _nbBoulesTotal;						  //Le nombre de boules total dans la map
+	std::vector<int> _powerUps;				  //Un vecteur qui contient les nombres qui vont être choisit au hasard pour les powers ups
 	int _nbBouleMange = 0;					  //Le nombre de boule mangé
 	int _nbBouleRouge;						  //Le nombre de boule rouge
+	int _distanceGrosseBoule = 20;			  //Distance x10 en pixel des grosses boules entre-eux
 	int _nbBouleRougeMange = 0;				  //lE NOMBRE DE BOULE ROUGE MANGÉS
 	int _nbFruitMange = 0;					  //Le nombre de fruit mangé, a chaque 3, donne un power up
 	bool _megaDragonShout = false;			  //Un bool pour gèrer le dragonshout et ne pas incrémenter plus d'une fois le nb de dragonshout
@@ -97,8 +100,6 @@ class Jeu
 	std::string _mapMsg;
 
 	Mire _mire = Mire(sf::Color::Red, 3);
-
-	std::vector<int> _powerUpDispo;
 public:
 	Jeu(std::string map);
 	~Jeu();

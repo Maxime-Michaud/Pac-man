@@ -21,4 +21,5 @@ BONUS, laser infini!
 c 255 0 0 255
 e 2
 r 2
-b -1
+b 150
+v 1
