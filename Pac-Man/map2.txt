@@ -1,4 +1,4 @@
-p (80, 50)
+p (80, 50) laser -30000
 f rouge 1 (600, 590) bouleRouge
 f bleu 1 (600, 590) bouleRouge
 f orange 1 (600, 590) bouleRouge
@@ -29,8 +29,9 @@ f rose 1 (600, 590) bouleRouge
 50,440 330,440
 450,450 630,450
 
-Map 2 Préparer-Vous!
+Map 2 tous les power ups possible!
 c 125 255 125 255
 e 2
 r 1
 b 15
+v 2 3 4 5

@@ -40,8 +40,7 @@ void Jeu::init()
 {
 	_nbBouleRougeMange = 0;
 	loadMap();
-
-	setTutorialText();
+	setTexts();
 
 	_viewVector = sf::Vector2f(_window.getSize().x, _window.getSize().y);
 	_view.setSize(_viewVector);
@@ -86,7 +85,7 @@ void Jeu::init()
 					{
 						for (int l = 0; l < _mangeable[k].size(); l++)
 						{
-							if (_mangeable[k][l] & mangeable::grosseBoule && abs(k - i) + abs(l - j) < 20)
+							if (_mangeable[k][l] & mangeable::grosseBoule && abs(k - i) + abs(l - j) < _distanceGrosseBoule)
 								tropPres = true;
 						}
 					}
@@ -197,33 +196,7 @@ void Jeu::loading()
 		{
 			_loadingMovie.play();
 		}
-
 	}
-
-	sf::Event event;
-	temp.pollEvent(event);
-	while (temp.pollEvent(event));
-	event = sf::Event();
-	loadingPleaseWait.setString("Appuyer sur une touche");
-	while (event.type != sf::Event::KeyReleased && event.type != sf::Event::LostFocus)
-	{
-		temp.pollEvent(event);
-		temp.clear();
-		_loadingMovie.update();
-		temp.draw(_loadingMovie);
-		temp.draw(loadingPleaseWait);
-		temp.display();
-		if (!_loadingMovie.getStatus())
-		{
-			_loadingMovie.play();
-		}
-	}
-
-	_window.requestFocus();
-	_stopPause = false;
-	_loadingThread->detach();
-	delete _loadingThread;
-
 }
 
 void Jeu::drawMangeable()
@@ -316,7 +289,10 @@ void Jeu::drawGunUI()
 void Jeu::drawDragonShoutUi()
 {
 	if (_mapsIterator != ++_maps.begin())
+	{
 		_ui.playAnimation("dragonUI");
+		_ui.setFrames("shouts", -1);
+	}
 	else
 	{
 		if (_pacman.getNbDragonShout() != 1)
@@ -358,8 +334,7 @@ void Jeu::draw(bool display)
 
 	drawLaserUi();
 
-	if (_pacman.getPowerUps(5))
-		drawDragonShoutUi();
+	drawDragonShoutUi();
 
 	_window.draw(_map);
 	drawMangeable();
@@ -402,6 +377,8 @@ sf::Vector2f Jeu::choisirPosRandom()
 void Jeu::loadMap()
 {
 	int minScore;
+	_distanceGrosseBoule = 20;		//La distance des grosses boulles par défaut
+	_powerUps.clear();
 	std::string mapName;
 	do
 	{
@@ -613,6 +590,17 @@ void Jeu::loadMap()
 						dynamic_cast<FantomeRose*>(f)->setNbEssai(atoi(params[1].c_str()));
 				break;
 
+
+			case 'd':
+				_distanceGrosseBoule = atoi(params[1].c_str());
+				break;
+
+			case 'v':
+				for (int i = 1; i < params.size(); i++)
+				{
+					_powerUps.push_back(atoi(params[i].c_str()));
+				}
+				break;
 			case 'r':
 				assert(params.size() == 2);
 
@@ -636,9 +624,16 @@ void Jeu::loadMap()
 
 void Jeu::donnerUnPowerUpPacman()
 {
-	int random = rand() % 3 + 1;
-	if (random == 2)
-		random = 4;
+	int random;
+	if (!_powerUps.empty())
+	{
+		random = _powerUps[rand() % _powerUps.size()];
+	}
+	else
+	{
+		random = rand() % 4 + 1;
+	}
+	
 	switch (random)
 	{
 	case 1:
@@ -647,7 +642,7 @@ void Jeu::donnerUnPowerUpPacman()
 		break;
 	case 3:
 		_pacman.setPowerUps(3, true);
-		_pacman.changerTempsPowerUp(3, rand() % 2 + 1);
+		_pacman.changerTempsPowerUp(3, rand() % 3 + 3);
 		break;
 	case 4:
 		_sons.play("etoile");
@@ -676,6 +671,8 @@ void Jeu::donnerUnPowerUpPacman()
 void Jeu::play()
 {
 	_loading = false;
+	_loadingThread->detach();
+	delete _loadingThread;
 	if (_mapsIterator != ++_maps.begin())
 		pause(_mapMsg);
 		
@@ -811,8 +808,8 @@ void Jeu::play()
 		if (_map.getChanged())
 			checkLines();
 		if (tempsNormal)
-		{ 
-		//Fait les mouvements des fantomes
+		{
+			//Fait les mouvements des fantomes
 			for (auto f : _fantome)
 			{
 				if (f->getNom() != "bleu")
@@ -828,25 +825,8 @@ void Jeu::play()
 						f->setIsDead(true);
 						continue;
 					}
-
-					if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
-					{
-						f->setPowerUp(1, true);
-						f->resetClockAlahuAkbar();
-						_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
-						_nbBouleRougeMange++;
-						if (_nbBouleRougeMange >= _nbBoulesTotal)
-						{
-							_sons.stopAll();
-							_pacman.stopSounds();
-							_sons.play("gagne");
-							Sleep(5500);
-							_fruits.vider();
-							init();
-							break;
-						}
-					}
 				}
+
 
 				if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
 				{
@@ -854,52 +834,78 @@ void Jeu::play()
 					if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
 					{
 
-						sf::Vector2f posRecul;
-						float x = (_pacman.getPos().x - f->getPos().x);
-						float y = (_pacman.getPos().y - f->getPos().y);
-						float ratioX = x / 250;
-						float ratioY = y / 250;
-						int reculX = 150 / ratioX;
-						int reculY = 150 / ratioY;
-						if (reculX > 350)
-							reculX = 350;
-						if (reculY > 350)
-							reculY = 350;
-						if (reculX < -350)
-							reculX = -350;
-						if (reculY < -350)
-							reculY = -350;
-						if (_pacman.getNbDragonShout() >= 2)
+						if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
 						{
-							if (reculX < 0)
-								reculX = -1000;
-							else
-								reculX = 1000;
-							if (reculY < 0)
-								reculY = -1000;
-							else
-								reculY = 1000;
+							f->setPowerUp(1, true);
+							f->resetClockAlahuAkbar();
+							_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
+							_nbBouleRougeMange++;
+							if (_nbBouleRougeMange >= _nbBoulesTotal)
+							{
+								_sons.stopAll();
+								_pacman.stopSounds();
+								_sons.play("gagne");
+								Sleep(5500);
+								_fruits.vider();
+								init();
+								break;
+							}
 						}
-						posRecul.x = f->getPos().x - reculX;
-						posRecul.y = f->getPos().y - reculY;
-						f->setDragonShoutEffect(posRecul);
 					}
 
-				}
-				//Tue dans un range quand il explose
-				if (f->getExploser())
-				{
-					for (auto f2 : _fantome)
+					if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
 					{
-						if (abs(f->getPos().x - f2->getPos().x) + abs(f->getPos().y - f2->getPos().y) < 150)
+						//Si le fantome est en range du dragonShout
+						if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
 						{
-							f2->setIsDead(true);
+
+							sf::Vector2f posRecul;
+							float x = (_pacman.getPos().x - f->getPos().x);
+							float y = (_pacman.getPos().y - f->getPos().y);
+							float ratioX = x / 250;
+							float ratioY = y / 250;
+							int reculX = 150 / ratioX;
+							int reculY = 150 / ratioY;
+							if (reculX > 350)
+								reculX = 350;
+							if (reculY > 350)
+								reculY = 350;
+							if (reculX < -350)
+								reculX = -350;
+							if (reculY < -350)
+								reculY = -350;
+							if (_pacman.getNbDragonShout() >= 2)
+							{
+								if (reculX < 0)
+									reculX = -1000;
+								else
+									reculX = 1000;
+								if (reculY < 0)
+									reculY = -1000;
+								else
+									reculY = 1000;
+							}
+							posRecul.x = f->getPos().x - reculX;
+							posRecul.y = f->getPos().y - reculY;
+							f->setDragonShoutEffect(posRecul);
 						}
+
 					}
-					if (abs(f->getPos().x - _pacman.getPos().x) + abs(f->getPos().y - _pacman.getPos().y) < 150)
+					//Tue dans un range quand il explose
+					if (f->getExploser())
 					{
-						if (!_pacman.getInvincible() && !_pacman.getPowerUps(4))
-							killPacman();
+						for (auto f2 : _fantome)
+						{
+							if (abs(f->getPos().x - f2->getPos().x) + abs(f->getPos().y - f2->getPos().y) < 150)
+							{
+								f2->setIsDead(true);
+							}
+						}
+						if (abs(f->getPos().x - _pacman.getPos().x) + abs(f->getPos().y - _pacman.getPos().y) < 150)
+						{
+							if (!_pacman.getInvincible() && !_pacman.getPowerUps(4))
+								killPacman();
+						}
 					}
 				}
 			}
@@ -1428,10 +1434,7 @@ void Jeu::loadAnimations()
 		}
 
 		//Écris le nombre de dragon shouts disponible
-		if (!_ui.hasText("shouts"))
-			_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(650, 310));
-		else
-			_ui.changeText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()));
+		_ui.changeText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()));
 
 		//On veut continuer l'animation
 		return true;
@@ -1493,7 +1496,7 @@ void Jeu::loadTexts()
 	_ui.addText("score", "Score  ", "8bit.ttf", sf::Vector2f());
 	//Prépare les runes pour quand on apprend un dragon shout. Il disparait en devenant transparent, pas en n'étant pas dessiné
 	_ui.addText("dragon", "Fus Roh Dah", "dragon.otf", sf::Vector2f(200, 10), 30, sf::Color(200, 200, 200, 0), -1);
-
+	_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(650, 310),30,sf::Color::White,0);
 
 	//Ajoute les textes pour le premier niveau qui expliquent les controles
 	_ui.addText("tutW", "W", "keyboard.otf", sf::Vector2f(815, 45), 75);
@@ -1528,7 +1531,7 @@ void Jeu::loadTexts()
 }
 
 //Cache les texte du tutorial si nécéssaire
-void Jeu::setTutorialText()
+void Jeu::setTexts()
 {
 	if (_mapsIterator != ++_maps.begin())
 	{
@@ -1543,5 +1546,7 @@ void Jeu::setTutorialText()
 		_ui.setFrames("tutGun", 0);
 		_ui.setFrames("tutPause", 0);
 		_ui.setFrames("tutFruit", 0);
+		_ui.setFrames("tutR", 0);
+		_ui.setFrames("tutRecule", 0);
 	}
 }
