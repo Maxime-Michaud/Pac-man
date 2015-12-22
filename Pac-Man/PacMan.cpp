@@ -525,6 +525,9 @@ void PacMan::resetPowerUps()
 
 	_powerUpMarioStar = false;
 	_nbMilisecondeEtoile = 0;
+
+	_nbFrameRecule = 0;
+	_powerUpTimeTravel = 0;
 }
 
 void PacMan::loadSounds()

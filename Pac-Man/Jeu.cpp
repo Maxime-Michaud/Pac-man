@@ -1509,6 +1509,12 @@ void Jeu::loadTexts()
 
 	_ui.addText("tutLaser", "Laser", "steelfish rg.ttf", sf::Vector2f(825, 210), 60);
 
+	_ui.addText("tutR", "R", "keyboard.otf", sf::Vector2f(925, 200), 75);
+	_ui.Text("tutR").setStyle(sf::Text::Bold);
+
+	_ui.addText("tutRecule", "Reculer", "steelfish rg.ttf", sf::Vector2f(1000, 200), 60);
+
+
 	_ui.addText("tutF", "F", "keyboard.otf", sf::Vector2f(750, 280), 75);
 	_ui.Text("tutF").setStyle(sf::Text::Bold);
 
