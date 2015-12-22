@@ -217,7 +217,7 @@ void PacMan::changerTempsPowerUp(int numDuPowerUp, float valeur)
 		_nbMilisecondeLaser += valeur;
 		break;
 	case 2:
-		//_powerUpTimeTravel = valeur;
+		_nbFrameRecule += valeur;
 		break;
 	case 3:
 		_balles += valeur;
@@ -356,6 +356,11 @@ void PacMan::deathAnimation(sf::RenderTarget & target) const
 bool PacMan::hasDisappeared() const
 {
 	return (_step + _deathCount) >= _nbrCote;
+}
+
+int PacMan::getTempsRecule() const
+{
+	return _nbFrameRecule;
 }
 
 void PacMan::input(char c)
@@ -531,6 +536,9 @@ void PacMan::resetPowerUps()
 
 	_nbFrameRecule = 0;
 	_powerUpTimeTravel = 0;
+	
+	while (!_change.empty())
+		_change.pop();
 }
 
 void PacMan::loadSounds()

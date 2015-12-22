@@ -114,6 +114,7 @@ public:
 
 	void deathAnimation(sf::RenderTarget & target) const;
 	bool hasDisappeared() const;
+	int getTempsRecule() const;
 
 	void input(char c);
 

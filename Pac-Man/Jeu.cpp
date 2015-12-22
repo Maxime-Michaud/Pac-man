@@ -285,6 +285,17 @@ void Jeu::drawGunUI()
 	}
 }
 
+void Jeu::drawReculeUI()
+{
+	if (_mapsIterator != ++_maps.begin())
+	{
+		int ms = 16 * _pacman.getTempsRecule();
+		std::string text = std::to_string(static_cast<int>(ms / 1000)) + "." + std::to_string(ms - static_cast<int>(ms / 1000));
+		_ui.setFrames("recule", -1);
+		_ui.changeText("recule", "Temps de recul : " + text);
+	}
+}
+
 //Dessiner le UI du dragonShout
 void Jeu::drawDragonShoutUi()
 {
@@ -333,7 +344,7 @@ void Jeu::draw(bool display)
 	drawEtoileUi();
 
 	drawLaserUi();
-
+	drawReculeUI();
 	drawDragonShoutUi();
 
 	_window.draw(_map);
@@ -1490,7 +1501,7 @@ void Jeu::loadTexts()
 	//Prépare les runes pour quand on apprend un dragon shout. Il disparait en devenant transparent, pas en n'étant pas dessiné
 	_ui.addText("dragon", "Fus Roh Dah", "dragon.otf", sf::Vector2f(200, 10), 30, sf::Color(200, 200, 200, 0), -1);
 	_ui.addText("shouts", "Dragon shout available: " + std::to_string(_pacman.getNbDragonShout()), "steelfish rg.ttf", sf::Vector2f(650, 310),30,sf::Color::White,0);
-
+	_ui.addText("recule", "Temps de recul: 0 sec", "steelfish rg.ttf", sf::Vector2f(650, 390), 30, sf::Color::White, 0);
 	//Ajoute les textes pour le premier niveau qui expliquent les controles
 	_ui.addText("tutW", "W", "keyboard.otf", sf::Vector2f(815, 45), 75);
 	_ui.Text("tutW").setStyle(sf::Text::Bold);

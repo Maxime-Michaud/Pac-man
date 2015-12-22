@@ -116,6 +116,7 @@ public:
 	void drawDragonShoutUi();
 	void drawEtoileUi();
 	void drawGunUI();
+	void drawReculeUI();
 	void play();
 
 	void captureEvent();
