@@ -38,7 +38,7 @@ f orange 1 (590, 600)
 330,50 330,600
 
 Préparez-vous à manipuler le temps!
-c 255 255 255 20
+c 200 200 200 10
 e 2
 r 1
 b 8

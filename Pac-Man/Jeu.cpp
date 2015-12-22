@@ -640,6 +640,10 @@ void Jeu::donnerUnPowerUpPacman()
 		_pacman.setPowerUps(1, true);
 		_pacman.changerTempsPowerUp(1, 2000);
 		break;
+	case 2:
+		_pacman.setPowerUps(2, true);
+		_pacman.changerTempsPowerUp(2, 360);
+		break;
 	case 3:
 		_pacman.setPowerUps(3, true);
 		_pacman.changerTempsPowerUp(3, rand() % 3 + 3);
@@ -820,77 +824,66 @@ void Jeu::play()
 				verifieSiMort(*f);
 				if (!f->getToucherParDragonshout())
 				{
+					if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
+					{
+						f->setPowerUp(1, true);
+						f->resetClockAlahuAkbar();
+						_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
+						_nbBouleRougeMange++;
+						if (_nbBouleRougeMange >= _nbBoulesTotal)
+						{
+							_sons.stopAll();
+							_pacman.stopSounds();
+							_sons.play("gagne");
+							Sleep(5500);
+							_fruits.vider();
+							init();
+							break;
+						}
+					}
 					if (f->getPos().x < 30 || f->getPos().x > 660 || f->getPos().y < 30 || f->getPos().y > 620)
 					{
 						f->setIsDead(true);
 						continue;
 					}
 				}
-
-
 				if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
 				{
 					//Si le fantome est en range du dragonShout
 					if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
 					{
 
-						if (_mangeable[f->getPos().x / 10][f->getPos().y / 10] & mangeable::bouleRouge)
+						sf::Vector2f posRecul;
+						float x = (_pacman.getPos().x - f->getPos().x);
+						float y = (_pacman.getPos().y - f->getPos().y);
+						float ratioX = x / 250;
+						float ratioY = y / 250;
+						int reculX = 150 / ratioX;
+						int reculY = 150 / ratioY;
+						if (reculX > 350)
+							reculX = 350;
+						if (reculY > 350)
+							reculY = 350;
+						if (reculX < -350)
+							reculX = -350;
+						if (reculY < -350)
+							reculY = -350;
+						if (_pacman.getNbDragonShout() >= 2)
 						{
-							f->setPowerUp(1, true);
-							f->resetClockAlahuAkbar();
-							_mangeable[f->getPos().x / 10][f->getPos().y / 10] = 0;
-							_nbBouleRougeMange++;
-							if (_nbBouleRougeMange >= _nbBoulesTotal)
-							{
-								_sons.stopAll();
-								_pacman.stopSounds();
-								_sons.play("gagne");
-								Sleep(5500);
-								_fruits.vider();
-								init();
-								break;
-							}
+							if (reculX < 0)
+								reculX = -1000;
+							else
+								reculX = 1000;
+							if (reculY < 0)
+								reculY = -1000;
+							else
+								reculY = 1000;
 						}
+						posRecul.x = f->getPos().x - reculX;
+						posRecul.y = f->getPos().y - reculY;
+						f->setDragonShoutEffect(posRecul);
 					}
-
-					if (_pacman.getDragonShoutActivated() && !f->getToucherParDragonshout() && _pacman.getTempsDragonShout() > 700)
-					{
-						//Si le fantome est en range du dragonShout
-						if (abs(f->getPos().x - _pacman.getPos().x) < 250 && abs(f->getPos().y - _pacman.getPos().y) < 250)
-						{
-
-							sf::Vector2f posRecul;
-							float x = (_pacman.getPos().x - f->getPos().x);
-							float y = (_pacman.getPos().y - f->getPos().y);
-							float ratioX = x / 250;
-							float ratioY = y / 250;
-							int reculX = 150 / ratioX;
-							int reculY = 150 / ratioY;
-							if (reculX > 350)
-								reculX = 350;
-							if (reculY > 350)
-								reculY = 350;
-							if (reculX < -350)
-								reculX = -350;
-							if (reculY < -350)
-								reculY = -350;
-							if (_pacman.getNbDragonShout() >= 2)
-							{
-								if (reculX < 0)
-									reculX = -1000;
-								else
-									reculX = 1000;
-								if (reculY < 0)
-									reculY = -1000;
-								else
-									reculY = 1000;
-							}
-							posRecul.x = f->getPos().x - reculX;
-							posRecul.y = f->getPos().y - reculY;
-							f->setDragonShoutEffect(posRecul);
-						}
-
-					}
+				}
 					//Tue dans un range quand il explose
 					if (f->getExploser())
 					{
@@ -907,7 +900,7 @@ void Jeu::play()
 								killPacman();
 						}
 					}
-				}
+				
 			}
 		}
 
